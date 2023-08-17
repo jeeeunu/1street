@@ -39,9 +39,10 @@ export class CreateUser1692255999587 implements MigrationInterface {
             name: 'email',
             type: 'varchar',
             length: '100',
+            isUnique: true,
           },
           {
-            name: 'phomenumber',
+            name: 'phome_number',
             type: 'int',
           },
           {
@@ -73,7 +74,7 @@ export class CreateUser1692255999587 implements MigrationInterface {
           {
             name: 'user_id',
             type: 'int',
-            isNullable: false,
+            isNullable: true, // user가 탈퇴해도 shop의 정보 남아있음
           },
           {
             name: 'shop_desc',
@@ -106,8 +107,7 @@ export class CreateUser1692255999587 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     // 제약 조건 제거
     await queryRunner.dropForeignKey('shop', 'FK_801741ae213da67afe2f556d207');
-
-    await queryRunner.dropTable('user'); // 롤백 : user 테이블
     await queryRunner.dropTable('shop'); // 롤백 : shop 테이블
+    await queryRunner.dropTable('user'); // 롤백 : user 테이블
   }
 }
