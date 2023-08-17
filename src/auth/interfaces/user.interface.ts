@@ -1,4 +1,4 @@
-// 임시
+// 
 export interface UserProfile {
   user_id: number;
   user_email: string;
