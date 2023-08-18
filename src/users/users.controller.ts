@@ -17,7 +17,7 @@ import { AuthUser } from '../auth/auth.decorator';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  //-- 회원가입 --//
+  //-- 일반 회원가입 --//
   @Post()
   @UsePipes(ValidationPipe)
   async signUp(

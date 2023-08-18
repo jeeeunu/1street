@@ -1,8 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
 
-export class MyCustomValidationException extends BadRequestException {
+export class CustomValidationException extends BadRequestException {
   constructor(errors: Record<string, any>) {
-    const formattedErrors = MyCustomValidationException.formatErrors(errors);
+    const formattedErrors = CustomValidationException.formatErrors(errors);
 
     super({
       statusCode: 400,

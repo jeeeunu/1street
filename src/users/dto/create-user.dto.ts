@@ -25,11 +25,9 @@ export class UserCreateDto {
   @IsString()
   readonly name: string;
 
-  @IsNotEmpty()
   @IsString()
   readonly phone_number: string;
 
-  @IsNotEmpty()
   @IsString()
   readonly address: string;
 
@@ -40,4 +38,8 @@ export class UserCreateDto {
   @IsOptional()
   @IsBoolean()
   readonly seller_flag: boolean;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly provider: string;
 }

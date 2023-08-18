@@ -1,19 +1,25 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { Observable } from 'rxjs';
 import { TokenExpiredError } from 'jsonwebtoken';
+import { UsersEntity } from '../users/entities/users.entity';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
+    @InjectRepository(UsersEntity)
+    private userRepository: Repository<UsersEntity>,
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector,
   ) {}
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const authToken = request.headers.cookie
       ?.split('; ')
@@ -23,11 +29,14 @@ export class AuthGuard implements CanActivate {
     if (authToken) {
       try {
         const payload = this.jwtService.verify(authToken);
-        request.user = {
+        const user = {
           email: payload.email,
-          isAdmin: payload.isAdmin,
+          isAdmin: payload.isAdmin || false,
           user_name: payload.user_name,
         };
+
+        request.user = user;
+
         return true;
       } catch (err) {
         console.error(err, err.stack);
