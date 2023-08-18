@@ -2,7 +2,7 @@ import { Request } from 'express';
 
 export interface CustomRequest extends Request {
   user: {
-    login_id: string;
+    email: string;
     isAdmin: boolean;
     user_name: string;
   };

@@ -2,7 +2,7 @@ import { IsString, Length, Matches } from 'class-validator';
 
 export class SignInDto {
   @IsString()
-  readonly login_id: string;
+  readonly email: string;
 
   @IsString()
   @Matches(/^(?=.*[a-z])(?=.*[0-9])[a-z0-9]+$/, {
