@@ -6,23 +6,25 @@ import {
   Get,
   Post,
   UseGuards,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { SignInDto } from './dto/sign-in.dto';
+import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
 
-@Controller()
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   //-- 로그인 --//
-  @Post('auth/login')
+  @Post('/login')
   async login(
-    @Body() signInDto: SignInDto,
+    @Body() logInDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<{ status: boolean; access_token: string }> {
-    const access_token = await this.authService.signIn(signInDto);
+    const access_token = await this.authService.signIn(logInDto);
     res.cookie('Authentication', access_token);
     return {
       status: true,
@@ -30,16 +32,35 @@ export class AuthController {
     };
   }
 
-  //-- 구글 로그인 --//
-  // 구글 로그인 폼
+  //-- 로그아웃 --//
+  @Post('/logout')
+  async logout(
+    @Req() req,
+    @Res() response: Response,
+  ): Promise<{ status: boolean; message: string }> {
+    if (req.user) {
+      response.clearCookie('access_token');
+
+      return {
+        status: true,
+        message: '로그아웃이 완료되었습니다.',
+      };
+    } else {
+      throw new HttpException(
+        { status: false, message: '이미 로그아웃 되었습니다.' },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+  }
+
+  //-- google --//
   @Get('/google/login/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req) {
     return req;
   }
 
-  // 구글 인증정보 반환
-  @Get('/google/redirect')
+  @Get('/google/redirect') // 고정
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(
     @Req() req,

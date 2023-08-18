@@ -6,12 +6,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { UserEntity } from './users/entities/users.entity';
+import { UsersEntity } from './users/entities/users.entity';
 import { GoogleStrategy } from './auth/strategies/google.strategy';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity]), // 소셜 로그인에 필요한 코드
+    TypeOrmModule.forFeature([UsersEntity]), // 소셜 로그인에 필요한 코드
     ConfigModule.forRoot({ isGlobal: true }),
 
     //-- TypeOrmModule --//

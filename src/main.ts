@@ -2,7 +2,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { MyCustomValidationException } from './common/exceptions/my-custom-validation.exception';
+import { CustomValidationException } from './common/exceptions/custom-validation.exception';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,7 +16,7 @@ async function bootstrap() {
       disableErrorMessages: true, // Error Message를 표시 여부 설정
       transformOptions: { enableImplicitConversion: true }, // 자동 변환 옵션
       exceptionFactory: (errors) => {
-        return new MyCustomValidationException(errors); // 커스텀 예외 클래스를 생성하고 반환
+        return new CustomValidationException(errors); // 커스텀 예외 클래스를 생성하고 반환
       },
     }),
   );

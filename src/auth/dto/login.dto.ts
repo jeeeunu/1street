@@ -1,6 +1,6 @@
 import { IsString, Length, Matches } from 'class-validator';
 
-export class SignInDto {
+export class LoginDto {
   @IsString()
   readonly email: string;
 

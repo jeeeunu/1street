@@ -7,7 +7,7 @@ export enum Provider {
   Google,
 }
 @Entity({ name: 'users' })
-export class UserEntity {
+export class UsersEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
@@ -22,22 +22,23 @@ export class UserEntity {
   @IsString()
   public password?: string;
 
-  @Column({ type: 'enum', enum: Provider, default: Provider.Local })
-  public provider: Provider;
-
   // 프로필 이미지
   @Column({ nullable: true })
   @IsOptional()
   @IsString()
-  public profile_images: string;
+  public profile_image: string;
 
   @Column()
   public name: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: true })
+  @IsOptional()
+  @IsString()
   public phone_number: string;
 
-  @Column()
+  @Column({ nullable: true })
+  @IsOptional()
+  @IsString()
   public address: string;
 
   @Column({ default: 3000 })
@@ -45,4 +46,7 @@ export class UserEntity {
 
   @Column({ default: false })
   public seller_flag: boolean;
+
+  @Column({ default: 'none' })
+  public provider: string;
 }
