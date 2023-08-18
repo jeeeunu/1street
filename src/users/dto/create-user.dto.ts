@@ -39,7 +39,7 @@ export class UserCreateDto {
   @IsBoolean()
   readonly seller_flag: boolean;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly provider: string;
 }

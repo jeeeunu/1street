@@ -18,6 +18,16 @@ export class UserService {
   ): Promise<{ status: boolean; message: string }> {
     userDto.password = await bcrypt.hash(userDto.password, 10);
     await this.userRepository.save(userDto);
-    return { status: true, message: '회원가입이 완료되었습니다' };
+    return { status: true, message: '회원가입이 완료되었습니다.' };
+  }
+
+  //-- 회원 탈퇴 --//
+  async delete(userId: number): Promise<{ status: boolean; message: string }> {
+    const deletedUser = await this.userRepository.delete(userId);
+
+    if (deletedUser.affected === 0) {
+      return { status: false, message: '사용자를 찾지 못했습니다.' };
+    }
+    return { status: true, message: '회원탈퇴가 완료되었습니다.' };
   }
 }
