@@ -38,8 +38,11 @@ export class UserController {
 
   //-- 회원 탈퇴 --//
   @Delete()
+  @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
-  async deleteUser(): Promise<{ status: boolean; message: string }> {
-    return;
+  async deleteUser(
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<{ status: boolean; message: string }> {
+    return await this.userService.delete(authUser.user_id);
   }
 }
