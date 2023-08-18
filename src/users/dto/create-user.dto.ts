@@ -9,7 +9,7 @@ import {
 export class UserCreateDto {
   @IsNotEmpty()
   @IsString()
-  readonly login_id: string;
+  readonly email: string;
 
   @IsNotEmpty()
   @IsString()
@@ -24,10 +24,6 @@ export class UserCreateDto {
   @IsNotEmpty()
   @IsString()
   readonly name: string;
-
-  @IsNotEmpty()
-  @IsString()
-  readonly email: string;
 
   @IsNotEmpty()
   @IsString()

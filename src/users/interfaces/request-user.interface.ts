@@ -1,5 +1,5 @@
 export interface RequestUserInterface {
-  login_id: string;
+  email: string;
   isAdmin: boolean;
   user_name: string;
 }
