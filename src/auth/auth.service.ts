@@ -40,7 +40,7 @@ export class AuthService {
       const payload = {
         login_id: signInDto.login_id,
         isAdmin: userFind.seller_flag,
-        user_id: userFind.name,
+        user_name: userFind.name,
       };
 
       const access_token = await this.jwtService.signAsync(payload); // expiresIn은 auth.modules 설정에 따라 자동으로 적용됨
