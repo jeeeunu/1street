@@ -6,6 +6,7 @@ import {
   UsePipes,
   UseGuards,
   ValidationPipe,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { UserCreateDto } from './dto/index';
@@ -26,12 +27,19 @@ export class UserController {
     return await this.userService.signUp(userDto);
   }
 
-  //-- AuthGuard/AuthUser 테스트용 --//
+  //-- TODO :: AuthGuard/AuthUser 테스트용, 삭제 예정 --//
   @Get()
   @UseGuards(AuthGuard)
   async test(
     @AuthUser() authUser: RequestUserInterface, // user 정보 받아올 수 있음
   ): Promise<any> {
     return console.log(authUser);
+  }
+
+  //-- 회원 탈퇴 --//
+  @Delete()
+  @UsePipes(ValidationPipe)
+  async deleteUser(): Promise<{ status: boolean; message: string }> {
+    return;
   }
 }
