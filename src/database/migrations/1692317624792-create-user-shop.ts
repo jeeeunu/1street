@@ -7,10 +7,10 @@ import {
 
 export class CreateUser1692255999587 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    //-- 테이블 생성 : user --//
+    //-- 테이블 생성 : users --//
     await queryRunner.createTable(
       new Table({
-        name: 'user',
+        name: 'users',
         columns: [
           {
             name: 'id',
@@ -39,11 +39,12 @@ export class CreateUser1692255999587 implements MigrationInterface {
             name: 'email',
             type: 'varchar',
             length: '100',
-            isUnique: true,
           },
           {
-            name: 'phome_number',
-            type: 'int',
+            name: 'phone_number',
+            type: 'varchar',
+            length: '40',
+            isUnique: true,
           },
           {
             name: 'address',
@@ -53,7 +54,12 @@ export class CreateUser1692255999587 implements MigrationInterface {
           {
             name: 'point',
             type: 'int',
-            default: 30000,
+            default: 3000,
+          },
+          {
+            name: 'seller_flag',
+            type: 'boolean',
+            default: false,
           },
         ],
       }),
@@ -62,7 +68,7 @@ export class CreateUser1692255999587 implements MigrationInterface {
     //-- 테이블 생성 : shop --//
     await queryRunner.createTable(
       new Table({
-        name: 'shop',
+        name: 'shops',
         columns: [
           {
             name: 'id',
@@ -94,11 +100,11 @@ export class CreateUser1692255999587 implements MigrationInterface {
 
     //-- 외래키 생성 : shop-user --//
     await queryRunner.createForeignKey(
-      'shop',
+      'shops',
       new TableForeignKey({
         columnNames: ['user_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'user',
+        referencedTableName: 'users',
         onDelete: 'SET NULL',
       }),
     );
@@ -106,8 +112,12 @@ export class CreateUser1692255999587 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // 제약 조건 제거
-    await queryRunner.dropForeignKey('shop', 'FK_801741ae213da67afe2f556d207');
-    await queryRunner.dropTable('shop'); // 롤백 : shop 테이블
-    await queryRunner.dropTable('user'); // 롤백 : user 테이블
+    try {
+      await queryRunner.dropForeignKey('shops', 'user_id');
+    } catch (error) {
+      console.error(error);
+    }
+    await queryRunner.dropTable('shops'); // 롤백 : shop 테이블
+    await queryRunner.dropTable('users'); // 롤백 : user 테이블
   }
 }
