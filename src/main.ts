@@ -2,7 +2,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { MyCustomValidationException } from './common/my-custom-validation.exception'; // 해당 경로를 실제 파일 경로로 변경해야 합니다.
+import { MyCustomValidationException } from './common/exceptions/my-custom-validation.exception';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
