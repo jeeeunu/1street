@@ -14,7 +14,7 @@ export class AppController {
 
   //-- 로그인 --//
   @Get('sign-in')
-  singIn(@Res() response: Response) {
+  singIn(@Res() response: Response): void {
     response.render('sign-in', {
       title: '테스트',
       subtitle: '서브 테스트',
@@ -23,7 +23,7 @@ export class AppController {
 
   //-- 장바구니 --//
   @Get('cart')
-  cart(@Res() response: Response) {
+  cart(@Res() response: Response): void {
     response.render('cart', {
       title: '테스트',
       subtitle: '서브 테스트',
@@ -32,7 +32,7 @@ export class AppController {
 
   //-- 상품 상세보가 --//
   @Get('product-detail')
-  productDetail(@Res() response: Response) {
+  productDetail(@Res() response: Response): void {
     response.render('product-detail', {
       title: '테스트',
       subtitle: '서브 테스트',

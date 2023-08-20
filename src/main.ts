@@ -4,7 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { NestFactory } from '@nestjs/core';
 import { join } from 'path';
 import { AppModule } from './app.module';
-import { CustomValidationException } from './common/exceptions/custom-validation.exception';
+import { CustomValidationException } from './common/exceptions';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);

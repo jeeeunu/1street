@@ -5,9 +5,11 @@ import {
   Controller,
   Get,
   Post,
+  UsePipes,
   UseGuards,
   HttpException,
   HttpStatus,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
@@ -21,6 +23,7 @@ export class AuthController {
 
   //-- 로그인 --//
   @Post('/login')
+  @UsePipes(ValidationPipe)
   async login(
     @Body() logInDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -35,6 +38,7 @@ export class AuthController {
 
   //-- 로그아웃 --//
   @Post('/logout')
+  @UsePipes(ValidationPipe)
   async logout(
     @Req() req,
     @Res() response: Response,
@@ -56,12 +60,14 @@ export class AuthController {
 
   //-- google --//
   @Get('/google/login/callback')
+  @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req) {
     return req;
   }
 
   @Get('/google/redirect') // 고정
+  @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(
     @Req() req,
