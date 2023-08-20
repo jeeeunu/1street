@@ -10,9 +10,10 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
+import { AuthService } from './auth.service';
+import { LoginDto } from './dto';
+import { ResultableInterface } from 'src/common/interfaces';
 
 @Controller('auth')
 export class AuthController {
@@ -37,7 +38,7 @@ export class AuthController {
   async logout(
     @Req() req,
     @Res() response: Response,
-  ): Promise<{ status: boolean; message: string }> {
+  ): Promise<ResultableInterface> {
     if (req.user) {
       response.clearCookie('access_token');
 
