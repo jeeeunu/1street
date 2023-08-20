@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserCreateDto } from './dto/create-user.dto';
 import { UsersEntity } from './entities/users.entity';
+import { ResultableInterface } from 'src/common/interfaces';
 
 @Injectable()
 export class UserService {
@@ -13,16 +14,14 @@ export class UserService {
   ) {}
 
   //-- 일반 회원가입 --//
-  async signUp(
-    userDto: UserCreateDto,
-  ): Promise<{ status: boolean; message: string }> {
+  async signUp(userDto: UserCreateDto): Promise<ResultableInterface> {
     userDto.password = await bcrypt.hash(userDto.password, 10);
     await this.userRepository.save(userDto);
     return { status: true, message: '회원가입이 완료되었습니다.' };
   }
 
   //-- 회원 탈퇴 --//
-  async delete(userId: number): Promise<{ status: boolean; message: string }> {
+  async delete(userId: number): Promise<ResultableInterface> {
     const deletedUser = await this.userRepository.delete(userId);
 
     if (deletedUser.affected === 0) {
