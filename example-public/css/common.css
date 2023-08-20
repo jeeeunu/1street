@@ -1,0 +1,433 @@
+textarea {
+    resize: none;
+}
+
+input,
+textarea,
+button {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.content-right {
+    display: flex;
+    justify-content: end;
+}
+
+.gray-text {
+    color: #999 !important;
+}
+
+.categories {
+    margin-bottom: 100px;
+}
+
+.profile-img-wrap {
+    display: block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: auto;
+    background-color: #fff;
+    z-index: 100;
+}
+
+.hero {
+    padding-top: 180px;
+}
+
+/* top 버튼 */
+#scroll-btn {
+    opacity: 0;
+    width: 70px;
+    height: 70px;
+    color: #fff;
+    background-color: #ef476f;
+    position: fixed;
+    bottom: 10%;
+    right: 10%;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    font: bold 35px monospace;
+    transition: opacity 0.5s, transform 0.5s;
+}
+
+#scroll-btn.show {
+    opacity: 1;
+    transition: opacity 1s, transform 1s;
+}
+
+/* 리뷰 */
+.comment-num {
+    margin-bottom: 50px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.list-comment.empty::after {
+    content: "작성된 댓글이 없습니다.";
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #999;
+}
+
+.item-comment:first-child {
+    padding: 10px 0 20px;
+}
+
+.item-comment {
+    padding: 40px 0 20px;
+}
+.item-comment + .item-comment {
+    border-top: 1px solid #efefef;
+}
+
+.item-comment .title-wrap {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.3em;
+    font-weight: 700;
+}
+
+.item-comment .title-wrap .profile-img-wrap {
+    margin-right: 0.7em;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.item-comment .title-wrap p {
+    margin-bottom: 0;
+    font-weight: 800;
+}
+
+.item-comment .comment-txt {
+    margin-bottom: 1.5em;
+}
+
+.item-comment .profile-img-wrap.comment {
+    width: 14.5em;
+}
+
+.review-img-list {
+    display: flex;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.review-img-item {
+    max-width: 150px;
+    max-height: 150px;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.comment-date {
+    font-size: 14px;
+    font-weight: 300;
+    color: #acacac;
+}
+
+/* 리뷰 END */
+
+/* FAQ */
+.qna {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.qna > li {
+    padding: 10px 0;
+    box-sizing: border-box;
+}
+.qna > li:nth-child(n + 2) {
+    /* 아이템 구분 점선 */
+    border-top: 1px dashed #aaa;
+}
+.qna input {
+    display: none;
+}
+
+.qna label {
+    /* 제목 - 클릭 영역 */
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+}
+.qna label::before {
+    /* 제목 앞 화살표 */
+    display: block;
+    content: "";
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-left: 8px solid #7fad39;
+    margin: 2px 0 0 8px;
+    float: left;
+}
+.qna input:checked + label::before {
+    /* 내용 펼침 상태 제목 앞 화살표 */
+    border: 8px solid transparent;
+    border-top: 8px solid #7fad39;
+    border-bottom: 0;
+    margin: 8px 4px 0;
+}
+
+.qna label .title {
+    flex: 1;
+}
+
+.qna label span {
+    padding-left: 10px;
+}
+
+.qna div {
+    /* 내용 영역 - 기본 감춤 상태 */
+    display: none;
+    color: #666;
+    font-size: 0.9375em;
+    overflow: hidden;
+    padding: 10px 0 10px 30px;
+    box-sizing: border-box;
+    transition: max-height 0.4s;
+}
+.qna input:checked + label + div {
+    /* 내용 영역 펼침 */
+    display: block;
+}
+/* FAQ END */
+
+/* sign */
+[class*="btn-primary-m"] {
+    min-width: 20rem;
+    height: 5.6rem;
+    font-size: 16px;
+}
+
+.list-link .item {
+    margin-bottom: 10px;
+}
+.list-link .item:last-child {
+    margin-bottom: 0;
+}
+.list-link .item a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    color: #555;
+    border-radius: 25px;
+}
+.list-link.type {
+    margin-bottom: 13rem;
+}
+.list-link .link-google {
+    color: var(--f-main);
+    background: #f2f2f2 url(../img/icon/ico_google.svg) no-repeat center left 30px/35px;
+}
+.list-link .link-apple {
+    color: var(--f-main);
+    background: #f2f2f2 url(../img/icon/ico_apple.svg) no-repeat center left 1rem/4.3rem;
+}
+.list-link .link-naver {
+    color: #fff;
+    background: #00bf18 url(../img/icon/ico_naver.svg) no-repeat center left 1rem/4.3rem;
+}
+.list-link .link-kakao {
+    color: var(--f-main);
+    background: #ffeb3b url(../img/icon/ico_kakao.svg) no-repeat center left 1rem/4.3rem;
+}
+
+.btn-primary-m {
+    width: 100%;
+    height: 50px;
+    margin-top: 15px;
+    color: #fff;
+    font-weight: 700;
+    background-color: #7fad39;
+    border: 0;
+}
+
+.sign-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 500px !important;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.sign-form form {
+    width: 100%;
+}
+
+.sign-form .tit-page {
+    margin-bottom: 50px;
+    font-weight: 700;
+}
+
+.input-wrap.txt + .input-wrap.txt {
+    margin-top: 10px;
+}
+
+.sign-link-area {
+    display: flex;
+    justify-content: right;
+    gap: 10px;
+    margin-top: 30px;
+    font-size: 14px;
+}
+
+.sign-link-area a {
+    color: #999;
+}
+
+.user-box {
+    position: relative;
+}
+
+.user-box input {
+    width: 100%;
+    padding: 45px 0 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+    border: none;
+    border-bottom: 1px solid #999;
+    outline: none;
+    background: transparent;
+}
+.user-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 40px 0;
+    font-size: 16px;
+    pointer-events: none;
+    transition: 0.5s;
+}
+
+.user-box input:focus ~ label,
+.user-box input:valid ~ label {
+    top: -25px;
+    left: 0;
+    color: #7fad39;
+    font-size: 14px;
+}
+label {
+    font-size: 18px;
+    line-height: 2rem;
+}
+
+.radios {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+[type="radio"],
+span {
+    vertical-align: middle;
+}
+
+[type="radio"] {
+    appearance: none;
+    border: max(2px, 0.1em) solid gray;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+    transition: border 0.5s ease-in-out;
+}
+
+.radio-wrap span {
+    font-size: 16px;
+    font-weight: 600;
+    color: #777;
+}
+
+[type="radio"]:checked {
+    border: 0.4em solid #7fad39;
+}
+
+[type="radio"]:focus-visible {
+    outline-offset: max(2px, 0.1em);
+    outline: max(2px, 0.1em) dotted #7fad39;
+}
+
+[type="radio"]:hover {
+    box-shadow: 0 0 0 max(4px, 0.2em) lightgray;
+    cursor: pointer;
+}
+
+[type="radio"]:hover + span {
+    cursor: pointer;
+}
+
+[type="radio"]:disabled {
+    background-color: lightgray;
+    box-shadow: none;
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+[type="radio"]:disabled + span {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Global CSS */
+fieldset {
+    display: flex;
+    justify-content: center;
+    border: none;
+    margin: 0;
+    padding: 40px 20px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* sign END */
+
+/* add */
+.sticky-wrap {
+    position: sticky;
+    top: 300px;
+}
+
+.store-content {
+    margin-top: 15px;
+    color: #fff;
+}
+
+.store-content::before {
+    content: "-";
+}
