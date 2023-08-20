@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+
+  <body>
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
+
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+    <!-- sign-form -->
+    <main class="hero container sign-form">
+      <form>
+        <legend class="tit-page">이메일 로그인</legend>
+        <!-- <div class="radios">
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>사용자</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>판매자</span>
+                </label>
+              </div>
+            </div> -->
+        <div class="content-wrap">
+          <div class="user-box">
+            <input type="text" name="" required="" />
+            <label>Email</label>
+          </div>
+          <div class="user-box">
+            <input type="password" name="" required="" />
+            <label>Password</label>
+          </div>
+          <button
+            type="button"
+            class="btn-primary-m btn-sign-in"
+            onclick="location.href='../../index.html'"
+          >
+            로그인
+          </button>
+          <div class="sign-link-area">
+            <!-- <a href="">아이디,비밀번호찾기</a> -->
+            <a href="sign-up.html">이메일로 회원가입</a>
+            <span class="gray-text">|</span>
+            <a href="sign-up.html">판매자 로그인</a>
+          </div>
+        </div>
+        <hr />
+        <div class="content-wrap">
+          <ul class="list-link website">
+            <li class="item">
+              <a href="" class="btn-primary-m link-google"
+                >구글 로그인/회원가입</a
+              >
+            </li>
+          </ul>
+        </div>
+      </form>
+    </main>
+
+    <!-- include : footer -->
+    <%- include('includes/footer') %>
+  </body>
+</html>
