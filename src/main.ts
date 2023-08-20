@@ -1,11 +1,13 @@
 // main.ts
 import { ValidationPipe } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { NestFactory } from '@nestjs/core';
+import { join } from 'path';
 import { AppModule } from './app.module';
 import { CustomValidationException } from './common/exceptions/custom-validation.exception';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   //-- Pipes --//
   app.useGlobalPipes(
@@ -20,6 +22,11 @@ async function bootstrap() {
       },
     }),
   );
+
+  //-- ejs --//
+  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.setBaseViewsDir(join(__dirname, '..', '/views'));
+  app.setViewEngine('ejs');
 
   await app.listen(3000);
 }

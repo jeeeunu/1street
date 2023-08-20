@@ -11,7 +11,7 @@ import { GoogleStrategy } from './auth/strategies/google.strategy';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UsersEntity]), // 소셜 로그인에 필요한 코드
+    TypeOrmModule.forFeature([UsersEntity]),
     ConfigModule.forRoot({ isGlobal: true }),
 
     //-- TypeOrmModule --//

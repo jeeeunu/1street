@@ -9,10 +9,11 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UserService } from './users.service';
-import { UserCreateDto } from './dto/index';
+import { UserCreateDto } from './dto';
 import { RequestUserInterface } from './interfaces/index';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser } from '../auth/auth.decorator';
+import { ResultableInterface } from 'src/common/interfaces';
 
 @Controller('users')
 export class UserController {
@@ -21,9 +22,7 @@ export class UserController {
   //-- 일반 회원가입 --//
   @Post()
   @UsePipes(ValidationPipe)
-  async signUp(
-    @Body() userDto: UserCreateDto,
-  ): Promise<{ status: boolean; message: string }> {
+  async signUp(@Body() userDto: UserCreateDto): Promise<ResultableInterface> {
     return await this.userService.signUp(userDto);
   }
 
@@ -42,7 +41,7 @@ export class UserController {
   @UsePipes(ValidationPipe)
   async deleteUser(
     @AuthUser() authUser: RequestUserInterface,
-  ): Promise<{ status: boolean; message: string }> {
+  ): Promise<ResultableInterface> {
     return await this.userService.delete(authUser.user_id);
   }
 }
