@@ -1,6 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { TokenExpiredError } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthenticationMiddleware implements NestMiddleware {
@@ -16,15 +17,21 @@ export class AuthenticationMiddleware implements NestMiddleware {
       ?.split('=')[1];
 
     if (authToken) {
-      const payload = this.jwtService.verify(authToken);
-      const user = {
-        user_id: payload.user_id,
-        email: payload.email,
-        user_name: payload.user_name,
-        isAdmin: payload.isAdmin || false,
-      };
-
-      req.user = user;
+      try {
+        const payload = this.jwtService.verify(authToken);
+        const user = {
+          user_id: payload.user_id,
+          email: payload.email,
+          user_name: payload.user_name,
+          isAdmin: payload.isAdmin || false,
+        };
+        req.user = user;
+      } catch (err) {
+        console.error(err, err.stack);
+        if (err instanceof TokenExpiredError) {
+          res.clearCookie('Authentication');
+        }
+      }
     }
 
     next();
