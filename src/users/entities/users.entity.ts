@@ -1,6 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
+import { ShopsEntity } from '../../shops/entities/shops.entity';
 
 export enum Provider {
   Local,
@@ -49,4 +50,7 @@ export class UsersEntity {
 
   @Column({ default: 'none' })
   public provider: string;
+
+  @OneToMany(() => ShopsEntity, (shop) => shop.user)
+  public shops: ShopsEntity[];
 }

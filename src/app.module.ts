@@ -8,6 +8,11 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { UsersEntity } from './users/entities/users.entity';
 import { GoogleStrategy } from './auth/strategies/google.strategy';
+import { ShopsModule } from './shops/shops.module';
+import { ProductsController } from './products/products.controller';
+import { ProductsModule } from './products/products.module';
+import { LikesService } from './likes/likes.service';
+import { LikesModule } from './likes/likes.module';
 
 @Module({
   imports: [
@@ -33,8 +38,11 @@ import { GoogleStrategy } from './auth/strategies/google.strategy';
 
     AuthModule,
     UsersModule,
+    ShopsModule,
+    ProductsModule,
+    LikesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, GoogleStrategy],
+  controllers: [AppController, ProductsController],
+  providers: [AppService, GoogleStrategy, LikesService],
 })
 export class AppModule {}
