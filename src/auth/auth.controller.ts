@@ -61,10 +61,6 @@ export class AuthController {
   ): Promise<void> {
     const access_token = await this.authService.googleLogin(req);
     res.cookie('Authentication', access_token);
-    // return {
-    //   status: true,
-    //   access_token,
-    // };
     res.redirect('/');
   }
 }

@@ -1,4 +1,7 @@
 <!-- Humberger Begin -->
+<!-- <% if (authUser) { %>
+<h1><%- authUser.user_id %></h1>
+<% } %> -->
 <div class="humberger__menu__overlay"></div>
 <div class="humberger__menu__wrapper">
   <div class="humberger__menu__logo">
@@ -64,11 +67,8 @@
         <div class="col-lg-6 col-md-6"></div>
         <div class="col-lg-6 col-md-6">
           <div class="header__top__right">
-            <!-- <div class="header__top__right__social">
-                                    <a href="#"><i class="fa fa-google"></i></a>
-                                </div> -->
             <div class="header__top__right__auth">
-              <% if (authenticationCookie) { %>
+              <% if (authUser) { %>
               <button type="button" id="logoutButton" onclick="logout()">
                 <i class="fa fa-sign-out"></i> Logout
               </button>
@@ -123,7 +123,7 @@
               <a href="#"><i class="fa fa-eye"></i></a>
             </li>
           </ul>
-          <% if (authenticationCookie) { %>
+          <% if (authUser) { %>
           <div class="header__cart__price">item: <span>$150.00</span></div>
           <% } %>
         </div>
