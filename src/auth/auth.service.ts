@@ -11,15 +11,22 @@ import { UsersEntity } from '../users/entities/users.entity';
 export class AuthService {
   constructor(
     @InjectRepository(UsersEntity)
-    private userRepository: Repository<UsersEntity>,
+    private usersRepository: Repository<UsersEntity>,
     private jwtService: JwtService,
   ) {}
 
   //-- 로그인 --//
   async signIn(loginDto: LoginDto): Promise<string> {
-    const userFind = await this.userRepository.findOne({
+    const userFind = await this.usersRepository.findOne({
       where: { email: loginDto.email },
     });
+
+    if (!userFind) {
+      throw new HttpException(
+        '일치하는 유저가 없습니다. 입력하신 내용을 다시 확인해주세요.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     // 암호화된 비밀번호와 비교
     const isPasswordMatching: boolean = await bcrypt.compare(
@@ -57,7 +64,7 @@ export class AuthService {
     }
 
     // 유저 없으면 회원가입 처리
-    const findUser = await this.userRepository.findOne({
+    const findUser = await this.usersRepository.findOne({
       where: { email: req.user.email },
     });
 
@@ -69,7 +76,7 @@ export class AuthService {
       newUser.name = fullName;
       newUser.profile_image = req.user.picture;
       newUser.provider = 'google';
-      await this.userRepository.save(newUser);
+      await this.usersRepository.save(newUser);
       return;
     }
 
