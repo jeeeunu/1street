@@ -68,12 +68,14 @@
                                     <a href="#"><i class="fa fa-google"></i></a>
                                 </div> -->
             <div class="header__top__right__auth">
+              <% if (authenticationCookie) { %>
+              <button type="button" id="logoutButton" onclick="logout()">
+                <i class="fa fa-sign-out"></i> Logout
+              </button>
+              <button type="button"><i class="fa fa-user"></i> Mypage</button>
+              <% } else { %>
               <a href="/sign-in"><i class="fa fa-user"></i> Login</a>
-              <!-- TODO :: logout 시에 아래 내용 보이도록 작업 -->
-              <!-- <div class="d-flex g-10">
-                                        <a href="#"><i class="fa fa-user"></i> Logout</a>
-                                        <a href="#"></i> mypage</a>
-                                    </div> -->
+              <% } %>
             </div>
           </div>
         </div>
@@ -121,7 +123,9 @@
               <a href="#"><i class="fa fa-eye"></i></a>
             </li>
           </ul>
+          <% if (authenticationCookie) { %>
           <div class="header__cart__price">item: <span>$150.00</span></div>
+          <% } %>
         </div>
       </div>
     </div>

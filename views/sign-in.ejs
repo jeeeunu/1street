@@ -4,12 +4,18 @@
   <%- include('includes/head') %>
   <!-- script : sign-in -->
   <script>
-    const login = async function () {
+    //-- 로그인 api --//
+    const login = async () => {
       try {
+        const emailInput = document.querySelector('#emailInput');
+        const passwordInput = document.querySelector('#passwordInput');
+        const errorDiv = document.querySelector('.error-message-div');
+
         const requestData = {
-          email: document.querySelector('#emailInput').value,
-          password: document.querySelector('#passwordInput').value,
+          email: emailInput.value,
+          password: passwordInput.value,
         };
+
         const response = await fetch('/auth/login', {
           method: 'POST',
           headers: {
@@ -17,31 +23,43 @@
           },
           body: JSON.stringify(requestData),
         });
+
         const data = await response.json();
-        const errorMessageArray = data.message;
-        const errorDiv = document.querySelector('.error-message-div');
+
         let newHtml = '';
-        if (Array.isArray(errorMessageArray)) {
-          errorMessageArray.forEach((errorMessage) => {
-            if (Array.isArray(errorMessage.messages)) {
-              const messagesHtml = errorMessage.messages
-                .map((message) => `<p class="error-text">${message}</p>`)
-                .join('');
-              newHtml += `<div class="error-message">${messagesHtml}</div>`;
-            } else {
-              newHtml += `<div class="error-message">${errorMessage.messages}</div>`;
-            }
+        if (Array.isArray(data.message)) {
+          data.message.forEach((errorMessage) => {
+            const messagesHtml = Array.isArray(errorMessage.messages)
+              ? errorMessage.messages
+                  .map((message) => `<p class="error-text">${message}</p>`)
+                  .join('')
+              : errorMessage.messages;
+            newHtml += `<div class="error-message">${messagesHtml}</div>`;
           });
-        } else if (typeof errorMessageArray === 'string') {
-          newHtml = `<div class="error-message">${errorMessageArray}</div>`;
+        } else if (typeof data.message === 'string') {
+          newHtml = `<div class="error-message">${data.message}</div>`;
         }
         errorDiv.innerHTML = newHtml;
+
         if (response.ok) {
           alert('로그인 되었습니다');
           window.location.href = '/';
+        } else {
+          console.error('로그인 실패:', data.message);
         }
       } catch (error) {
-        alert(error);
+        console.error('에러 발생:', error);
+        alert('로그인 과정에서 오류가 발생했습니다');
+      }
+    };
+
+    //-- 구글 로그인 --//
+    const loginGoogle = async (button) => {
+      const authenticationCookie = document.cookie.includes('Authentication');
+      if (authenticationCookie) {
+        return alert('로그인 상태입니다.');
+      } else {
+        window.location.href = '/auth/google/login/callback';
       }
     };
   </script>
@@ -86,7 +104,11 @@
         <div class="content-wrap">
           <ul class="list-link website">
             <li class="item">
-              <button type="button" class="btn-primary-m link-google">
+              <button
+                type="button"
+                class="btn-primary-m link-google"
+                onclick="loginGoogle(this)"
+              >
                 구글 로그인/회원가입
               </button>
             </li>

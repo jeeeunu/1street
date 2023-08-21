@@ -9,6 +9,7 @@ export class AppController {
     const isIndexPath = request.url === '/';
     response.render('index', {
       isIndexPath,
+      authenticationCookie: response.locals.authenticationCookie,
     });
   }
 
@@ -18,6 +19,7 @@ export class AppController {
     response.render('sign-in', {
       title: '테스트',
       subtitle: '서브 테스트',
+      authenticationCookie: response.locals.authenticationCookie,
     });
   }
 
