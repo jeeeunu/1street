@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { UsersEntity } from './users/entities/users.entity';
 import { GoogleStrategy } from './auth/strategies/google.strategy';
 import { AuthenticationMiddleware } from './auth/auth.middleware';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AuthenticationMiddleware } from './auth/auth.middleware';
 
     AuthModule,
     UsersModule,
+    ReviewsModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy],
