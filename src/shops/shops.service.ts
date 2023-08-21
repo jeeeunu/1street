@@ -47,6 +47,12 @@ export class ShopsService {
       // TODO :: 오류날때 status로 따로 오류를 넘길건지 내장쓸건지
       throw new ForbiddenException('판매자만 스토어를 개설할 수 있습니다.');
     const user = await this.userService.findOne(authUser.user_id);
+    const foundShop = await this.shopRepository.findOne({
+      where: { user: { id: user.id } },
+    });
+    if (foundShop)
+      // TODO :: 오류날때 status로 따로 오류를 넘길건지 내장쓸건지
+      throw new ForbiddenException('스토어는 계정당 1개만 만들 수 있습니다.');
     try {
       await this.shopRepository.save({
         user: { id: user.id },
