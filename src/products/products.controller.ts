@@ -10,8 +10,10 @@ import {
 } from '@nestjs/common';
 import { AuthUser } from '../auth/auth.decorator';
 import { AuthGuard } from '../auth/auth.guard';
+import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
 import { ProductCreateDto, ProductUpdateDto } from './dto';
+import { ProductsEntity } from './entities/products.entity';
 import { ProductsService } from './products.service';
 
 @Controller('products')
@@ -20,18 +22,22 @@ export class ProductsController {
 
   //-- 상품 상세보기 --//
   @Get(':id')
-  async getDetail(@Param('id') id: number) {
+  async getDetail(@Param('id') id: number): Promise<ProductsEntity> {
     return await this.productsService.findById(id);
   }
   //-- 상품 검색 (검색어)--//
   @Get()
-  async searchKeyword(@Query('search') keyword: string) {
+  async searchKeyword(
+    @Query('search') keyword: string,
+  ): Promise<ProductsEntity[]> {
     return await this.productsService.findByKeyword(keyword);
   }
 
   //-- 상품 검색 (카테고리 번호)--//
   @Get('search/:category')
-  async searchCategory(@Param('category') category: number) {
+  async searchCategory(
+    @Param('category') category: number,
+  ): Promise<ProductsEntity[]> {
     return await this.productsService.findByCategory(category);
   }
 
@@ -41,7 +47,7 @@ export class ProductsController {
   async createProduct(
     @Body() data: ProductCreateDto,
     @AuthUser() authUser: RequestUserInterface,
-  ) {
+  ): Promise<ResultableInterface> {
     return await this.productsService.create(data, authUser);
   }
 
@@ -52,7 +58,7 @@ export class ProductsController {
     @Param('id') id: number,
     @Body() data: ProductUpdateDto,
     @AuthUser() authUser: RequestUserInterface,
-  ) {
+  ): Promise<ResultableInterface> {
     return await this.productsService.update(id, data, authUser);
   }
   //-- 상품 삭제 --//
@@ -61,7 +67,7 @@ export class ProductsController {
   async deleteProduct(
     @Param('id') id: number,
     @AuthUser() authUser: RequestUserInterface,
-  ) {
+  ): Promise<ResultableInterface> {
     return await this.productsService.delete(id, authUser);
   }
 

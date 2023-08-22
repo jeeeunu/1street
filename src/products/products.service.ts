@@ -1,10 +1,12 @@
 import {
   ForbiddenException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
+import { ResultableInterface } from '../common/interfaces';
 import { ShopsEntity } from '../shops/entities/shops.entity';
 
 import { RequestUserInterface } from '../users/interfaces';
@@ -24,62 +26,91 @@ export class ProductsService {
   ) {}
 
   //-- 상품 상세보기 --//
-  async findById(id: number) {
-    const product = await this.productRepository.findOne({ where: { id } });
-    if (!product) throw new NotFoundException('해당 상품이 존재하지 않습니다.');
-    return product;
+  async findById(id: number): Promise<ProductsEntity> {
+    try {
+      const product = await this.productRepository.findOne({ where: { id } });
+      if (!product)
+        throw new NotFoundException('해당 상품이 존재하지 않습니다.');
+      return product;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
+      );
+    }
   }
 
   //-- 상품 검색 (검색어)--//
-  async findByKeyword(keyword: string) {
-    const products = await this.productRepository.find({
-      where: { product_name: Like(`%${keyword}`) },
-    });
-    if (products.length === 0)
-      throw new NotFoundException('해당 상품이 존재하지 않습니다.');
-    return products;
+  async findByKeyword(keyword: string): Promise<ProductsEntity[]> {
+    try {
+      const products = await this.productRepository.find({
+        where: { product_name: Like(`%${keyword}`) },
+      });
+      if (products.length === 0)
+        throw new NotFoundException('해당 상품이 존재하지 않습니다.');
+      return products;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
+      );
+    }
   }
 
   //-- 상품 검색 (카테고리)--//
-  async findByCategory(category: number) {
-    const products = await this.productRepository.find({
-      where: { category: { category_number: category } },
-      relations: ['category'],
-    });
-    if (products.length === 0)
-      throw new NotFoundException('해당 상품이 존재하지 않습니다.');
-    return products;
+  async findByCategory(category: number): Promise<ProductsEntity[]> {
+    try {
+      const products = await this.productRepository.find({
+        where: { category: { category_number: category } },
+        relations: ['category'],
+      });
+      if (products.length === 0)
+        throw new NotFoundException('해당 상품이 존재하지 않습니다.');
+      return products;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
+      );
+    }
   }
 
   //-- 상품 등록 --//
-  async create(data: ProductCreateDto, authUser: RequestUserInterface) {
-    const shop = await this.shopRepository.findOne({
-      where: { id: data.shop_id },
-      relations: ['user'],
-    });
-    if (!shop) throw new NotFoundException('해당 스토어가 존재하지 않습니다.');
-    if (shop.user.id !== authUser.user_id)
-      throw new ForbiddenException(
-        '해당 스토어를 개설한 판매자만 상품을 추가할 수 있습니다.',
+  async create(
+    data: ProductCreateDto,
+    authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
+    try {
+      const shop = await this.shopRepository.findOne({
+        where: { id: data.shop_id },
+        relations: ['user'],
+      });
+      if (!shop)
+        throw new NotFoundException('해당 스토어가 존재하지 않습니다.');
+      if (shop.user.id !== authUser.user_id)
+        throw new ForbiddenException(
+          '해당 스토어를 개설한 판매자만 상품을 추가할 수 있습니다.',
+        );
+      const {
+        product_name,
+        product_desc,
+        product_price,
+        product_thumbnail,
+        shop_id,
+        category,
+      } = data;
+      const categoryId = await this.findCategory(category);
+      await this.productRepository.insert({
+        shop: { id: shop_id },
+        category: { id: categoryId },
+        product_name,
+        product_desc,
+        product_price,
+        product_thumbnail,
+      });
+      return { status: true, message: '상품을 성공적으로 등록했습니다' };
+    } catch (err) {
+      throw new InternalServerErrorException(
+        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
       );
-    const {
-      product_name,
-      product_desc,
-      product_price,
-      product_thumbnail,
-      shop_id,
-      category,
-    } = data;
-    const categoryId = await this.findCategory(category);
-    await this.productRepository.insert({
-      shop: { id: shop_id },
-      category: { id: categoryId },
-      product_name,
-      product_desc,
-      product_price,
-      product_thumbnail,
-    });
-    return { status: true, message: '상품을 성공적으로 등록했습니다' };
+    }
   }
 
   //-- 상품 수정 --//
@@ -87,38 +118,49 @@ export class ProductsService {
     id: number,
     data: ProductUpdateDto,
     authUser: RequestUserInterface,
-  ) {
-    const shop = await this.shopRepository.findOne({
-      where: { products: { id } },
-      relations: ['user', 'products'],
-    });
-    if (!shop) throw new NotFoundException('해당 스토어가 존재하지 않습니다.');
-    if (shop.user.id !== authUser.user_id)
-      throw new ForbiddenException(
-        '해당 스토어를 개설한 판매자만 상품을 추가할 수 있습니다.',
-      );
-    const {
-      product_name,
-      product_desc,
-      product_price,
-      product_thumbnail,
-      category,
-    } = data;
-    const categoryId = await this.findCategory(category);
-    await this.productRepository.update(
-      { id },
-      {
-        category: { id: categoryId },
+  ): Promise<ResultableInterface> {
+    try {
+      const shop = await this.shopRepository.findOne({
+        where: { products: { id } },
+        relations: ['user', 'products'],
+      });
+      if (!shop)
+        throw new NotFoundException('해당 스토어가 존재하지 않습니다.');
+      if (shop.user.id !== authUser.user_id)
+        throw new ForbiddenException(
+          '해당 스토어를 개설한 판매자만 상품을 추가할 수 있습니다.',
+        );
+      const {
         product_name,
         product_desc,
         product_price,
         product_thumbnail,
-      },
-    );
-    return { status: true, message: '상품을 성공적으로 수정했습니다' };
+        category,
+      } = data;
+      const categoryId = await this.findCategory(category);
+      await this.productRepository.update(
+        { id },
+        {
+          category: { id: categoryId },
+          product_name,
+          product_desc,
+          product_price,
+          product_thumbnail,
+        },
+      );
+      return { status: true, message: '상품을 성공적으로 수정했습니다' };
+    } catch (err) {
+      throw new InternalServerErrorException(
+        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
+      );
+    }
   }
+
   //-- 상품 삭제 --//
-  async delete(id: number, authUser: RequestUserInterface) {
+  async delete(
+    id: number,
+    authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
     const shop = await this.shopRepository.findOne({
       where: { products: { id } },
       relations: ['user', 'products'],
@@ -132,11 +174,6 @@ export class ProductsService {
     return { status: true, message: '상품을 성공적으로 삭제했습니다' };
   }
 
-  //-- 카테고리 만들기 (개발용) --//
-  //   async category(data) {
-  //     return await this.categoryRepository.save({ ...data });
-  //   }
-
   //-- 카테고리 넘버로 아이디 찾기 --//
   async findCategory(categoryNumber: number) {
     const category = await this.categoryRepository.findOne({
@@ -146,4 +183,9 @@ export class ProductsService {
       throw new NotFoundException('카테코리 번호가 잘못되었습니다.');
     return category.id;
   }
+
+  //-- 카테고리 만들기 (개발용) --//
+  //   async category(data) {
+  //     return await this.categoryRepository.save({ ...data });
+  //   }
 }
