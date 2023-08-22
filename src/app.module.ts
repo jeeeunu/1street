@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
@@ -13,6 +13,7 @@ import { ProductsController } from './products/products.controller';
 import { ProductsModule } from './products/products.module';
 import { LikesService } from './likes/likes.service';
 import { LikesModule } from './likes/likes.module';
+import { AuthenticationMiddleware } from './auth/auth.middleware';
 
 @Module({
   imports: [
@@ -45,4 +46,8 @@ import { LikesModule } from './likes/likes.module';
   controllers: [AppController, ProductsController],
   providers: [AppService, GoogleStrategy, LikesService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthenticationMiddleware).forRoutes('*');
+  }
+}
