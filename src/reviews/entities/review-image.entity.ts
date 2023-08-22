@@ -9,7 +9,7 @@ import {
 @Entity('review_image')
 export class ReviewImageEntity {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   review_id: number;

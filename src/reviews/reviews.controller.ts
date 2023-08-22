@@ -25,7 +25,7 @@ export class ReviewsController {
   @Post('/:order_detail_id')
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
-  async signUp(
+  async createReview(
     @Param('order_detail_id') orderDetailId: number,
     @Body() createReviewsDto: CreateReviewsDto,
     @AuthUser() authUser: RequestUserInterface,
