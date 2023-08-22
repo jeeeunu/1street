@@ -20,11 +20,11 @@ export class AuthService {
 
   //-- 로그인 --//
   async signIn(loginDto: LoginDto): Promise<string> {
-    const userFind = await this.usersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       where: { email: loginDto.email },
     });
 
-    if (!userFind)
+    if (!user)
       throw new NotFoundException(
         '일치하는 유저가 없습니다. 입력하신 내용을 다시 확인해주세요',
       );
@@ -32,7 +32,7 @@ export class AuthService {
     // 암호화된 비밀번호와 비교
     const isPasswordMatching: boolean = await bcrypt.compare(
       loginDto.password,
-      userFind.password,
+      user.password,
     );
 
     if (!isPasswordMatching)
@@ -40,10 +40,10 @@ export class AuthService {
 
     // JWT 토큰에 포함될 payload
     const payload = {
-      user_id: userFind.id,
+      user_id: user.id,
       email: loginDto.email,
-      user_name: userFind.name,
-      isAdmin: userFind.seller_flag,
+      user_name: user.name,
+      isAdmin: user.seller_flag,
     };
 
     const access_token = await this.jwtService.signAsync(payload);
@@ -57,13 +57,13 @@ export class AuthService {
     if (!req.user) throw new NotFoundException('구글 아이디 정보가 없습니다.');
 
     // 유저 없으면 회원가입 처리
-    const findUser = await this.usersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       where: { email: req.user.email },
     });
 
     const fullName = `${req.user.firstName || ''} ${req.user.lastName || ''}`;
 
-    if (!findUser) {
+    if (!user) {
       const newUser = new UsersEntity();
       newUser.email = req.user.email;
       newUser.name = fullName;
@@ -75,7 +75,7 @@ export class AuthService {
 
     // JWT 토큰에 포함될 payload
     const payload = {
-      user_id: findUser.id,
+      user_id: user.id,
       user_name: req.user.lastName,
       email: req.user.email,
     };

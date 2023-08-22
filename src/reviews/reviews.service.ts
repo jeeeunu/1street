@@ -21,11 +21,11 @@ export class ReviewsService {
     orderDetailId: number,
     createReviewsDto: CreateReviewsDto,
   ): Promise<ResultableInterface> {
-    const reviewFind = await this.reviewsEntity.findOne({
+    const review = await this.reviewsEntity.findOne({
       where: { order_detail_id: orderDetailId },
     });
 
-    if (reviewFind) {
+    if (review) {
       throw new ConflictException('이미 리뷰를 작성하셨습니다.');
     }
 
