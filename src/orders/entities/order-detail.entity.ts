@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { OrdersEntity } from './_orders.entity';
+import { OrdersEntity } from '../../common/entities/orders.entity';
 
 export enum OrderReviewStatus {
   notWritten = '0',

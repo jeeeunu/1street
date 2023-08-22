@@ -10,7 +10,7 @@ import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
 import { UserService } from '../users/users.service';
 import { ShopCreateDto, ShopUpdateDto } from './dto/index';
-import { ShopsEntity } from './entities/shops.entity';
+import { ShopsEntity } from '../common/entities/shops.entity';
 
 @Injectable()
 export class ShopsService {

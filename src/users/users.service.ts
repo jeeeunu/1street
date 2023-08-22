@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserCreateDto, EditUserDto } from './dto';
-import { UsersEntity } from './entities/users.entity';
+import { UsersEntity } from '../common/entities/users.entity';
 import { userInfo } from './interfaces';
 import { ResultableInterface } from 'src/common/interfaces';
 
@@ -83,8 +83,8 @@ export class UserService {
 
     return { status: true, message: '회원탈퇴가 완료되었습니다.' };
   }
-  
+
   async findOne(userId: number): Promise<UsersEntity> {
-    return await this.userRepository.findOne({ where: { id: userId } });
+    return await this.usersRepository.findOne({ where: { id: userId } });
   }
 }

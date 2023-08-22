@@ -1,5 +1,5 @@
 // import { IsOptional } from 'class-validator';
-import { UsersEntity } from 'src/users/entities/users.entity';
+import { UsersEntity } from 'src/common/entities/users.entity';
 import {
   Column,
   Entity,
@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   Timestamp,
 } from 'typeorm';
-import { OrderDetailsEntity } from './order-detail.entity';
+import { OrderDetailsEntity } from '../../orders/entities/order-detail.entity';
 
 export enum OrderStatus {
   OrderCancel = '0',
