@@ -12,6 +12,9 @@ export class ReviewImageEntity {
   id: string;
 
   @Column()
+  review_id: number;
+
+  @Column()
   e_tag: string;
 
   @Column()

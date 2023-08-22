@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
+import { v4 as uuidv4 } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ResultableInterface } from 'src/common/interfaces';
 import { ReviewImageEntity } from '../reviews/entities/review-image.entity';
-
 @Injectable()
 export class UploadsService {
   private s3: AWS.S3 = new AWS.S3(); // S3 초기화
@@ -13,33 +14,56 @@ export class UploadsService {
     private readonly reviewImageEntity: Repository<ReviewImageEntity>,
   ) {}
 
-  async uploadReviewImages(files: Express.Multer.File[]) {
+  //-- 공통 : S3 저장 후 eTag 반환 --//
+  private async uploadPromise(
+    file: Express.Multer.File,
+    key: string,
+  ): Promise<string> {
+    const bucketName = '1street';
+    const params: AWS.S3.PutObjectRequest = {
+      Bucket: bucketName,
+      Key: key,
+      Body: file.buffer,
+    };
+
+    const response = await this.s3.putObject(params).promise();
+    return response.ETag;
+  }
+
+  //-- 이미지 저장 : 리뷰이미지 저장 --//
+  async uploadReviewImages(
+    reviewId: number,
+    files: Express.Multer.File[],
+  ): Promise<ResultableInterface> {
     try {
-      const bucketName = '1street';
-      const uploadPromises = files.map(async (file) => {
-        const key = `uploads-reviews/${file.originalname}`;
-        const params: AWS.S3.PutObjectRequest = {
-          Bucket: bucketName,
-          Key: key,
-          Body: file.buffer,
-        };
-        await this.s3.putObject(params).promise();
-        const response = await this.s3.putObject(params).promise(); // S3에 업로드된 ETag 값을 받아옴
+      const uploadPromises: Promise<void>[] = files.map(async (file) => {
+        const timestamp = new Date().getTime();
+        const uniqueId = uuidv4();
+        const key = `uploads-reviews/${timestamp}__${uniqueId}`;
+
+        const eTag = await this.uploadPromise(file, key);
 
         const uploadFile = new ReviewImageEntity();
-        uploadFile.e_tag = response.ETag;
+        uploadFile.review_id = reviewId;
+        uploadFile.url = `S3_URL/${key}`;
         uploadFile.original_name = file.originalname;
         uploadFile.encoding = file.encoding;
         uploadFile.mime_type = file.mimetype;
         uploadFile.size = file.size;
-        uploadFile.url = `S3_URL/${key}`;
+        uploadFile.e_tag = eTag;
 
         await this.reviewImageEntity.save(uploadFile);
       });
+
       await Promise.all(uploadPromises);
-      return { status: true, message: `${files.length} 개의 파일 업로드 완료` };
-    } catch (err) {
-      console.error(err);
+      return {
+        status: true,
+        message: `${files.length} 개 파일 업로드 완료`,
+      };
+    } catch {
+      throw new InternalServerErrorException(
+        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
+      );
     }
   }
 }

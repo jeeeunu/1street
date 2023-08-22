@@ -1,6 +1,7 @@
 import {
   Controller,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -12,11 +13,15 @@ import { ResultableInterface } from 'src/common/interfaces';
 export class UploadsController {
   constructor(private readonly uploadsService: UploadsService) {}
 
-  @Post('reviews')
+  //-- 이미지 저장 --//
+  @Post()
   @UseInterceptors(FilesInterceptor('files'))
   async uploadReviewImages(
     @UploadedFiles() files: Express.Multer.File[],
+    @Query('review_id') reviewId?: number,
   ): Promise<ResultableInterface> {
-    return this.uploadsService.uploadReviewImages(files);
+    if (reviewId) {
+      return this.uploadsService.uploadReviewImages(reviewId, files);
+    }
   }
 }

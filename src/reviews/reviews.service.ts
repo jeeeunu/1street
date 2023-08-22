@@ -8,6 +8,8 @@ import { ReviewInterface } from './interfaces';
 
 @Injectable()
 export class ReviewsService {
+  private s3: AWS.S3;
+
   constructor(
     @InjectRepository(ReviewsEntity)
     private reviewsEntity: Repository<ReviewsEntity>,
