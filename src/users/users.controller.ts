@@ -30,9 +30,7 @@ export class UserController {
   //-- 유저 조회 --//
   @Get()
   @UseGuards(AuthGuard)
-  async userInfo(
-    @AuthUser() authUser: RequestUserInterface,
-  ): Promise<userInfo> {
+  async getUser(@AuthUser() authUser: RequestUserInterface): Promise<userInfo> {
     return await this.userService.find(authUser.user_id);
   }
 
