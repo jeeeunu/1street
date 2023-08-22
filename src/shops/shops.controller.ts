@@ -13,8 +13,8 @@ import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser } from '../auth/auth.decorator';
 import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
-import { ShopCreateDto, ShopUpdateDto } from './dto/index';
-import { ShopsEntity } from './entities/shops.entity';
+import { ShopCreateDto, ShopUpdateDto } from './dtos/index';
+import { ShopsEntity } from '../common/entities/shops.entity';
 import { ShopsService } from './shops.service';
 
 @Controller('shops')

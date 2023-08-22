@@ -6,8 +6,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IsOptional, IsString, MaxLength } from 'class-validator';
-import { UsersEntity } from '../../users/entities/users.entity';
 import { ProductsEntity } from '../../products/entities/products.entity';
+import { UsersEntity } from './users.entity';
 
 @Entity({ name: 'shops' })
 export class ShopsEntity {

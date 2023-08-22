@@ -3,10 +3,72 @@
   <!-- include : head -->
   <%- include('includes/head') %>
 
+  <script>
+    //-- 회원가입 api --//
+    const signUp = async () => {
+      try {
+        const emailInput = document.querySelector('#emailInput');
+        const passwordInput = document.querySelector('#passwordInput');
+        const passwordConfirmInput = document.querySelector(
+          '#passwordConfirmInput',
+        );
+        const nameInput = document.querySelector('#nameInput');
+        const phoneNumberInput = document.querySelector('#phoneNumberInput');
+        const addressInput = document.querySelector('#addressInput');
+
+        if (passwordInput !== passwordConfirmInput) {
+          alert('비밀번호를 확인해주세요.');
+        }
+
+        const requestData = {
+          email: emailInput.value,
+          password: passwordInput.value,
+          name: nameInput.value,
+          phone_number: phoneNumberInput.value,
+          address: addressInput.value,
+        };
+
+        const response = await fetch('/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
+        });
+
+        const data = await response.json();
+
+        let newHtml = '';
+        if (Array.isArray(data.message)) {
+          data.message.forEach((errorMessage) => {
+            const messagesHtml = Array.isArray(errorMessage.messages)
+              ? errorMessage.messages
+                  .map((message) => `<p class="error-text">${message}</p>`)
+                  .join('')
+              : errorMessage.messages;
+            newHtml += `<div class="error-message">${messagesHtml}</div>`;
+          });
+        } else if (typeof data.message === 'string') {
+          newHtml = `<div class="error-message">${data.message}</div>`;
+        }
+        errorDiv.innerHTML = newHtml;
+
+        if (response.ok) {
+          alert('로그인 되었습니다');
+          window.location.href = '/';
+        } else {
+          console.error('로그인 실패:', data.message);
+        }
+      } catch (error) {
+        console.error('에러 발생:', error);
+        alert('로그인 과정에서 오류가 발생했습니다');
+      }
+    };
+  </script>
+
   <body>
     <!-- include : preloder -->
-    <%- include('includes/preloder') %>
-
+    <%- include('includes/preloder') %> error-message-div
     <!-- include : header -->
     <%- include('includes/header') %>
 
@@ -30,33 +92,38 @@
         </div>
         <div class="content-wrap">
           <div class="user-box">
-            <input type="text" name="" required="" />
-            <label class="required"> Email</label>
+            <input type="text" id="emailInput" name="" required="" />
+            <label class="required">Email</label>
           </div>
           <div class="user-box">
-            <input type="password" name="" required="" />
+            <input type="password" id="passwordInput" name="" required="" />
             <label>Password</label>
           </div>
           <div class="user-box">
-            <input type="password" name="" required="" />
+            <input
+              type="password"
+              id="passwordConfirmInput"
+              name=""
+              required=""
+            />
             <label>Password Confirm</label>
           </div>
           <div class="user-box">
-            <input type="text" name="" required="" />
+            <input type="text" id="nameInput" name="" required="" />
             <label>Name</label>
           </div>
           <div class="user-box">
-            <input type="text" name="" required="" />
+            <input type="text" id="phoneNumberInput" name="" required="" />
             <label>Phone Number</label>
           </div>
           <div class="user-box">
-            <input type="text" name="" required="" />
+            <input type="text" id="addressInput" name="" required="" />
             <label>Adress</label>
           </div>
           <button
             type="button"
             class="btn-primary-m btn-sign-in"
-            onclick="location.href='../../index.html'"
+            onclick="signUp()"
           >
             회원가입
           </button>
