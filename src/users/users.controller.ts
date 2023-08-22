@@ -10,7 +10,7 @@ import {
   Patch,
 } from '@nestjs/common';
 import { UserService } from './users.service';
-import { UserCreateDto, EditUserDto } from './dto';
+import { UserCreateDto, EditUserDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface, userInfo } from './interfaces/index';
 import { AuthGuard } from '../auth/auth.guard';

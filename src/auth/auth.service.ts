@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from './dto';
+import { LoginDto } from './dtos';
 import { UsersEntity } from '../common/entities/users.entity';
 
 @Injectable()

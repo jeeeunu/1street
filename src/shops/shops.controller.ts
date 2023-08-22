@@ -13,7 +13,7 @@ import { Request } from 'supertest';
 import { AuthGuard } from '../auth/auth.guard';
 import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
-import { ShopCreateDto, ShopUpdateDto } from './dto/index';
+import { ShopCreateDto, ShopUpdateDto } from './dtos/index';
 import { ShopsEntity } from '../common/entities/shops.entity';
 import { ShopsService } from './shops.service';
 

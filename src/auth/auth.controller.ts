@@ -12,7 +12,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto';
+import { LoginDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
 
 @Controller('auth')

@@ -12,7 +12,7 @@ import { OrdersService } from './orders.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser } from '../auth/auth.decorator';
 import { Request } from 'supertest';
-import { OrderCreateDto, OrderStatusDto, OrderUpdateDto } from './dto';
+import { OrderCreateDto, OrderStatusDto, OrderUpdateDto } from './dtos';
 import { orderInterface } from './interfaces';
 import { CustomRequest, ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from 'src/users/interfaces';

@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { ResultableInterface } from 'src/common/interfaces';
-import { CreateReviewsDto } from './dto';
+import { CreateReviewsDto } from './dtos';
 import { AuthUser } from '../auth/auth.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RequestUserInterface } from '../users/interfaces';

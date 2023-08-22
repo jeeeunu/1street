@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { OrdersEntity } from '../common/entities/orders.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { OrderCreateDto, OrderStatusDto } from './dto';
+import { OrderCreateDto, OrderStatusDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from 'src/users/interfaces';
 import { UserService } from 'src/users/users.service';

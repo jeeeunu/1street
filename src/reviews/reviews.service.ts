@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ResultableInterface } from 'src/common/interfaces';
 import { ReviewsEntity } from 'src/common/entities';
-import { CreateReviewsDto } from './dto';
+import { CreateReviewsDto } from './dtos';
 import { ReviewInterface } from './interfaces';
 
 @Injectable()
