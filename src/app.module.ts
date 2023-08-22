@@ -8,12 +8,19 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { UsersEntity } from './users/entities/users.entity';
 import { GoogleStrategy } from './auth/strategies/google.strategy';
+import { OrdersModule } from './orders/orders.module';
+import { OrdersEntity } from './orders/entities/_orders.entity';
+import { ShopsModule } from './shops/shops.module';
+import { ProductsController } from './products/products.controller';
+import { ProductsModule } from './products/products.module';
+import { LikesService } from './likes/likes.service';
+import { LikesModule } from './likes/likes.module';
 import { AuthenticationMiddleware } from './auth/auth.middleware';
 import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UsersEntity]),
+    TypeOrmModule.forFeature([UsersEntity, OrdersEntity]),
     ConfigModule.forRoot({ isGlobal: true }),
 
     //-- TypeOrmModule --//
@@ -36,9 +43,13 @@ import { ReviewsModule } from './reviews/reviews.module';
     AuthModule,
     UsersModule,
     ReviewsModule,
+    OrdersModule,
+    ShopsModule,
+    ProductsModule,
+    LikesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, GoogleStrategy],
+  controllers: [AppController, ProductsController],
+  providers: [AppService, GoogleStrategy, LikesService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
