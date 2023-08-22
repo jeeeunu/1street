@@ -5,6 +5,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Timestamp,
 } from 'typeorm';
@@ -24,9 +25,8 @@ export class OrdersEntity {
   @PrimaryGeneratedColumn()
   public order_id: number;
 
-  @ManyToOne(() => OrderDetailsEntity, (orderDetail) => orderDetail.order)
-  @JoinColumn({ name: 'order' })
-  public order: OrderDetailsEntity[];
+  @OneToMany(() => OrderDetailsEntity, (orderDetail) => orderDetail.order_id)
+  public order_details: OrderDetailsEntity[];
 
   @ManyToOne(() => UsersEntity, (user) => user.orders)
   @JoinColumn({ name: 'userId' })

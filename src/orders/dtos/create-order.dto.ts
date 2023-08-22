@@ -6,13 +6,34 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  ArrayNotEmpty,
+  ArrayMinSize,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { OrderStatus } from '../../common/entities/orders.entity';
+
+class OrderDetails {
+  @IsNumber()
+  readonly product_id: number;
+
+  @IsNumber()
+  readonly order_quantity: number;
+
+  @IsNumber()
+  readonly review_flag: number;
+}
 
 export class OrderCreateDto {
   @IsNumber()
   @IsOptional()
   readonly user_id: number;
+
+  @ArrayNotEmpty()
+  @ArrayMinSize(1)
+  @ValidateNested({ each: true })
+  @Type(() => OrderDetails)
+  readonly order_details: OrderDetails[];
 
   @IsNotEmpty()
   @IsString()

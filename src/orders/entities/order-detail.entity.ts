@@ -1,18 +1,11 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { OrdersEntity } from '../../common/entities/orders.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum OrderReviewStatus {
   notWritten = '0',
   written = '1',
 }
 
-@Entity({ name: 'orderDetails' })
+@Entity({ name: 'order_details' })
 export class OrderDetailsEntity {
   @PrimaryGeneratedColumn()
   public order_detail_id: number;
@@ -23,7 +16,10 @@ export class OrderDetailsEntity {
   @Column()
   public order_quantity: number;
 
-  @OneToMany(() => OrdersEntity, (order) => order.order)
-  @JoinColumn({ name: 'order' })
-  public order: OrdersEntity;
+  // @ManyToOne(() => OrdersEntity, (order) => order.order_id)
+  // @JoinColumn({ name: 'order_id' })
+  // public order_id: OrdersEntity;
+
+  @Column()
+  public order_id: number;
 }
