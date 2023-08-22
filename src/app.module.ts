@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { UsersEntity } from './users/entities/users.entity';
 import { GoogleStrategy } from './auth/strategies/google.strategy';
+import { OrdersModule } from './orders/orders.module';
+import { OrdersEntity } from './orders/entities/_orders.entity';
 import { ShopsModule } from './shops/shops.module';
 import { ProductsController } from './products/products.controller';
 import { ProductsModule } from './products/products.module';
@@ -17,7 +19,7 @@ import { AuthenticationMiddleware } from './auth/auth.middleware';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UsersEntity]),
+    TypeOrmModule.forFeature([UsersEntity, OrdersEntity]),
     ConfigModule.forRoot({ isGlobal: true }),
 
     //-- TypeOrmModule --//
@@ -39,6 +41,7 @@ import { AuthenticationMiddleware } from './auth/auth.middleware';
 
     AuthModule,
     UsersModule,
+    OrdersModule,
     ShopsModule,
     ProductsModule,
     LikesModule,
