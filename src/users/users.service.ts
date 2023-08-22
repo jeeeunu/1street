@@ -31,23 +31,28 @@ export class UserService {
   async find(user_id: number): Promise<userInfo> {
     const userFind = await this.usersRepository.findOne({
       where: { id: user_id },
-      // relations: ['like', 'cart', 'qna'],
+      // TODO :: 유저와 연결된 테이블 설정
+      relations: ['like', 'like.product', 'qna'],
+      select: {
+        email: true,
+        name: true,
+        phone_number: true,
+        address: true,
+        point: true,
+        seller_flag: true,
+        // like: {
+        //   product_id: true,
+        //   product_name: true,
+        //   created_at: true,
+        // },
+      },
     });
 
     if (!userFind) {
       throw new UserNotFoundException();
     }
 
-    const data = {
-      email: userFind.email,
-      name: userFind.name,
-      phone_number: userFind.phone_number,
-      address: userFind.address,
-      point: userFind.point,
-      seller_flag: userFind.seller_flag,
-    };
-
-    return { status: true, results: data };
+    return { status: true, results: userFind };
   }
 
   //-- 유저 수정 --//

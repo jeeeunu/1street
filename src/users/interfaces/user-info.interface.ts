@@ -7,5 +7,7 @@ export interface userInfo {
     address: string;
     point: number;
     seller_flag: boolean;
+    // TODO :: 유저와 연결된 테이블 설정
+    // like: [];
   };
 }
