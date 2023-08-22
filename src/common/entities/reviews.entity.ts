@@ -33,8 +33,8 @@ export class ReviewsEntity {
   public review_content: string;
 
   @CreateDateColumn({ type: 'timestamp' })
-  create_at: Date;
+  created_at: string;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  update_at: Date;
+  updated_at: string;
 }
