@@ -397,16 +397,20 @@ ol {
 }
 
 .header__top__right__auth {
-  display: inline-block;
+  display: flex;
+  justify-content: end;
+  gap: 10px;
 }
 
-.header__top__right__auth a {
+.header__top__right__auth button {
   display: block;
   font-size: 14px;
   color: #1c1c1c;
+  border-color: transparent;
+  background-color: transparent;
 }
 
-.header__top__right__auth a i {
+.header__top__right__auth button i {
   margin-right: 6px;
 }
 
@@ -508,7 +512,7 @@ ol {
 .header__cart ul li {
   list-style: none;
   display: inline-block;
-  margin-right: 15px;
+  margin-right: 22px;
 }
 
 .header__cart ul li:last-child {
