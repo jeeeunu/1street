@@ -9,7 +9,7 @@ import { UsersModule } from './users/users.module';
 import { UsersEntity } from './users/entities/users.entity';
 import { GoogleStrategy } from './auth/strategies/google.strategy';
 import { OrdersModule } from './orders/orders.module';
-import { OrdersEntity } from './orders/entities/orders.entity';
+import { OrdersEntity } from './orders/entities/_orders.entity';
 
 @Module({
   imports: [

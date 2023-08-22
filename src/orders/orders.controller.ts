@@ -5,11 +5,13 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser } from '../auth/auth.decorator';
+import { Request } from 'supertest';
 import { OrderCreateDto, OrderStatusDto, OrderUpdateDto } from './dto';
 import { orderInterface } from './interfaces';
 import { CustomRequest, ResultableInterface } from 'src/common/interfaces';
@@ -22,8 +24,14 @@ export class OrdersController {
   //-- 주문 작성 --//
   @Post()
   @UseGuards(AuthGuard)
-  async postOrder(@Body() data: OrderCreateDto): Promise<ResultableInterface> {
-    return await this.ordersService.postOrder(data);
+  async postOrder(
+    @Body() data: OrderCreateDto,
+    @Req() req: Request,
+  ): Promise<ResultableInterface> {
+    const authUser: RequestUserInterface = req['user'];
+    const orderNum = await this.ordersService.postOrder(data, authUser);
+    console.log(orderNum);
+    return orderNum;
   }
   //-- 주문 확인 --//
   @Get()
@@ -34,10 +42,8 @@ export class OrdersController {
   //-- 주문 상세 확인 --//
   @Get('/:order_id')
   @UseGuards(AuthGuard)
-  getDetailOrder(
-    @Param('order_id') userOrder: orderInterface,
-  ): Promise<ResultableInterface> {
-    return this.ordersService.getDetailOrder(userOrder);
+  getDetailOrder(@Param('order_id') order_id: number): Promise<any> {
+    return this.ordersService.getDetailOrder(order_id);
   }
   //-- 주문 수정하기 --//
   @Patch('/:order_id')
@@ -71,10 +77,6 @@ export class OrdersController {
     @Param('order_id') order_id: number,
     @Body() data: OrderStatusDto,
   ): Promise<ResultableInterface> {
-    return await this.ordersService.sellerOrder(
-      authUser.user_id,
-      order_id,
-      data,
-    );
+    return await this.ordersService.sellerOrder(authUser, order_id, data);
   }
 }

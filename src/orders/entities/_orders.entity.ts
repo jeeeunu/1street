@@ -1,5 +1,14 @@
 // import { IsOptional } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
+import { UsersEntity } from 'src/users/entities/users.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  Timestamp,
+} from 'typeorm';
+import { OrderDetailsEntity } from './order-detail.entity';
 
 export enum OrderStatus {
   OrderCancel = '0',
@@ -14,6 +23,14 @@ export enum OrderStatus {
 export class OrdersEntity {
   @PrimaryGeneratedColumn()
   public order_id: number;
+
+  @ManyToOne(() => OrderDetailsEntity, (orderDetail) => orderDetail.order)
+  @JoinColumn({ name: 'order' })
+  public order: OrderDetailsEntity[];
+
+  @ManyToOne(() => UsersEntity, (user) => user.orders)
+  @JoinColumn({ name: 'userId' })
+  public user: UsersEntity;
 
   @Column()
   // @IsOptional()

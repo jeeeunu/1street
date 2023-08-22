@@ -29,4 +29,7 @@ export class UserService {
     }
     return { status: true, message: '회원탈퇴가 완료되었습니다.' };
   }
+  async findOne(userId: number): Promise<UsersEntity> {
+    return await this.userRepository.findOne({ where: { id: userId } });
+  }
 }

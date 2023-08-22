@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { OrderStatus } from '../entities/orders.entity';
+import { OrderStatus } from '../entities/_orders.entity';
 
 export class OrderCancelDto {
   @IsString()

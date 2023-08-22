@@ -7,9 +7,13 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { OrderStatus } from '../entities/orders.entity';
+import { OrderStatus } from '../entities/_orders.entity';
 
 export class OrderCreateDto {
+  @IsNumber()
+  @IsOptional()
+  readonly user_id: number;
+
   @IsNotEmpty()
   @IsString()
   readonly order_receiver: string;
