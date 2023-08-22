@@ -16,6 +16,7 @@ import { ProductsModule } from './products/products.module';
 import { LikesService } from './likes/likes.service';
 import { LikesModule } from './likes/likes.module';
 import { AuthenticationMiddleware } from './auth/auth.middleware';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { AuthenticationMiddleware } from './auth/auth.middleware';
 
     AuthModule,
     UsersModule,
+    ReviewsModule,
     OrdersModule,
     ShopsModule,
     ProductsModule,
