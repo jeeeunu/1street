@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { UsersEntity } from './users/entities/users.entity';
 import { GoogleStrategy } from './auth/strategies/google.strategy';
+import { QnasModule } from './qnas/qnas.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { GoogleStrategy } from './auth/strategies/google.strategy';
 
     AuthModule,
     UsersModule,
+    QnasModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy],
