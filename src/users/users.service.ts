@@ -1,8 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  forwardRef,
+  NotFoundException,
+} from '@nestjs/common';
+
+import { UploadsService } from 'src/uploads/uploads.service';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { UserCreateDto, EditUserDto } from './dtos';
+import { CreateUserDto, EditUserDto } from './dtos';
 import { UsersEntity } from '../common/entities/users.entity';
 import { userInfo } from './interfaces';
 import { ResultableInterface } from 'src/common/interfaces';
@@ -18,12 +25,17 @@ export class UserService {
   constructor(
     @InjectRepository(UsersEntity)
     private usersRepository: Repository<UsersEntity>,
+    private uploadsService: UploadsService,
   ) {}
 
   //-- 일반 회원가입 --//
-  async signUp(userDto: UserCreateDto): Promise<ResultableInterface> {
+  async signUp(
+    userDto: CreateUserDto,
+    files: Express.Multer.File[],
+  ): Promise<ResultableInterface> {
     userDto.password = await bcrypt.hash(userDto.password, 10);
-    await this.usersRepository.save(userDto);
+    const createUser = await this.usersRepository.save(userDto);
+    const imageUrl = await this.uploadsService.createS3Images(files);
     return { status: true, message: '회원가입이 완료되었습니다.' };
   }
 
@@ -32,19 +44,14 @@ export class UserService {
     const user = await this.usersRepository.findOne({
       where: { id: user_id },
       // TODO :: 유저와 연결된 테이블 설정
-      relations: ['like', 'like.product', 'qna'],
+      relations: ['likes', 'likes.product'],
       select: {
-        email: true,
-        name: true,
-        phone_number: true,
-        address: true,
-        point: true,
-        seller_flag: true,
-        // like: {
-        //   product_id: true,
-        //   product_name: true,
-        //   created_at: true,
-        // },
+        likes: {
+          product: {
+            product_thumbnail: true,
+            product_name: true,
+          },
+        },
       },
     });
 

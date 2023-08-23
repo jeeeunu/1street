@@ -6,7 +6,7 @@ import {
   Length,
   Matches,
 } from 'class-validator';
-export class UserCreateDto {
+export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   readonly email: string;
@@ -42,4 +42,7 @@ export class UserCreateDto {
   @IsOptional()
   @IsString()
   readonly provider: string;
+
+  @IsOptional()
+  files: Express.Multer.File[]; // 업로드된 파일 배열
 }

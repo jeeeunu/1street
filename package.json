@@ -32,7 +32,6 @@
     "@nestjs/jwt": "^10.1.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^10.0.0",
-    "@nestjs/platform-express": "^10.2.0",
     "@nestjs/typeorm": "^10.0.0",
     "aws-sdk": "^2.1441.0",
     "axios": "^1.4.0",
@@ -50,9 +49,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.17",
-    "typeorm-naming-strategies": "^4.1.0"
+    "typeorm-naming-strategies": "^4.1.0",
     "uuid": "^9.0.0"
-
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -60,6 +58,7 @@
     "@nestjs/testing": "^10.0.0",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
+    "@types/multer": "^1.4.7",
     "@types/node": "^20.3.1",
     "@types/passport-google-oauth20": "^2.0.11",
     "@types/supertest": "^2.0.12",
@@ -73,7 +72,6 @@
     "source-map-support": "^0.5.21",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
-    "@types/multer": "^1.4.7",
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
