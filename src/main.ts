@@ -6,6 +6,7 @@ import { join } from 'path';
 import { AppModule } from './app.module';
 import { CustomValidationException } from './common/exceptions';
 import * as AWS from 'aws-sdk';
+import { GlobalCatchException } from './common/exceptions/global-catch.exception';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -23,6 +24,9 @@ async function bootstrap() {
       },
     }),
   );
+
+  //-- 글로벌 예외 처리 --//
+  app.useGlobalFilters(new GlobalCatchException()); // try, catch문 생략 가능
 
   //-- ejs --//
   app.useStaticAssets(join(__dirname, '..', 'public'));
