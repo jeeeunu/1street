@@ -29,7 +29,7 @@ export class UserService {
 
   //-- 유저 조회 --//
   async find(user_id: number): Promise<userInfo> {
-    const userFind = await this.usersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       where: { id: user_id },
       // TODO :: 유저와 연결된 테이블 설정
       relations: ['like', 'like.product', 'qna'],
@@ -48,11 +48,11 @@ export class UserService {
       },
     });
 
-    if (!userFind) {
+    if (!user) {
       throw new UserNotFoundException();
     }
 
-    return { status: true, results: userFind };
+    return { status: true, results: user };
   }
 
   //-- 유저 수정 --//
@@ -60,16 +60,16 @@ export class UserService {
     user_id: number,
     editUserDto: EditUserDto,
   ): Promise<ResultableInterface> {
-    const userFind = await this.usersRepository.findOne({
+    const existingUser = await this.usersRepository.findOne({
       where: { id: user_id },
     });
 
-    if (!userFind) {
+    if (!existingUser) {
       throw new UserNotFoundException();
     }
 
-    Object.assign(userFind, editUserDto);
-    await this.usersRepository.save(userFind);
+    Object.assign(existingUser, editUserDto);
+    await this.usersRepository.save(existingUser);
 
     return { status: true, message: '회원 정보가 수정되었습니다.' };
   }
