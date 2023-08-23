@@ -1,8 +1,7 @@
 import {
-  Inject,
   Injectable,
-  forwardRef,
   NotFoundException,
+  ConflictException,
 } from '@nestjs/common';
 
 import { UploadsService } from 'src/uploads/uploads.service';
@@ -34,8 +33,22 @@ export class UserService {
     files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
     userDto.password = await bcrypt.hash(userDto.password, 10);
+    const existingUser = await this.usersRepository.findOne({
+      where: [{ email: userDto.email }, { phone_number: userDto.phone_number }],
+    });
+
+    if (existingUser) {
+      throw new ConflictException('이미 존재하는 아이디나 핸드폰 번호입니다.');
+    }
+
     const createUser = await this.usersRepository.save(userDto);
-    const imageUrl = await this.uploadsService.createS3Images(files);
+
+    if (files.length !== 0) {
+      const imageUrl = await this.uploadsService.createS3Images(files);
+      createUser.profile_image = imageUrl;
+    }
+
+    await this.usersRepository.save(createUser);
     return { status: true, message: '회원가입이 완료되었습니다.' };
   }
 
@@ -91,6 +104,7 @@ export class UserService {
     return { status: true, message: '회원탈퇴가 완료되었습니다.' };
   }
 
+  // TODO :: 삭제 예정
   async findOne(userId: number): Promise<UsersEntity> {
     return await this.usersRepository.findOne({ where: { id: userId } });
   }

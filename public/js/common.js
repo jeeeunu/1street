@@ -51,3 +51,18 @@ const logout = async () => {
     }
   }
 };
+
+//-- 프로필 이미지 미리보기 --//
+const setThumbnail = (event) => {
+  const reader = new FileReader();
+  const previewWrap = document.querySelector('.edit-img-wrap');
+
+  reader.onload = (event) => {
+    previewWrap.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = event.target.result;
+    previewWrap.appendChild(img);
+  };
+
+  reader.readAsDataURL(event.target.files[0]);
+};

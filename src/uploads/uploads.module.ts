@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MulterModule } from '@nestjs/platform-express';
 import { UploadsController } from './uploads.controller';
 import { UploadsService } from './uploads.service';
 import { ReviewImageEntity } from './entities/review-image.entity';

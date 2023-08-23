@@ -9,6 +9,7 @@ import {
   Delete,
   Patch,
   UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { CreateUserDto, EditUserDto } from './dtos';
@@ -16,6 +17,7 @@ import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface, userInfo } from './interfaces/index';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser } from '../auth/auth.decorator';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
@@ -23,12 +25,12 @@ export class UserController {
 
   //-- 일반 회원가입 --//
   @Post()
-  @UsePipes(ValidationPipe) // dto만 있을때 사용
+  @UsePipes(ValidationPipe)
+  @UseInterceptors(FilesInterceptor('files'))
   async signUp(
     @UploadedFiles() files: Express.Multer.File[],
     @Body() createUserDto: CreateUserDto,
   ): Promise<ResultableInterface> {
-    console.log(files);
     return await this.userService.signUp(createUserDto, files);
   }
 

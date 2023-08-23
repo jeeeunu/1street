@@ -21,6 +21,12 @@
           alert('비밀번호를 확인해주세요.');
           return;
         }
+
+        const sellerRadio = document.querySelector(
+          'input[name="user-type"][value="seller"]',
+        );
+        const seller_flag = sellerRadio?.checked ?? false;
+
         const formData = new FormData();
         formData.append('files', profileImageInput.files[0]);
         formData.append('email', emailInput.value);
@@ -28,10 +34,11 @@
         formData.append('name', nameInput.value);
         formData.append('phone_number', phoneNumberInput.value);
         formData.append('address', addressInput.value);
+        formData.append('seller_flag', seller_flag);
 
-        console.log(formData);
         const response = await fetch('/users', {
           method: 'POST',
+          headers: { Accept: 'application/json' },
           body: formData,
         });
 
@@ -39,9 +46,10 @@
 
         if (response.ok) {
           alert('회원가입이 완료되었습니다.');
-          window.location.href = '/';
+          window.location.href = '/sign-in';
         } else {
-          console.error('회원가입 실패:', data.message);
+          console.log(data);
+          alert(data.message);
         }
       } catch (error) {
         console.error('에러 발생:', error);
@@ -63,20 +71,25 @@
         <div class="radios">
           <div class="radio-wrap">
             <label>
-              <input type="radio" name="contact" value="phone" checked />
+              <input type="radio" name="user-type" value="user" checked />
               <span>사용자</span>
             </label>
           </div>
           <div class="radio-wrap">
             <label>
-              <input type="radio" name="contact" value="phone" />
+              <input type="radio" name="user-type" value="seller" />
               <span>판매자</span>
             </label>
           </div>
         </div>
         <div class="content-wrap">
-          <div class="pofile-img-wrap">
-            <input type="file" id="profileInput" />
+          <div class="edit-img-container">
+            <div class="edit-img-wrap"></div>
+            <input
+              type="file"
+              id="profileInput"
+              onchange="setThumbnail(event)"
+            />
           </div>
           <div class="user-box">
             <input

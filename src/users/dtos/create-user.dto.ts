@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsNotEmpty,
   IsString,
@@ -36,6 +37,9 @@ export class CreateUserDto {
   readonly point: number;
 
   @IsOptional()
+  @Transform(({ obj, key }) => {
+    return obj[key] === 'true' ? true : obj[key] === 'false' ? false : obj[key];
+  })
   @IsBoolean()
   readonly seller_flag: boolean;
 
@@ -44,5 +48,5 @@ export class CreateUserDto {
   readonly provider: string;
 
   @IsOptional()
-  files: Express.Multer.File[]; // 업로드된 파일 배열
+  readonly files: Express.Multer.File[];
 }

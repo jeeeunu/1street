@@ -32,9 +32,9 @@ export class UploadsService {
     await this.s3.deleteObject(params).promise();
   }
 
-  //-- 이미지 저장 : 유저 프로필 --//
+  //-- 이미지 저장 : 유저 프로필 url 반환 --//
   async createS3Images(files: Express.Multer.File[]): Promise<string> {
-    let key: string; // Declare the key variable outside the loop
+    let key: string;
 
     const uploadPromises: Promise<void>[] = files.map(async (file) => {
       const uniqueId = uuidv4();
@@ -43,7 +43,7 @@ export class UploadsService {
     });
 
     await Promise.all(uploadPromises);
-    return `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`; // Use the key variable here
+    return `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`; // Use the
   }
 
   // //-- 이미지 저장 : 리뷰이미지 저장 --//
