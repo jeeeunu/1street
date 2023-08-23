@@ -6,12 +6,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
+import { ProductsEntity, ShopsEntity } from '../common/entities';
 import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
 import { ProductCreateDto, ProductUpdateDto } from './dto';
 import { CategoryEntity } from './entities/category.entity';
-import { ProductsEntity } from '../common/entities/products.entity';
-import { ShopsEntity } from '../common/entities';
 
 @Injectable()
 export class ProductsService {

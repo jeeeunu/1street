@@ -1,8 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
-import { OrdersEntity } from 'src/common/entities/orders.entity';
-import { ShopsEntity } from './shops.entity';
+import { LikeEntity, OrdersEntity, ShopsEntity } from '.';
 
 export enum Provider {
   Local,
@@ -57,4 +56,7 @@ export class UsersEntity {
 
   @OneToMany(() => ShopsEntity, (shop) => shop.user)
   public shops: ShopsEntity[];
+
+  @OneToMany(() => LikeEntity, (like) => like.user)
+  public likes: LikeEntity[];
 }
