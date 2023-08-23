@@ -7,11 +7,12 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { ResultableInterface } from '../common/interfaces';
+import { ShopsEntity } from '../shops/entities/shops.entity';
+
 import { RequestUserInterface } from '../users/interfaces';
 import { ProductCreateDto, ProductUpdateDto } from './dto';
 import { CategoryEntity } from './entities/category.entity';
-import { ProductsEntity } from '../common/entities/products.entity';
-import { ShopsEntity } from '../common/entities';
+import { ProductsEntity } from './entities/products.entity';
 
 @Injectable()
 export class ProductsService {

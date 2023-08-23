@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
-import { CategoryEntity } from '../../products/entities/category.entity';
-import { ShopsEntity } from './shops.entity';
+import { ShopsEntity } from '../../shops/entities/shops.entity';
+import { CategoryEntity } from './category.entity';
 
 @Entity({ name: 'products' })
 export class ProductsEntity {
