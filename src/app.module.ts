@@ -15,7 +15,9 @@ import { ProductsModule } from './products/products.module';
 import { LikesModule } from './likes/likes.module';
 import { AuthenticationMiddleware } from './auth/auth.middleware';
 import { ReviewsModule } from './reviews/reviews.module';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UploadsModule } from './uploads/uploads.module';
+
 
 @Module({
   imports: [
@@ -32,6 +34,7 @@ import { UploadsModule } from './uploads/uploads.module';
       database: process.env.DB_DATABASE,
       autoLoadEntities: true,
       synchronize: false,
+      namingStrategy: new SnakeNamingStrategy(),
     }),
 
     //-- jwt --//
