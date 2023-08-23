@@ -7,13 +7,14 @@ import {
   UseGuards,
   ValidationPipe,
   Delete,
+  Patch,
 } from '@nestjs/common';
 import { UserService } from './users.service';
-import { UserCreateDto } from './dto';
-import { RequestUserInterface } from './interfaces/index';
+import { UserCreateDto, EditUserDto } from './dtos';
+import { ResultableInterface } from 'src/common/interfaces';
+import { RequestUserInterface, userInfo } from './interfaces/index';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser } from '../auth/auth.decorator';
-import { ResultableInterface } from 'src/common/interfaces';
 
 @Controller('users')
 export class UserController {
@@ -26,16 +27,24 @@ export class UserController {
     return await this.userService.signUp(userDto);
   }
 
-  //-- TODO :: AuthGuard/AuthUser 테스트용, 삭제 예정 --//
+  //-- 유저 조회 --//
   @Get()
   @UseGuards(AuthGuard)
-  async test(
-    @AuthUser() authUser: RequestUserInterface, // user 정보 받아올 수 있음
-  ): Promise<any> {
-    return console.log(authUser);
+  async getUser(@AuthUser() authUser: RequestUserInterface): Promise<userInfo> {
+    return await this.userService.find(authUser.user_id);
   }
 
-  //-- 회원 탈퇴 --//
+  //-- 유저 수정 --//
+  @Patch()
+  @UseGuards(AuthGuard)
+  async editUser(
+    @Body() editUserDto: EditUserDto,
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
+    return await this.userService.edit(authUser.user_id, editUserDto);
+  }
+
+  //-- 유저 탈퇴 --//
   @Delete()
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
