@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   Req,
+  Delete,
   UseGuards,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
@@ -27,7 +28,6 @@ export class OrdersController {
     @Req() req: Request,
   ): Promise<ResultableInterface> {
     const authUser: RequestUserInterface = req['user'];
-    console.log(authUser);
     return await this.ordersService.postOrder(data, authUser);
   }
   //-- 주문 확인 --//
@@ -52,16 +52,33 @@ export class OrdersController {
   //   return await this.ordersService.updateOrder(order_id, data);
   // }
 
-  //-- 주문 부분 취소하기 --//
-
   // //-- 주문 취소하기 --//
   @Patch('/:order_id/cancel')
   @UseGuards(AuthGuard)
   async cancelOrder(
+    @Req() req: Request,
     @Param('order_id') order_id: number,
   ): Promise<ResultableInterface> {
-    return await this.ordersService.cancelOrder(order_id);
+    const authUser: RequestUserInterface = req['user'];
+    return await this.ordersService.cancelOrder(order_id, authUser);
   }
+
+  //-- 주문 부분 취소하기 --//
+  @Patch('/:order_id/:order_detail_id')
+  @UseGuards(AuthGuard)
+  async partialCancel(
+    @Req() req: Request,
+    @Param('order_id') order_id: number,
+    order_detail_id: number,
+  ): Promise<ResultableInterface> {
+    const authUser: RequestUserInterface = req['user'];
+    return await this.ordersService.partialCancel(
+      order_id,
+      order_detail_id,
+      authUser,
+    );
+  }
+
   //-- 주문 상태 변경(판매자) --//
   @Patch('/:order_id/seller')
   @UseGuards(AuthGuard)

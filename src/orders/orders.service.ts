@@ -23,7 +23,6 @@ export class OrdersService {
     authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
     const user = await this.userService.findOne(authUser.user_id);
-    console.log(user.id);
 
     const order = await this.orderRepository.save({
       user: { id: user.id },
@@ -81,19 +80,59 @@ export class OrdersService {
   //   // orderProducts = data.order_details;
   //   return { status: true, message: '주문이 수정되었습니다.' };
   // }
-  //-- 주문 취소하기 --//
-  async cancelOrder(order_id: number): Promise<ResultableInterface> {
+
+  //-- 주문 부분 취소 --//
+  async partialCancel(
+    order_id: number,
+    order_detail_id: number,
+    authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
     const order = await this.orderRepository.findOne({
       where: { order_id },
     });
     if (!order) {
       throw new NotFoundException('주문이 존재하지 않습니다.');
     }
+    if (order.user_id !== authUser.user_id) {
+      throw new NotFoundException('권한이 없습니다.');
+    }
+    const orderDetail = await this.orderDetailRepository.findOne({
+      where: { order_detail_id },
+    });
+    const orderDetails = await this.orderDetailRepository.find({
+      where: { order_id },
+    });
+    if (orderDetails.length === 0) {
+      order.order_status = '0';
+      await this.orderRepository.save(order);
+    }
+    if (!orderDetail) {
+      throw new NotFoundException('상세 주문이 존재하지 않습니다.');
+    }
+
+    await this.orderDetailRepository.remove(orderDetail);
+
+    return { status: true, message: '선택하신 상세 주문 삭제에 성공했습니다.' };
+  }
+
+  //-- 주문 취소하기 --//
+  async cancelOrder(
+    order_id: number,
+    authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
+    const order = await this.orderRepository.findOne({
+      where: { order_id },
+    });
+    if (!order) {
+      throw new NotFoundException('주문이 존재하지 않습니다.');
+    }
+    if (order.user.id !== authUser.user_id) {
+      throw new NotFoundException('권한이 없습니다.');
+    }
     order.order_status = '0';
     await this.orderRepository.save(order);
     return { status: true, message: '주문이 취소되었습니다.' };
   }
-  //-- 주문 부분 취소 --//
 
   //-- 주문 상태 변경(판매자) --//
   async sellerOrder(

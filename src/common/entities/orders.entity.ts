@@ -29,7 +29,7 @@ export class OrdersEntity {
   public order_details: OrderDetailsEntity[];
 
   @ManyToOne(() => UsersEntity, (user) => user.orders)
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   public user: UsersEntity;
 
   @Column()
@@ -56,4 +56,7 @@ export class OrdersEntity {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created_at: Timestamp;
+
+  @Column()
+  public user_id: number;
 }
