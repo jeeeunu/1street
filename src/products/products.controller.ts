@@ -1,20 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
-import { AuthUser } from '../auth/auth.decorator';
-import { AuthGuard } from '../auth/auth.guard';
-import { ProductsEntity } from '../common/entities';
-import { ResultableInterface } from '../common/interfaces';
-import { RequestUserInterface } from '../users/interfaces';
-import { ProductCreateDto, ProductUpdateDto } from './dto';
-import { ProductsService } from './products.service';
+import { Controller } from '@nestjs/common';
 
 @Controller('products')
 export class ProductsController {
@@ -79,3 +63,6 @@ export class ProductsController {
   //     return await this.productsService.category(data);
   //   }
 }
+
+export class ProductsController {}
+

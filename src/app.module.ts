@@ -11,7 +11,9 @@ import { GoogleStrategy } from './auth/strategies/google.strategy';
 import { OrdersModule } from './orders/orders.module';
 import { OrdersEntity } from './common/entities/orders.entity';
 import { ShopsModule } from './shops/shops.module';
+import { ProductsController } from './products/products.controller';
 import { ProductsModule } from './products/products.module';
+import { LikesService } from './likes/likes.service';
 import { LikesModule } from './likes/likes.module';
 import { AuthenticationMiddleware } from './auth/auth.middleware';
 import { ReviewsModule } from './reviews/reviews.module';
@@ -46,8 +48,8 @@ import { ReviewsModule } from './reviews/reviews.module';
     ProductsModule,
     LikesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, GoogleStrategy],
+  controllers: [AppController, ProductsController],
+  providers: [AppService, GoogleStrategy, LikesService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
