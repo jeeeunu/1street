@@ -1,7 +1,14 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 import { CategoryEntity } from '../../products/entities/category.entity';
 import { ShopsEntity } from './shops.entity';
+import { LikeEntity } from './likes.entity';
 
 @Entity({ name: 'products' })
 export class ProductsEntity {
@@ -35,4 +42,7 @@ export class ProductsEntity {
 
   @ManyToOne(() => CategoryEntity, (category) => category.products)
   public category: CategoryEntity;
+
+  @OneToMany(() => LikeEntity, (like) => like.product)
+  public likes: LikeEntity[];
 }
