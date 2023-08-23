@@ -18,10 +18,8 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UploadsModule } from './uploads/uploads.module';
 
-
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UsersEntity, OrdersEntity]),
     ConfigModule.forRoot({ isGlobal: true }),
 
     //-- TypeOrmModule --//
