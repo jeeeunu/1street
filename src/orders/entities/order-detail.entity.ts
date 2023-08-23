@@ -12,7 +12,7 @@ export enum OrderReviewStatus {
   written = '1',
 }
 
-@Entity({ name: 'orderDetails' })
+@Entity({ name: 'order_details' })
 export class OrderDetailsEntity {
   @PrimaryGeneratedColumn()
   public order_detail_id: number;
