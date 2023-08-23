@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common';
 import { AuthUser } from '../auth/auth.decorator';
 import { AuthGuard } from '../auth/auth.guard';
-import { ProductsEntity } from '../common/entities';
+import { ProductsEntity } from '../common/entities/products.entity';
 import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
-import { ProductCreateDto, ProductUpdateDto } from './dto';
+import { ProductCreateDto, ProductUpdateDto } from './dtos';
 import { ProductsService } from './products.service';
 
 @Controller('products')
