@@ -25,15 +25,8 @@ export enum OrderStatus {
 export class OrdersEntity {
   @PrimaryGeneratedColumn()
   public order_id: number;
-<<<<<<< HEAD
-
   @OneToMany(() => OrderDetailsEntity, (orderDetail) => orderDetail.order_id)
   public order_details: OrderDetailsEntity[];
-
-=======
-  @OneToMany(() => OrderDetailsEntity, (orderDetail) => orderDetail.order_id)
-  public order_details: OrderDetailsEntity[];
->>>>>>> a68ce7f96bd82342d07d8163837a5f7c98dbecf5
   @ManyToOne(() => UsersEntity, (user) => user.orders)
   @JoinColumn({ name: 'user_id' })
   public user: UsersEntity;
