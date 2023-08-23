@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { IsOptional, IsString, MaxLength } from 'class-validator';
-import { ProductsEntity } from '../../products/entities/products.entity';
+import { ProductsEntity } from './products.entity';
 import { UsersEntity } from './users.entity';
 
 @Entity({ name: 'shops' })
