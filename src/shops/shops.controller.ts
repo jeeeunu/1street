@@ -14,8 +14,8 @@ import { AuthUser } from '../auth/auth.decorator';
 import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
 import { ShopCreateDto, ShopUpdateDto } from './dtos/index';
+import { ShopsEntity } from '../common/entities/shops.entity';
 import { ShopsService } from './shops.service';
-import { ShopsEntity } from '../common/entities';
 
 @Controller('shops')
 export class ShopsController {

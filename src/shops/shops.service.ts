@@ -6,11 +6,11 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ShopsEntity } from '../common/entities';
 import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
 import { UserService } from '../users/users.service';
 import { ShopCreateDto, ShopUpdateDto } from './dtos/index';
+import { ShopsEntity } from '../common/entities/shops.entity';
 
 @Injectable()
 export class ShopsService {

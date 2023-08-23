@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IsNumber, IsString } from 'class-validator';
-import { ProductsEntity } from '../../common/entities';
+import { ProductsEntity } from '../../common/entities/products.entity';
 
 @Entity({ name: 'categorys' })
 export class CategoryEntity {
