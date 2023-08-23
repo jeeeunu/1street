@@ -7,54 +7,35 @@ export class AppController {
   @Get()
   main(@Req() request: Request, @Res() response: Response): void {
     const isIndexPath = request.url === '/';
-    const authUser = request.user;
     response.render('index', {
       isIndexPath,
-      authUser,
-    });
-  }
-
-  //-- 회원가입 --//
-  @Get('sign-up')
-  singUp(@Req() request: Request, @Res() response: Response): void {
-    const isIndexPath = request.url === '/';
-    const authUser = request.user;
-    response.render('sign-up', {
-      isIndexPath,
-      authUser,
     });
   }
 
   //-- 로그인 --//
   @Get('sign-in')
-  singIn(@Req() request: Request, @Res() response: Response): void {
-    const isIndexPath = request.url === '/';
-    const authUser = request.user;
+  singIn(@Res() response: Response): void {
     response.render('sign-in', {
-      isIndexPath,
-      authUser,
+      title: '테스트',
+      subtitle: '서브 테스트',
     });
   }
 
   //-- 장바구니 --//
   @Get('cart')
-  cart(@Req() request: Request, @Res() response: Response): void {
-    const isIndexPath = request.url === '/';
-    const authUser = request.user;
+  cart(@Res() response: Response): void {
     response.render('cart', {
-      isIndexPath,
-      authUser,
+      title: '테스트',
+      subtitle: '서브 테스트',
     });
   }
 
   //-- 상품 상세보가 --//
   @Get('product-detail')
-  productDetail(@Req() request: Request, @Res() response: Response): void {
-    const isIndexPath = request.url === '/';
-    const authUser = request.user;
+  productDetail(@Res() response: Response): void {
     response.render('product-detail', {
-      isIndexPath,
-      authUser,
+      title: '테스트',
+      subtitle: '서브 테스트',
     });
   }
 }

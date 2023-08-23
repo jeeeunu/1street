@@ -2,67 +2,6 @@
 <html lang="ko">
   <!-- include : head -->
   <%- include('includes/head') %>
-  <!-- script : sign-in -->
-  <script>
-    //-- 로그인 api --//
-    const login = async () => {
-      try {
-        const emailInput = document.querySelector('#emailInput');
-        const passwordInput = document.querySelector('#passwordInput');
-        const errorDiv = document.querySelector('.error-message-div');
-
-        const requestData = {
-          email: emailInput.value,
-          password: passwordInput.value,
-        };
-
-        const response = await fetch('/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData),
-        });
-
-        const data = await response.json();
-
-        let newHtml = '';
-        if (Array.isArray(data.message)) {
-          data.message.forEach((errorMessage) => {
-            const messagesHtml = Array.isArray(errorMessage.messages)
-              ? errorMessage.messages
-                  .map((message) => `<p class="error-text">${message}</p>`)
-                  .join('')
-              : errorMessage.messages;
-            newHtml += `<div class="error-message">${messagesHtml}</div>`;
-          });
-        } else if (typeof data.message === 'string') {
-          newHtml = `<div class="error-message">${data.message}</div>`;
-        }
-        errorDiv.innerHTML = newHtml;
-
-        if (response.ok) {
-          alert('로그인 되었습니다');
-          window.location.href = '/';
-        } else {
-          console.error('로그인 실패:', data.message);
-        }
-      } catch (error) {
-        console.error('에러 발생:', error);
-        alert('로그인 과정에서 오류가 발생했습니다');
-      }
-    };
-
-    //-- 구글 로그인 --//
-    const loginGoogle = async (button) => {
-      const authenticationCookie = document.cookie.includes('Authentication');
-      if (authenticationCookie) {
-        return alert('로그인 상태입니다.');
-      } else {
-        window.location.href = '/auth/google/login/callback';
-      }
-    };
-  </script>
 
   <body>
     <!-- include : preloder -->
@@ -75,42 +14,50 @@
     <main class="hero container sign-form">
       <form>
         <legend class="tit-page">이메일 로그인</legend>
+        <!-- <div class="radios">
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>사용자</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>판매자</span>
+                </label>
+              </div>
+            </div> -->
         <div class="content-wrap">
           <div class="user-box">
-            <input type="text" id="emailInput" name="" required />
+            <input type="text" name="" required="" />
             <label>Email</label>
           </div>
           <div class="user-box">
-            <input type="password" id="passwordInput" name="" required />
+            <input type="password" name="" required="" />
             <label>Password</label>
           </div>
-          <!-- PUB :: 에러메세지 -->
-          <div class="error-message-div"></div>
           <button
             type="button"
             class="btn-primary-m btn-sign-in"
-            onclick="login()"
+            onclick="location.href='../../index.html'"
           >
             로그인
           </button>
           <div class="sign-link-area">
             <!-- <a href="">아이디,비밀번호찾기</a> -->
-            <a href="/sign-up">이메일로 회원가입</a>
+            <a href="sign-up.html">이메일로 회원가입</a>
             <span class="gray-text">|</span>
-            <a href="/sign-up">판매자 로그인</a>
+            <a href="sign-up.html">판매자 로그인</a>
           </div>
         </div>
         <hr />
         <div class="content-wrap">
           <ul class="list-link website">
             <li class="item">
-              <button
-                type="button"
-                class="btn-primary-m link-google"
-                onclick="loginGoogle(this)"
+              <a href="" class="btn-primary-m link-google"
+                >구글 로그인/회원가입</a
               >
-                구글 로그인/회원가입
-              </button>
             </li>
           </ul>
         </div>

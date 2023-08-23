@@ -5,7 +5,6 @@ import { NestFactory } from '@nestjs/core';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { CustomValidationException } from './common/exceptions';
-import * as session from 'express-session';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -28,16 +27,6 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', '/views'));
   app.setViewEngine('ejs');
-
-  //-- session --//
-  app.use(
-    session({
-      secret: 'your-secret-key',
-      resave: false,
-      saveUninitialized: true,
-      cookie: { secure: false }, // Adjust this based on your needs
-    }),
-  );
 
   await app.listen(3000);
 }

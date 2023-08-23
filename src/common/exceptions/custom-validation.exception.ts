@@ -16,7 +16,7 @@ export class CustomValidationException extends BadRequestException {
     for (const field in errors) {
       const constraints = errors[field].constraints;
       if (constraints) {
-        const messages = Object.values(constraints).reverse();
+        const messages = Object.values(constraints);
         formattedErrors.push({
           field,
           messages,
