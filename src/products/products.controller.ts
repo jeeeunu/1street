@@ -13,7 +13,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
 import { ProductCreateDto, ProductUpdateDto } from './dto';
-import { ProductsEntity } from './entities/products.entity';
+import { ProductsEntity } from '../common/entities/products.entity';
 import { ProductsService } from './products.service';
 
 @Controller('products')
