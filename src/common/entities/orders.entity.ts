@@ -10,6 +10,7 @@ import {
   Timestamp,
 } from 'typeorm';
 import { OrderDetailsEntity } from '../../orders/entities/order-detail.entity';
+import { IsOptional, Min } from 'class-validator';
 
 export enum OrderStatus {
   OrderCancel = '0',
@@ -24,36 +25,34 @@ export enum OrderStatus {
 export class OrdersEntity {
   @PrimaryGeneratedColumn()
   public order_id: number;
+<<<<<<< HEAD
 
   @OneToMany(() => OrderDetailsEntity, (orderDetail) => orderDetail.order_id)
   public order_details: OrderDetailsEntity[];
 
+=======
+  @OneToMany(() => OrderDetailsEntity, (orderDetail) => orderDetail.order_id)
+  public order_details: OrderDetailsEntity[];
+>>>>>>> a68ce7f96bd82342d07d8163837a5f7c98dbecf5
   @ManyToOne(() => UsersEntity, (user) => user.orders)
   @JoinColumn({ name: 'user_id' })
   public user: UsersEntity;
-
   @Column()
   // @IsOptional()
   public order_receiver: string;
-
   @Column()
   // @IsOptional()
   public order_phone: string;
-
   @Column()
   // @IsOptional()
   public order_email: string;
-
   @Column()
   // @IsOptional()
   public order_address: string;
-
   @Column()
   public order_payment_amount: number;
-
   @Column({ default: '1' })
   public order_status: string;
-
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created_at: Timestamp;
 

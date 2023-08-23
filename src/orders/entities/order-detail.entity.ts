@@ -9,10 +9,8 @@ export enum OrderReviewStatus {
 export class OrderDetailsEntity {
   @PrimaryGeneratedColumn()
   public order_detail_id: number;
-
   @Column()
   public product_id: number;
-
   @Column()
   public order_quantity: number;
 

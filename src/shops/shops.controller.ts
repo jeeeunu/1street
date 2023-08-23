@@ -6,16 +6,16 @@ import {
   Param,
   Patch,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
-import { Request } from 'supertest';
+
 import { AuthGuard } from '../auth/auth.guard';
+import { AuthUser } from '../auth/auth.decorator';
 import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
 import { ShopCreateDto, ShopUpdateDto } from './dtos/index';
-import { ShopsEntity } from '../common/entities/shops.entity';
 import { ShopsService } from './shops.service';
+import { ShopsEntity } from '../common/entities';
 
 @Controller('shops')
 export class ShopsController {
@@ -32,9 +32,8 @@ export class ShopsController {
   @UseGuards(AuthGuard)
   async createShop(
     @Body() shopData: ShopCreateDto,
-    @Req() req: Request,
+    @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    const authUser: RequestUserInterface = req['user'];
     //TODO:: 유저 아이디 받아오기
     return await this.shopsService.create(shopData, authUser);
   }
@@ -44,9 +43,8 @@ export class ShopsController {
   @UseGuards(AuthGuard)
   async updateShop(
     @Body() shopData: ShopUpdateDto,
-    @Req() req: RequestUserInterface,
+    @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    const authUser: RequestUserInterface = req['user'];
     return await this.shopsService.update(shopData, authUser);
   }
 
@@ -55,9 +53,8 @@ export class ShopsController {
   @UseGuards(AuthGuard)
   async deleteShop(
     @Param('id') shopId: number,
-    @Req() req: RequestUserInterface,
+    @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    const authUser = req['user'];
     return await this.shopsService.delete(shopId, authUser);
   }
 }
