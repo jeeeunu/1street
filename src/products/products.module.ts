@@ -16,5 +16,6 @@ import { ProductsEntity, ShopsEntity, UsersEntity } from '../common/entities';
   ],
   providers: [ProductsService],
   controllers: [ProductsController],
+  exports: [ProductsService],
 })
 export class ProductsModule {}

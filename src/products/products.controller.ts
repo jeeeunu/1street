@@ -25,6 +25,7 @@ export class ProductsController {
   async getDetail(@Param('id') id: number): Promise<ProductsEntity> {
     return await this.productsService.findById(id);
   }
+
   //-- 상품 검색 (검색어)--//
   @Get()
   async searchKeyword(
@@ -61,6 +62,7 @@ export class ProductsController {
   ): Promise<ResultableInterface> {
     return await this.productsService.update(id, data, authUser);
   }
+
   //-- 상품 삭제 --//
   @Delete(':id')
   @UseGuards(AuthGuard)
