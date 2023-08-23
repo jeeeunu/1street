@@ -16,6 +16,9 @@ import { LikesModule } from './likes/likes.module';
 import { AuthenticationMiddleware } from './auth/auth.middleware';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { UploadsModule } from './uploads/uploads.module';
+
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([UsersEntity, OrdersEntity]),
@@ -46,6 +49,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
     ShopsModule,
     ProductsModule,
     LikesModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy],
