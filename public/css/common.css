@@ -24,14 +24,6 @@ img {
   justify-content: end;
 }
 
-.error-text {
-  margin-bottom: 0;
-  font-size: 12px;
-  text-align: left;
-  color: #ef476f;
-  line-height: 1.6;
-}
-
 .gray-text {
   color: #999 !important;
 }
@@ -242,14 +234,12 @@ img {
 .list-link .item:last-child {
   margin-bottom: 0;
 }
-.list-link .item button {
+.list-link .item a {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 50px;
-  font-size: 14px;
-  font-weight: 800;
   color: #555;
   border-radius: 25px;
 }

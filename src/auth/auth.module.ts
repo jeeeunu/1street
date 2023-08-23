@@ -1,10 +1,9 @@
 // auth.module.ts
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import * as cookieParser from 'cookie-parser';
 import { UsersModule } from '../users/users.module';
-import { UsersEntity } from '../common/entities/users.entity';
+import { UsersEntity } from '../users/entities/users.entity';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { GoogleStrategy } from './strategies/google.strategy';
@@ -22,8 +21,4 @@ import { GoogleStrategy } from './strategies/google.strategy';
   providers: [AuthService, GoogleStrategy],
   controllers: [AuthController],
 })
-export class AuthModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(cookieParser()).forRoutes(AuthController);
-  }
-}
+export class AuthModule {}
