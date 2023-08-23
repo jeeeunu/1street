@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { QnasController } from './qnas.controller';
-import { QnaService } from './qnas.service';
+import { QnasService } from './qnas.service';
 import { QnasEntity } from './entities/qnas.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersEntity } from 'src/users/entities/users.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([QnasEntity])],
+  imports: [TypeOrmModule.forFeature([QnasEntity, UsersEntity])],
   controllers: [QnasController],
-  providers: [QnaService],
+  providers: [QnasService],
 })
 export class QnasModule {}

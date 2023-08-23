@@ -6,36 +6,78 @@ import {
   Param,
   Patch,
   Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
-import { QnaService } from './qnas.service';
-import { QnaCreateDto } from './dto/create-qna.dto';
-import { QnaUpdateDto } from './dto/update-qna.dto';
+import { QnasService } from './qnas.service';
+import { CreateQnasDto } from './dto/create-qna.dto';
+import { UpdateQnasDto } from './dto/update-qna.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthUser } from 'src/auth/auth.decorator';
+import { RequestUserInterface } from 'src/users/interfaces';
+import { ResultableInterface } from 'src/common/interfaces';
+import { QnasEntity } from './entities/qnas.entity';
 
 @Controller('qnas')
 export class QnasController {
-  constructor(private readonly qnasService: QnaService) {}
+  constructor(private readonly qnasService: QnasService) {}
 
-  // qna 조회
-  @Get('/qnas/:product_id')
-  async getQnasById(@Param('id') productId: number) {
-    return await this.qnasService.getQnasById(productId);
+  // QNA 조회
+  @Get()
+  @UseGuards(AuthGuard)
+  async getQnas(
+    @Query('product_id') productId?: number,
+  ): Promise<QnasEntity[]> {
+    if (productId) {
+      // product_id를 사용하여 Q&A 항목을 조회하는 서비스 메서드를 호출
+      return await this.qnasService.getForProduct(productId);
+    }
+    return [];
   }
 
-  // qna 등록
+  // QNA 등록
   @Post('/qnas')
-  createQna(@Body() data: QnaCreateDto) {
-    return this.qnasService.createQna(data.name, data.content);
+  @UseGuards(AuthGuard)
+  async createQna(
+    @Body() data: CreateQnasDto,
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
+    return await this.qnasService.create(data, authUser);
   }
 
-  // qna 수정
-  @Patch('/qnas/:qna_id')
-  async updateQna(@Param('id') qnaId: number, @Body() data: QnaUpdateDto) {
-    return await this.qnasService.updateQna(qnaId, data.name, data.content);
+  // QNA 수정
+  @Patch()
+  @UseGuards(AuthGuard)
+  async updateQna(
+    @Body() qnaData: UpdateQnasDto,
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
+    return await this.qnasService.update(qnaData, authUser);
   }
 
-  // qna 삭제
+  // 기존
+  // @Patch('/qnas/:qna_id')
+  // @UseGuards(AuthGuard)
+  // async updateQna(@Param('id') qnaId: number, @Body() data: UpdateQnasDto) {
+  //   return await this.qnasService.updateQna(qnaId, data.name, data.content);
+  // }
+
+  // QNA 삭제
   @Delete('/qnas/:qna_id')
-  async deleteQna(@Param('id') qnaId: number) {
-    return await this.qnasService.deleteQna(qnaId);
+  @UseGuards(AuthGuard)
+  async deleteQna(
+    @Param('id') qnaId: number,
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
+    return await this.qnasService.delete(qnaId, authUser);
   }
 }
+
+// @Delete(':id')
+// @UseGuards(AuthGuard)
+// async deleteQna(
+//   @Param('id') qnaId: number,
+//   @AuthUser() authUser: RequestUserInterface,
+// ): Promise<ResultableInterface> {
+//   return await this.qnasService.delete(qnaId, authUser);
+// }

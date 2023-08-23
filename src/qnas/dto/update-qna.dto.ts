@@ -1,4 +1,15 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { QnaCreateDto } from './create-qna.dto';
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
-export class QnaUpdateDto extends PartialType(QnaCreateDto) {}
+export class UpdateQnasDto {
+  @IsNotEmpty()
+  @IsNumber()
+  readonly id: number;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly name: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly content: string;
+}

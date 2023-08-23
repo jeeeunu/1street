@@ -2,58 +2,61 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QnasEntity } from './entities/qnas.entity';
 import { RequestUserInterface } from 'src/users/interfaces';
 import { ResultableInterface } from 'src/common/interfaces';
-import { QnaUpdateDto } from './dto/update-qna.dto';
+import { UpdateQnasDto } from './dto/update-qna.dto';
 import { Repository } from 'typeorm';
+import { CreateQnasDto } from './dto/create-qna.dto';
+import { UserService } from 'src/users/users.service';
 
 @Injectable()
-export class QnaService {
+export class QnasService {
   constructor(
     @InjectRepository(QnasEntity)
     private qnaRepository: Repository<QnasEntity>,
+    private readonly qnasEntity: Repository<QnasEntity>,
+    private userService: UserService,
   ) {}
 
-  //-- 상품 아이디로 QNA 찾기 (수정 필요) --//
-  // qna id를 이용하는 것이 아니라 product id를 이용해서 찾아야 한다.
-  async find(id: number): Promise<QnasEntity> {
-    try {
-      const qna = await this.qnaRepository.findOne({
-        // 이러면 qna_id 를 통해 검색되지 않나?
-        where: { id },
-        // product와의 관계를 로드한다?
-        relations: ['product'],
-      });
-      if (!qna) throw new NotFoundException('QNA가 존재하지 않습니다.');
-      return qna;
-    } catch (err) {
-      console.log(err);
-      throw new InternalServerErrorException(
-        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-      );
-    }
-  }
-  //-- QNA 만들기 --//
-  createQna(name: string, content: string) {
-    this.qnaRepository.insert({
-      name,
-      content,
+  //-- 상품 아이디로 QNA 찾기 --//
+  async getForProduct(productId: number): Promise<QnasEntity[]> {
+    const qnas = await this.qnaRepository.find({
+      where: { product_id: productId },
     });
+    return qnas;
+  }
+
+  //-- QNA 만들기 --//
+
+  async create(
+    data: CreateQnasDto,
+    authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
+    const user = await this.userService.findOne(authUser.user_id); // dev와의 차이로 인한 오류 발생
+    console.log(user);
+    const qna = await this.qnaRepository.save({
+      user: { id: user.id },
+      ...data,
+    });
+    console.log(qna);
+    return { status: true, message: '질문이 등록되었습니다.' };
   }
 
   //-- QNA 수정 --//
-  async updateQna(
-    qnaData: QnaUpdateDto,
+  async update(
+    qnaId: UpdateQnasDto,
     authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    const qna = await this.find(qnaData.id);
-    if (qna.id !== authUser.user_id)
+    const qna = await this.qnaRepository.findOne({
+      where: { user: { id: qnaId.id } },
+      relations: ['user'],
+    });
+    if (qna.user.id !== authUser.user_id)
       throw new ForbiddenException('질문을 등록한 사람만 수정할 수 있습니다.');
-    const updateQna = Object.assign(qna, qnaData);
+    const updateQna = Object.assign(qna, qnaId);
     try {
       await this.qnaRepository.save(updateQna);
       return { status: true, message: '질문이 수정되었습니다.' };
@@ -65,14 +68,16 @@ export class QnaService {
   }
 
   //-- QNA 삭제 --//
-  async deleteQna(
+  async delete(
     qnaId: number,
     authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    const qna = await this.find(qnaId);
-    if (qna.id !== authUser.user_id)
+    const qna = await this.qnaRepository.findOne({
+      where: { user: { id: qnaId } },
+      relations: ['user'],
+    });
+    if (qna.user.id !== authUser.user_id)
       throw new ForbiddenException('질문을 등록한 사람만 삭제할 수 있습니다.');
-
     try {
       await this.qnaRepository.remove(qna);
       return { status: true, message: '질문 삭제에 성공했습니다.' };
