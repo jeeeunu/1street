@@ -25,10 +25,17 @@ export enum OrderStatus {
 export class OrdersEntity {
   @PrimaryGeneratedColumn()
   public order_id: number;
+<<<<<<< HEAD
+
   @OneToMany(() => OrderDetailsEntity, (orderDetail) => orderDetail.order_id)
   public order_details: OrderDetailsEntity[];
+
+=======
+  @OneToMany(() => OrderDetailsEntity, (orderDetail) => orderDetail.order_id)
+  public order_details: OrderDetailsEntity[];
+>>>>>>> a68ce7f96bd82342d07d8163837a5f7c98dbecf5
   @ManyToOne(() => UsersEntity, (user) => user.orders)
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   public user: UsersEntity;
   @Column()
   // @IsOptional()
@@ -48,4 +55,7 @@ export class OrdersEntity {
   public order_status: string;
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created_at: Timestamp;
+
+  @Column()
+  public user_id: number;
 }
