@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,19 +8,13 @@ import { ReviewImageEntity } from '../reviews/entities/review-image.entity';
 
 @Injectable()
 export class UploadsService {
-  private s3: AWS.S3 = new AWS.S3(); // S3 초기화
+  private s3: AWS.S3 = new AWS.S3({ region: 'ap-northeast-2' }); // S3 초기화
   private bucketName = '1street';
 
   constructor(
     @InjectRepository(ReviewImageEntity)
     private readonly reviewImageEntity: Repository<ReviewImageEntity>,
   ) {}
-
-  //-- 공통 : S3 생성키 --//
-  private async generateKey(): Promise<string> {
-    const uniqueId = uuidv4();
-    return `uploads-reviews/${uniqueId}`;
-  }
 
   //-- 공통 : S3 저장 후 eTag 반환 --//
   private async uploadPromise(
@@ -56,33 +46,28 @@ export class UploadsService {
     reviewId: number,
     files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
-    try {
-      const uploadPromises: Promise<void>[] = files.map(async (file) => {
-        const key = await this.generateKey();
-        const eTag = await this.uploadPromise(file, key);
+    const uploadPromises: Promise<void>[] = files.map(async (file) => {
+      const uniqueId = uuidv4();
+      const key = `uploads-reviews/${uniqueId}`;
+      const eTag = await this.uploadPromise(file, key);
 
-        const uploadFile = new ReviewImageEntity();
-        uploadFile.review_id = reviewId;
-        uploadFile.url = key;
-        uploadFile.original_name = file.originalname;
-        uploadFile.encoding = file.encoding;
-        uploadFile.mime_type = file.mimetype;
-        uploadFile.size = file.size;
-        uploadFile.e_tag = eTag;
+      const uploadFile = new ReviewImageEntity();
+      uploadFile.review_id = reviewId;
+      uploadFile.url = key;
+      uploadFile.original_name = file.originalname;
+      uploadFile.encoding = file.encoding;
+      uploadFile.mime_type = file.mimetype;
+      uploadFile.size = file.size;
+      uploadFile.e_tag = eTag;
 
-        await this.reviewImageEntity.save(uploadFile);
-      });
+      await this.reviewImageEntity.save(uploadFile);
+    });
 
-      await Promise.all(uploadPromises);
-      return {
-        status: true,
-        message: `${files.length} 개 파일 업로드 완료`,
-      };
-    } catch (error) {
-      throw new InternalServerErrorException(
-        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-      );
-    }
+    await Promise.all(uploadPromises);
+    return {
+      status: true,
+      message: `${files.length} 개 파일 업로드 완료`,
+    };
   }
 
   //-- 이미지 수정 : 리뷰이미지 수정 --//
@@ -90,42 +75,56 @@ export class UploadsService {
     imageId: number,
     files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
-    try {
-      // 기존 이미지 정보 조회
-      const existingImage = await this.reviewImageEntity.findOne({
-        where: { id: imageId },
-      });
+    const existingImage = await this.reviewImageEntity.findOne({
+      where: { id: imageId },
+    });
 
-      if (!existingImage) {
-        throw new NotFoundException('해당 이미지를 찾을 수 없습니다.');
-      }
-
-      const editPromises: Promise<void>[] = files.map(async (file) => {
-        await this.deleteFile(existingImage.url);
-
-        const key = await this.generateKey();
-        const eTag = await this.uploadPromise(file, key);
-
-        existingImage.url = key;
-        existingImage.original_name = file.originalname;
-        existingImage.encoding = file.encoding;
-        existingImage.mime_type = file.mimetype;
-        existingImage.size = file.size;
-        existingImage.e_tag = eTag;
-
-        await this.reviewImageEntity.save(existingImage);
-      });
-
-      await Promise.all(editPromises);
-
-      return {
-        status: true,
-        message: '이미지 업데이트가 완료되었습니다.',
-      };
-    } catch (error) {
-      throw new InternalServerErrorException(
-        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-      );
+    if (!existingImage) {
+      throw new NotFoundException('해당 이미지를 찾을 수 없습니다.');
     }
+
+    const editPromises: Promise<void>[] = files.map(async (file) => {
+      await this.deleteFile(existingImage.url);
+      const uniqueId = uuidv4();
+      const key = `uploads-reviews/${uniqueId}`;
+      const eTag = await this.uploadPromise(file, key);
+
+      existingImage.url = key;
+      existingImage.original_name = file.originalname;
+      existingImage.encoding = file.encoding;
+      existingImage.mime_type = file.mimetype;
+      existingImage.size = file.size;
+      existingImage.e_tag = eTag;
+
+      await this.reviewImageEntity.save(existingImage);
+    });
+
+    await Promise.all(editPromises);
+
+    return {
+      status: true,
+      message: '이미지 업데이트가 완료되었습니다.',
+    };
+  }
+
+  //-- 이미지 삭제 : 리뷰이미지 삭제 --//
+  async deleteReviewImage(imageId: number): Promise<ResultableInterface> {
+    // 기존 이미지 정보 조회
+    const existingImage = await this.reviewImageEntity.findOne({
+      where: { id: imageId },
+    });
+
+    const deletedImage = await this.reviewImageEntity.remove(existingImage);
+
+    if (!deletedImage) {
+      throw new NotFoundException('이미지 삭제에 실패했습니다.');
+    }
+
+    await this.deleteFile(existingImage.url);
+
+    return {
+      status: true,
+      message: '이미지 삭제가 완료되었습니다.',
+    };
   }
 }
