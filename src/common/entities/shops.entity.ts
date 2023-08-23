@@ -1,12 +1,5 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { IsOptional, IsString, MaxLength } from 'class-validator';
-import { ProductsEntity } from '../../products/entities/products.entity';
 import { UsersEntity } from './users.entity';
 
 @Entity({ name: 'shops' })
@@ -33,7 +26,4 @@ export class ShopsEntity {
 
   @ManyToOne(() => UsersEntity, (user) => user.shops)
   public user: UsersEntity;
-
-  @OneToMany(() => ProductsEntity, (product) => product.shop)
-  public products: ProductsEntity[];
 }
