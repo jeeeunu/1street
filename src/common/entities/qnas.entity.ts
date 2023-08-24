@@ -32,9 +32,9 @@ export class QnasEntity {
   @IsString()
   public status: string;
 
-  @Column('text', { array: true }) // Add results column
+  @Column() // Add results column
   @IsNotEmpty()
-  public results: string[];
+  public results: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: string;

@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
 import { LikeEntity, OrdersEntity, ShopsEntity } from '.';
-import { QnasEntity } from 'src/qnas/entities/qnas.entity';
+import { QnasEntity } from './qnas.entity';
 
 export enum Provider {
   Local,

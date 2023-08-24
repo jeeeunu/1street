@@ -17,7 +17,7 @@ export class QnasService {
   constructor(
     @InjectRepository(QnasEntity)
     private qnaRepository: Repository<QnasEntity>,
-    private readonly qnasEntity: Repository<QnasEntity>,
+    // private readonly qnasEntity: Repository<QnasEntity>,
     private userService: UserService,
   ) {}
 
