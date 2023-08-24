@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { UsersEntity } from '../users/entities/users.entity';
+import { UsersEntity } from '../common/entities/users.entity';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
