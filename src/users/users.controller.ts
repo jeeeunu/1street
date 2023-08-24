@@ -41,6 +41,15 @@ export class UserController {
     return await this.userService.find(authUser.user_id);
   }
 
+  //-- 유저 조회 : 좋아요 --//
+  @Get('/likes')
+  @UseGuards(AuthGuard)
+  async getUserLikes(
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<userInfo> {
+    return await this.userService.findLikes(authUser.user_id);
+  }
+
   //-- 유저 수정 --//
   @Patch()
   @UseGuards(AuthGuard)
