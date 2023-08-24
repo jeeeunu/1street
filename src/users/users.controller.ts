@@ -8,13 +8,16 @@ import {
   ValidationPipe,
   Delete,
   Patch,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './users.service';
-import { UserCreateDto, EditUserDto } from './dtos';
+import { CreateUserDto, EditUserDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface, userInfo } from './interfaces/index';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser } from '../auth/auth.decorator';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
@@ -23,8 +26,12 @@ export class UserController {
   //-- 일반 회원가입 --//
   @Post()
   @UsePipes(ValidationPipe)
-  async signUp(@Body() userDto: UserCreateDto): Promise<ResultableInterface> {
-    return await this.userService.signUp(userDto);
+  @UseInterceptors(FilesInterceptor('files'))
+  async signUp(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<ResultableInterface> {
+    return await this.userService.signUp(createUserDto, files);
   }
 
   //-- 유저 조회 --//
@@ -32,6 +39,15 @@ export class UserController {
   @UseGuards(AuthGuard)
   async getUser(@AuthUser() authUser: RequestUserInterface): Promise<userInfo> {
     return await this.userService.find(authUser.user_id);
+  }
+
+  //-- 유저 조회 : 좋아요 --//
+  @Get('/likes')
+  @UseGuards(AuthGuard)
+  async getUserLikes(
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<userInfo> {
+    return await this.userService.findLikes(authUser.user_id);
   }
 
   //-- 유저 수정 --//

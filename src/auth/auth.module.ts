@@ -15,7 +15,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
     JwtModule.register({
       global: true,
       secret: 'DB_JWT_SECRET_KEY',
-      signOptions: { expiresIn: '120s' },
+      signOptions: { expiresIn: '2h' },
     }),
     TypeOrmModule.forFeature([UsersEntity]),
   ],

@@ -21,7 +21,6 @@ import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UsersEntity, OrdersEntity]),
     ConfigModule.forRoot({ isGlobal: true }),
 
     //-- TypeOrmModule --//

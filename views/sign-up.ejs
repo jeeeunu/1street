@@ -7,6 +7,7 @@
     //-- 회원가입 api --//
     const signUp = async () => {
       try {
+        const profileImageInput = document.querySelector('#profileInput');
         const emailInput = document.querySelector('#emailInput');
         const passwordInput = document.querySelector('#passwordInput');
         const passwordConfirmInput = document.querySelector(
@@ -16,52 +17,43 @@
         const phoneNumberInput = document.querySelector('#phoneNumberInput');
         const addressInput = document.querySelector('#addressInput');
 
-        if (passwordInput !== passwordConfirmInput) {
+        if (passwordInput.value !== passwordConfirmInput.value) {
           alert('비밀번호를 확인해주세요.');
+          return;
         }
 
-        const requestData = {
-          email: emailInput.value,
-          password: passwordInput.value,
-          name: nameInput.value,
-          phone_number: phoneNumberInput.value,
-          address: addressInput.value,
-        };
+        const sellerRadio = document.querySelector(
+          'input[name="user-type"][value="seller"]',
+        );
+        const seller_flag = sellerRadio?.checked ?? false;
 
-        const response = await fetch('/auth/login', {
+        const formData = new FormData();
+        formData.append('files', profileImageInput.files[0]);
+        formData.append('email', emailInput.value);
+        formData.append('password', passwordInput.value);
+        formData.append('name', nameInput.value);
+        formData.append('phone_number', phoneNumberInput.value);
+        formData.append('address', addressInput.value);
+        formData.append('seller_flag', seller_flag);
+
+        const response = await fetch('/users', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData),
+          headers: { Accept: 'application/json' },
+          body: formData,
         });
 
         const data = await response.json();
 
-        let newHtml = '';
-        if (Array.isArray(data.message)) {
-          data.message.forEach((errorMessage) => {
-            const messagesHtml = Array.isArray(errorMessage.messages)
-              ? errorMessage.messages
-                  .map((message) => `<p class="error-text">${message}</p>`)
-                  .join('')
-              : errorMessage.messages;
-            newHtml += `<div class="error-message">${messagesHtml}</div>`;
-          });
-        } else if (typeof data.message === 'string') {
-          newHtml = `<div class="error-message">${data.message}</div>`;
-        }
-        errorDiv.innerHTML = newHtml;
-
         if (response.ok) {
-          alert('로그인 되었습니다');
-          window.location.href = '/';
+          alert('회원가입이 완료되었습니다.');
+          window.location.href = '/sign-in';
         } else {
-          console.error('로그인 실패:', data.message);
+          console.log(data);
+          alert(data.message);
         }
       } catch (error) {
         console.error('에러 발생:', error);
-        alert('로그인 과정에서 오류가 발생했습니다');
+        alert('회원가입을 실패했습니다.');
       }
     };
   </script>
@@ -79,24 +71,44 @@
         <div class="radios">
           <div class="radio-wrap">
             <label>
-              <input type="radio" name="contact" value="phone" checked />
+              <input type="radio" name="user-type" value="user" checked />
               <span>사용자</span>
             </label>
           </div>
           <div class="radio-wrap">
             <label>
-              <input type="radio" name="contact" value="phone" />
+              <input type="radio" name="user-type" value="seller" />
               <span>판매자</span>
             </label>
           </div>
         </div>
         <div class="content-wrap">
+          <div class="edit-img-container">
+            <div class="edit-img-wrap"></div>
+            <input
+              type="file"
+              id="profileInput"
+              onchange="setThumbnail(event)"
+            />
+          </div>
           <div class="user-box">
-            <input type="text" id="emailInput" name="" required="" />
+            <input
+              type="text"
+              id="emailInput"
+              name=""
+              required=""
+              value="bsn23@naver.com"
+            />
             <label class="required">Email</label>
           </div>
           <div class="user-box">
-            <input type="password" id="passwordInput" name="" required="" />
+            <input
+              type="password"
+              id="passwordInput"
+              name=""
+              required=""
+              value="7982wldms"
+            />
             <label>Password</label>
           </div>
           <div class="user-box">
@@ -105,19 +117,38 @@
               id="passwordConfirmInput"
               name=""
               required=""
+              value="7982wldms"
             />
             <label>Password Confirm</label>
           </div>
           <div class="user-box">
-            <input type="text" id="nameInput" name="" required="" />
+            <input
+              type="text"
+              id="nameInput"
+              name=""
+              required=""
+              value="유지은"
+            />
             <label>Name</label>
           </div>
           <div class="user-box">
-            <input type="text" id="phoneNumberInput" name="" required="" />
+            <input
+              type="text"
+              id="phoneNumberInput"
+              name=""
+              required=""
+              value="010-6698-7769"
+            />
             <label>Phone Number</label>
           </div>
           <div class="user-box">
-            <input type="text" id="addressInput" name="" required="" />
+            <input
+              type="text"
+              id="addressInput"
+              name=""
+              required=""
+              value="화이린"
+            />
             <label>Adress</label>
           </div>
           <button

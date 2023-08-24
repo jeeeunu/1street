@@ -4,6 +4,7 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 
 @Catch()
@@ -11,6 +12,12 @@ export class GlobalCatchException implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
+
+    if (exception instanceof BadRequestException) {
+      return response
+        .status(exception.getStatus())
+        .json(exception.getResponse());
+    }
 
     const status =
       exception instanceof HttpException

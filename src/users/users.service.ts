@@ -1,8 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
+
+import { UploadsService } from 'src/uploads/uploads.service';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { UserCreateDto, EditUserDto } from './dtos';
+import { CreateUserDto, EditUserDto } from './dtos';
 import { UsersEntity } from '../common/entities/users.entity';
 import { userInfo } from './interfaces';
 import { ResultableInterface } from 'src/common/interfaces';
@@ -17,36 +23,76 @@ export class UserNotFoundException extends NotFoundException {
 export class UserService {
   constructor(
     @InjectRepository(UsersEntity)
-    private usersRepository: Repository<UsersEntity>,
+    private usersEntity: Repository<UsersEntity>,
+    private uploadsService: UploadsService,
   ) {}
 
   //-- 일반 회원가입 --//
-  async signUp(userDto: UserCreateDto): Promise<ResultableInterface> {
+  async signUp(
+    userDto: CreateUserDto,
+    files: Express.Multer.File[],
+  ): Promise<ResultableInterface> {
     userDto.password = await bcrypt.hash(userDto.password, 10);
-    await this.usersRepository.save(userDto);
+    const existingUser = await this.usersEntity.findOne({
+      where: [{ email: userDto.email }, { phone_number: userDto.phone_number }],
+    });
+
+    if (existingUser) {
+      throw new ConflictException('이미 존재하는 아이디나 핸드폰 번호입니다.');
+    }
+
+    const createUser = await this.usersEntity.save(userDto);
+
+    if (files.length !== 0) {
+      const imageUrl = await this.uploadsService.createS3Images(files);
+      createUser.profile_image = imageUrl;
+    }
+
+    await this.usersEntity.save(createUser);
     return { status: true, message: '회원가입이 완료되었습니다.' };
   }
 
   //-- 유저 조회 --//
   async find(user_id: number): Promise<userInfo> {
-    const user = await this.usersRepository.findOne({
-      where: { id: user_id },
-      // TODO :: 유저와 연결된 테이블 설정
-      relations: ['like', 'like.product', 'qna'],
-      select: {
-        email: true,
-        name: true,
-        phone_number: true,
-        address: true,
-        point: true,
-        seller_flag: true,
-        // like: {
-        //   product_id: true,
-        //   product_name: true,
-        //   created_at: true,
-        // },
-      },
-    });
+    const user = await this.usersEntity
+      .createQueryBuilder('user')
+      .leftJoin('user.orders', 'orders')
+      .leftJoin('user.likes', 'likes')
+      .leftJoin('likes.product', 'product')
+      .loadRelationCountAndMap('user.like_count', 'user.likes')
+      .select([
+        'user.id',
+        'user.email',
+        'user.name',
+        'user.phone_number',
+        'user.address',
+        'user.point',
+        'user.profile_image',
+        'likes.id',
+        'likes.created_at',
+        'product.product_name',
+        'product.product_price',
+        'product.product_thumbnail',
+        'orders.order_status',
+      ])
+      .where('user.id = :id', { id: user_id })
+      .getOne();
+
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    return { status: true, results: user };
+  }
+
+  //-- 유저 조회 : 좋아요 --//
+  async findLikes(user_id: number): Promise<userInfo> {
+    const user = await this.usersEntity
+      .createQueryBuilder('user')
+      .leftJoin('user.likes', 'likes')
+      .select(['likes.id', 'likes.created_at'])
+      .where('user.id = :id', { id: user_id })
+      .getOne();
 
     if (!user) {
       throw new UserNotFoundException();
@@ -60,7 +106,7 @@ export class UserService {
     user_id: number,
     editUserDto: EditUserDto,
   ): Promise<ResultableInterface> {
-    const existingUser = await this.usersRepository.findOne({
+    const existingUser = await this.usersEntity.findOne({
       where: { id: user_id },
     });
 
@@ -69,14 +115,14 @@ export class UserService {
     }
 
     Object.assign(existingUser, editUserDto);
-    await this.usersRepository.save(existingUser);
+    await this.usersEntity.save(existingUser);
 
     return { status: true, message: '회원 정보가 수정되었습니다.' };
   }
 
   //-- 유저 탈퇴 --//
   async delete(userId: number): Promise<ResultableInterface> {
-    const deletedUser = await this.usersRepository.delete(userId);
+    const deletedUser = await this.usersEntity.delete(userId);
 
     if (deletedUser.affected === 0)
       throw new NotFoundException('사용자를 찾지 못했습니다.');
@@ -84,7 +130,8 @@ export class UserService {
     return { status: true, message: '회원탈퇴가 완료되었습니다.' };
   }
 
+  // TODO :: 삭제 예정
   async findOne(userId: number): Promise<UsersEntity> {
-    return await this.usersRepository.findOne({ where: { id: userId } });
+    return await this.usersEntity.findOne({ where: { id: userId } });
   }
 }

@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsNotEmpty,
   IsString,
@@ -6,7 +7,7 @@ import {
   Length,
   Matches,
 } from 'class-validator';
-export class UserCreateDto {
+export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   readonly email: string;
@@ -36,10 +37,16 @@ export class UserCreateDto {
   readonly point: number;
 
   @IsOptional()
+  @Transform(({ obj, key }) => {
+    return obj[key] === 'true' ? true : obj[key] === 'false' ? false : obj[key];
+  })
   @IsBoolean()
   readonly seller_flag: boolean;
 
   @IsOptional()
   @IsString()
   readonly provider: string;
+
+  @IsOptional()
+  readonly files: Express.Multer.File[];
 }
