@@ -51,6 +51,23 @@ export class AppController {
     });
   }
 
+  //-- 회원정보 수정 --//
+  @Get('my-page-user-edit')
+  async userEdit(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const isIndexPath = request.url === '/';
+    const userInfo = await this.userService.find(authUser.user_id);
+    const user = userInfo.results;
+    response.render('my-page-user-edit', {
+      isIndexPath,
+      authUser,
+      user,
+    });
+  }
+
   //-- 마이 페이지 --//
   @Get('my-page')
   async myPage(

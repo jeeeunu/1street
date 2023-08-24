@@ -97,6 +97,7 @@ export class UserService {
       .where('user.id = :id', { id: user_id })
       .select([
         'user.id',
+        'user.provider',
         'likes.id',
         'likes.created_at',
         'product.id',

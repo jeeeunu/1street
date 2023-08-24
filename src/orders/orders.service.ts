@@ -98,7 +98,7 @@ export class OrdersService {
     //   throw new NotFoundException('권한이 없습니다.');
     // }
     const orderDetail = await this.orderDetailRepository.findOne({
-      where: { order_detail_id },
+      where: { id: order_detail_id },
     });
     // const orderDetails = await this.orderDetailRepository.find({
     //   where: { order_id },
