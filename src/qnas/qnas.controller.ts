@@ -16,7 +16,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { AuthUser } from 'src/auth/auth.decorator';
 import { RequestUserInterface } from 'src/users/interfaces';
 import { ResultableInterface } from 'src/common/interfaces';
-import { QnasEntity } from './entities/qnas.entity';
+import { QnasEntity } from 'src/common/entities/qnas.entity';
 
 @Controller('qnas')
 export class QnasController {
