@@ -54,12 +54,12 @@ export class UserService {
 
   //-- 유저 조회 --//
   async find(user_id: number): Promise<userInfo> {
+    // TODO :: 장바구니 개수, orders_details 불러오기
     const user = await this.usersEntity
       .createQueryBuilder('user')
       .leftJoin('user.orders', 'orders')
-      .leftJoin('user.likes', 'likes')
-      .leftJoin('likes.product', 'product')
       .loadRelationCountAndMap('user.like_count', 'user.likes')
+      .loadRelationCountAndMap('user.order_count', 'user.orders')
       .select([
         'user.id',
         'user.email',
@@ -68,12 +68,6 @@ export class UserService {
         'user.address',
         'user.point',
         'user.profile_image',
-        'likes.id',
-        'likes.created_at',
-        'product.product_name',
-        'product.product_price',
-        'product.product_thumbnail',
-        'orders.order_status',
       ])
       .where('user.id = :id', { id: user_id })
       .getOne();
@@ -85,20 +79,57 @@ export class UserService {
     return { status: true, results: user };
   }
 
-  //-- 유저 조회 : 좋아요 --//
-  async findLikes(user_id: number): Promise<userInfo> {
-    const user = await this.usersEntity
+  //-- 유저 조회 : 좋아요 리스트 --//
+  async getLikes(user_id: number): Promise<userInfo> {
+    const userLikes = await this.usersEntity
       .createQueryBuilder('user')
-      .leftJoin('user.likes', 'likes')
-      .select(['likes.id', 'likes.created_at'])
+      .leftJoinAndSelect('user.likes', 'likes')
+      .leftJoinAndSelect('likes.product', 'product')
       .where('user.id = :id', { id: user_id })
+      .select([
+        'user.id',
+        'likes.id',
+        'likes.created_at',
+        'product.id',
+        'product.product_name',
+        'product.product_price',
+        'product.product_thumbnail',
+      ])
       .getOne();
 
-    if (!user) {
+    if (!userLikes) {
       throw new UserNotFoundException();
     }
 
-    return { status: true, results: user };
+    return { status: true, results: userLikes };
+  }
+
+  //-- 유저 조회 : 주문 리스트 --//
+  async getOrders(user_id: number): Promise<userInfo> {
+    const userOrders = await this.usersEntity
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.orders', 'orders')
+      .leftJoinAndSelect('orders.order_details', 'order_details')
+      .leftJoinAndSelect('order_details.product', 'product')
+      .where('user.id = :id', { id: user_id })
+      .select([
+        'user.id',
+        'orders.id',
+        'orders.order_payment_amount',
+        'orders.created_at',
+        'order_details.id',
+        'order_details.order_quantity',
+        'product.id',
+        'product.product_name',
+        'product.product_thumbnail',
+      ])
+      .getOne();
+
+    if (!userOrders) {
+      throw new UserNotFoundException();
+    }
+
+    return { status: true, results: userOrders };
   }
 
   //-- 유저 수정 --//

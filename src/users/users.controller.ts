@@ -41,13 +41,22 @@ export class UserController {
     return await this.userService.find(authUser.user_id);
   }
 
-  //-- 유저 조회 : 좋아요 --//
+  //-- 유저 조회 : 주문 리스트 --//
+  @Get('/orders')
+  @UseGuards(AuthGuard)
+  async getUserOrders(
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<userInfo> {
+    return await this.userService.getOrders(authUser.user_id);
+  }
+
+  //-- 유저 조회 : 좋아요 리스트 --//
   @Get('/likes')
   @UseGuards(AuthGuard)
   async getUserLikes(
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<userInfo> {
-    return await this.userService.findLikes(authUser.user_id);
+    return await this.userService.getLikes(authUser.user_id);
   }
 
   //-- 유저 수정 --//
