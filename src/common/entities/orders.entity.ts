@@ -1,4 +1,3 @@
-// import { IsOptional } from 'class-validator';
 import { UsersEntity } from 'src/common/entities/users.entity';
 import {
   Column,
@@ -10,7 +9,6 @@ import {
   Timestamp,
 } from 'typeorm';
 import { OrderDetailsEntity } from '../../orders/entities/order-detail.entity';
-import { IsOptional, Min } from 'class-validator';
 
 export enum OrderStatus {
   OrderCancel = '0',

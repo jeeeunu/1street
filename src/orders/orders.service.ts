@@ -87,6 +87,7 @@ export class OrdersService {
     order_detail_id: number,
     authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
+    console.log(order_detail_id);
     const order = await this.orderRepository.findOne({
       where: { order_id },
     });
@@ -102,6 +103,7 @@ export class OrdersService {
     const orderDetails = await this.orderDetailRepository.find({
       where: { order_id },
     });
+    console.log(orderDetail);
     if (orderDetails.length === 0) {
       order.order_status = '0';
       await this.orderRepository.save(order);
@@ -126,7 +128,7 @@ export class OrdersService {
     if (!order) {
       throw new NotFoundException('주문이 존재하지 않습니다.');
     }
-    if (order.user.id !== authUser.user_id) {
+    if (order.user_id !== authUser.user_id) {
       throw new NotFoundException('권한이 없습니다.');
     }
     order.order_status = '0';
