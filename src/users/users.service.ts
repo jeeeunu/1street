@@ -132,6 +132,36 @@ export class UserService {
     return { status: true, results: userOrders };
   }
 
+  //-- 유저 조회 : qna 리스트 --//
+  async getQnas(user_id: number): Promise<userInfo> {
+    const userOrders = await this.usersEntity
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.orders', 'orders')
+      .leftJoinAndSelect('user.qna', 'qna')
+      .leftJoinAndSelect('orders.order_details', 'order_details')
+      .leftJoinAndSelect('order_details.product', 'product')
+      .where('user.id = :id', { id: user_id })
+      .select([
+        'user.id',
+        'orders.id',
+        'orders.order_payment_amount',
+        'orders.created_at',
+        'order_details.id',
+        'order_details.order_quantity',
+        'product.id',
+        'product.product_name',
+        'product.product_thumbnail',
+        'qna.id',
+      ])
+      .getOne();
+
+    if (!userOrders) {
+      throw new UserNotFoundException();
+    }
+
+    return { status: true, results: userOrders };
+  }
+
   //-- 유저 수정 --//
   async edit(
     user_id: number,

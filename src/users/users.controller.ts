@@ -10,6 +10,8 @@ import {
   Patch,
   UploadedFiles,
   UseInterceptors,
+  Param,
+  NotFoundException,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { CreateUserDto, EditUserDto } from './dtos';
@@ -35,28 +37,23 @@ export class UserController {
   }
 
   //-- 유저 조회 --//
-  @Get()
+  @Get('/:category')
   @UseGuards(AuthGuard)
-  async getUser(@AuthUser() authUser: RequestUserInterface): Promise<userInfo> {
-    return await this.userService.find(authUser.user_id);
-  }
-
-  //-- 유저 조회 : 주문 리스트 --//
-  @Get('/orders')
-  @UseGuards(AuthGuard)
-  async getUserOrders(
+  async getUserInfo(
     @AuthUser() authUser: RequestUserInterface,
-  ): Promise<userInfo> {
-    return await this.userService.getOrders(authUser.user_id);
-  }
-
-  //-- 유저 조회 : 좋아요 리스트 --//
-  @Get('/likes')
-  @UseGuards(AuthGuard)
-  async getUserLikes(
-    @AuthUser() authUser: RequestUserInterface,
-  ): Promise<userInfo> {
-    return await this.userService.getLikes(authUser.user_id);
+    @Param('category') category: string,
+  ): Promise<any> {
+    if (category === 'user') {
+      return await this.userService.find(authUser.user_id);
+    } else if (category === 'orders') {
+      return await this.userService.getOrders(authUser.user_id);
+    } else if (category === 'likes') {
+      return await this.userService.getLikes(authUser.user_id);
+    } else if (category === 'qnas') {
+      return await this.userService.getQnas(authUser.user_id);
+    } else {
+      throw new NotFoundException('잘못된 접근입니다.');
+    }
   }
 
   //-- 유저 수정 --//
