@@ -51,7 +51,7 @@ export class ShopsService {
     if (foundShop)
       throw new ForbiddenException('스토어는 계정당 1개만 만들 수 있습니다.');
     try {
-      await this.shopRepository.save({
+      await this.shopRepository.insert({
         user: { id: user.id },
         ...shopData,
       });
