@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
 import { LikeEntity, OrdersEntity, ShopsEntity } from '.';
+import { QnasEntity } from 'src/qnas/entities/qnas.entity';
 
 export enum Provider {
   Local,
@@ -59,4 +60,7 @@ export class UsersEntity {
 
   @OneToMany(() => LikeEntity, (like) => like.user)
   public likes: LikeEntity[];
+
+  @OneToMany(() => QnasEntity, (qna) => qna.user)
+  public qna: QnasEntity[];
 }

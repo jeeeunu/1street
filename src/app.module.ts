@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { UsersEntity } from './common/entities/users.entity';
 import { GoogleStrategy } from './auth/strategies/google.strategy';
+import { QnasModule } from './qnas/qnas.module';
 import { OrdersModule } from './orders/orders.module';
 import { OrdersEntity } from './common/entities/orders.entity';
 import { ShopsModule } from './shops/shops.module';
@@ -42,6 +43,7 @@ import { UploadsModule } from './uploads/uploads.module';
 
     AuthModule,
     UsersModule,
+    QnasModule,
     ReviewsModule,
     OrdersModule,
     ShopsModule,
