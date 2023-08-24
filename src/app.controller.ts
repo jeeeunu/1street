@@ -1,13 +1,21 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { UserService } from './users/users.service';
+import { AuthUser } from './auth/auth.decorator';
+import { RequestUserInterface } from './users/interfaces';
 
 @Controller()
 export class AppController {
+  constructor(private readonly userService: UserService) {}
+
   //-- 메인 페이지 --//
   @Get()
-  main(@Req() request: Request, @Res() response: Response): void {
+  main(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): void {
     const isIndexPath = request.url === '/';
-    const authUser = request.user;
     response.render('index', {
       isIndexPath,
       authUser,
@@ -16,9 +24,13 @@ export class AppController {
 
   //-- 회원가입 --//
   @Get('sign-up')
-  singUp(@Req() request: Request, @Res() response: Response): void {
+  singUp(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): void {
     const isIndexPath = request.url === '/';
-    const authUser = request.user;
+
     response.render('sign-up', {
       isIndexPath,
       authUser,
@@ -27,20 +39,44 @@ export class AppController {
 
   //-- 로그인 --//
   @Get('sign-in')
-  singIn(@Req() request: Request, @Res() response: Response): void {
+  singIn(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): void {
     const isIndexPath = request.url === '/';
-    const authUser = request.user;
     response.render('sign-in', {
       isIndexPath,
       authUser,
     });
   }
 
+  //-- 마이 페이지 --//
+  @Get('my-page')
+  async myPage(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const isIndexPath = request.url === '/';
+    const userInfo = await this.userService.find(authUser.user_id);
+    const user = userInfo.results;
+    console.log(user);
+    response.render('my-page', {
+      isIndexPath,
+      authUser,
+      user,
+    });
+  }
+
   //-- 장바구니 --//
   @Get('cart')
-  cart(@Req() request: Request, @Res() response: Response): void {
+  cart(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): void {
     const isIndexPath = request.url === '/';
-    const authUser = request.user;
     response.render('cart', {
       isIndexPath,
       authUser,
@@ -49,9 +85,12 @@ export class AppController {
 
   //-- 상품 상세보가 --//
   @Get('product-detail')
-  productDetail(@Req() request: Request, @Res() response: Response): void {
+  productDetail(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): void {
     const isIndexPath = request.url === '/';
-    const authUser = request.user;
     response.render('product-detail', {
       isIndexPath,
       authUser,
