@@ -22,7 +22,9 @@
       <div class="row">
         <aside class="col-lg-3">
           <div class="proflie-info-container">
-            <div class="primary-img-wrap"></div>
+            <div class="primary-img-wrap">
+              <img src="<%- user.profile_image %> " alt="">
+            </div>
             <div class="text-wrap">
               <div class="name-wrap">
                 <span><%- authUser.user_name %> 님</span>
@@ -59,7 +61,16 @@
               </li>
               <li class="status-item">
                 <p>주문내역</p>
-                <p><a href="">100건</a></p>
+                <p>
+                  <a href="">
+                    <% if (authUser.user_count) { %>
+                      <%= user.like_count %>
+                    <% } else { %>
+                      0 
+                    <% } %>
+                    건
+                  </a>
+               </p>
               </li>
               <li class="status-item">
                 <p>좋아요한 상품</p>
@@ -72,7 +83,7 @@
                   건</a></p>
               </li>
               <li class="status-item">
-                <p>장바구니</p>
+                <p>최근 본 상품</p>
                 <p><a href="">100건</a></p>
               </li>
             </ul>

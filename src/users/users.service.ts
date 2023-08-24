@@ -63,8 +63,12 @@ export class UserService {
       .leftJoinAndSelect('order_details.product', 'product')
       .where('user.id = :id', { id: user_id })
       .loadRelationCountAndMap('user.like_count', 'user.likes') // Add this line
+      .loadRelationCountAndMap('orders.orders_count', 'user.orders') // Add this line
       .select([
         'user.id',
+        'user.profile_image',
+        'user.provider',
+        'user.point',
         'orders.id',
         'orders.order_payment_amount',
         'orders.created_at',

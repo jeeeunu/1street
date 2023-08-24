@@ -482,8 +482,8 @@ fieldset {
 }
 
 .primary-img-wrap {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   border-radius: 10px;
   overflow: hidden;
   background-color: #efefef;
@@ -496,7 +496,7 @@ fieldset {
 .list-container .title-wrap {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .list-container h3 {
@@ -579,5 +579,9 @@ fieldset {
 
 .order-info-wrap .text-wrap span:first-child {
   margin-bottom: 10px;
+  font-size: 10px;
+}
+
+.order-info-wrap .text-wrap span:nth-child(3) {
   font-size: 10px;
 }
