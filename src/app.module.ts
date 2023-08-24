@@ -18,6 +18,8 @@ import { AuthenticationMiddleware } from './auth/auth.middleware';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UploadsModule } from './uploads/uploads.module';
+import { CartsController } from './carts/carts.controller';
+import { CartsModule } from './carts/carts.module';
 
 @Module({
   imports: [
@@ -50,8 +52,9 @@ import { UploadsModule } from './uploads/uploads.module';
     ProductsModule,
     LikesModule,
     UploadsModule,
+    CartsModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, CartsController],
   providers: [AppService, GoogleStrategy],
 })
 export class AppModule implements NestModule {
