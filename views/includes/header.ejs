@@ -40,7 +40,6 @@
         </ul>
       </li>
       <li><a href="./blog.html">Blog</a></li>
-      <li><a href="./contact.html">Contact</a></li>
     </ul>
   </nav>
   <div id="mobile-menu-wrap"></div>
@@ -72,7 +71,9 @@
               <button type="button" id="logoutButton" onclick="logout()">
                 <i class="fa fa-sign-out"></i> Logout
               </button>
-              <button type="button"><i class="fa fa-user"></i> Mypage</button>
+              <button type="button" onclick="location.href='/my-page'">
+                <i class="fa fa-user"></i> Mypage
+              </button>
               <% } else { %>
               <a href="/sign-in"><i class="fa fa-user"></i> Login</a>
               <% } %>
@@ -104,7 +105,6 @@
               </ul>
             </li>
             <li><a href="./blog.html">Blog</a></li>
-            <li><a href="./contact.html">Contact</a></li>
           </ul>
         </nav>
       </div>
