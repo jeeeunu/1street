@@ -55,13 +55,6 @@ export class QnasController {
     return await this.qnasService.update(qnaData, authUser);
   }
 
-  // 기존
-  // @Patch('/qnas/:qna_id')
-  // @UseGuards(AuthGuard)
-  // async updateQna(@Param('id') qnaId: number, @Body() data: UpdateQnasDto) {
-  //   return await this.qnasService.updateQna(qnaId, data.name, data.content);
-  // }
-
   // QNA 삭제
   @Delete('/qnas/:qna_id')
   @UseGuards(AuthGuard)
@@ -72,12 +65,3 @@ export class QnasController {
     return await this.qnasService.delete(qnaId, authUser);
   }
 }
-
-// @Delete(':id')
-// @UseGuards(AuthGuard)
-// async deleteQna(
-//   @Param('id') qnaId: number,
-//   @AuthUser() authUser: RequestUserInterface,
-// ): Promise<ResultableInterface> {
-//   return await this.qnasService.delete(qnaId, authUser);
-// }
