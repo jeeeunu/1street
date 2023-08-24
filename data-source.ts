@@ -15,7 +15,7 @@ export default new DataSource({
   database: configService.get('DB_DATABASE'),
   synchronize: false,
   entities: ['src/**/*.entity.ts'],
-  migrations: ['src/database/migrations/*.ts'],
+  migrations: ['src/database/Migrations/*.ts'],
   migrationsTableName: 'migrations',
   namingStrategy: new SnakeNamingStrategy(),
 });
