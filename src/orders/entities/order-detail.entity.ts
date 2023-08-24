@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { OrdersEntity, ProductsEntity } from 'src/common/entities';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 export enum OrderReviewStatus {
   notWritten = '0',
@@ -9,15 +10,13 @@ export enum OrderReviewStatus {
 export class OrderDetailsEntity {
   @PrimaryGeneratedColumn()
   public order_detail_id: number;
-  @Column()
-  public product_id: number;
+
   @Column()
   public order_quantity: number;
 
-  // @ManyToOne(() => OrdersEntity, (order) => order.order_id)
-  // @JoinColumn({ name: 'order_id' })
-  // public order_id: OrdersEntity;
+  @ManyToOne(() => OrdersEntity, (order) => order.order_details)
+  public order: OrdersEntity;
 
-  @Column()
-  public order_id: number;
+  @ManyToOne(() => ProductsEntity, (product) => product.order_detail)
+  public product: ProductsEntity;
 }

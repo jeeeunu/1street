@@ -62,14 +62,13 @@ export class OrdersController {
     const authUser: RequestUserInterface = req['user'];
     return await this.ordersService.cancelOrder(order_id, authUser);
   }
-
   //-- 주문 부분 취소하기 --//
   @Patch('/:order_id/:order_detail_id')
   @UseGuards(AuthGuard)
   async partialCancel(
     @Req() req: Request,
     @Param('order_id') order_id: number,
-    order_detail_id: number,
+    @Param('order_detail_id') order_detail_id: number,
   ): Promise<ResultableInterface> {
     const authUser: RequestUserInterface = req['user'];
     return await this.ordersService.partialCancel(
