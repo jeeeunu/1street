@@ -36,7 +36,7 @@ export class OrdersService {
       data.order_details.map((detail) => ({
         product_id: detail.product_id,
         order_quantity: detail.order_quantity,
-        order_id: order.order_id,
+        order_id: order.id,
       }));
     await this.orderDetailRepository.save(orderDetails);
     return { status: true, message: '주문이 완료되었습니다.' };
@@ -47,13 +47,13 @@ export class OrdersService {
   }
 
   //-- 주문 상세 확인 --//
-  async getDetailOrder(order_id: number): Promise<any> {
-    const order = await this.orderRepository.findOne({ where: { order_id } });
-    const orderProducts = await this.orderDetailRepository.find({
-      where: { order_id },
-    });
-    const orderDetails = { order, orderProducts };
-    return orderDetails;
+  async getDetailOrder(id: number): Promise<any> {
+    const order = await this.orderRepository.findOne({ where: { id } });
+    // const orderProducts = await this.orderDetailRepository.find({
+    //   where: { order_id },
+    // });
+    // const orderDetails = { order, orderProducts };
+    return order;
   }
   // //-- 주문 수정하기 --//
   // async updateOrder(
@@ -83,31 +83,31 @@ export class OrdersService {
 
   //-- 주문 부분 취소 --//
   async partialCancel(
-    order_id: number,
+    id: number,
     order_detail_id: number,
     authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
     console.log(order_detail_id);
     const order = await this.orderRepository.findOne({
-      where: { order_id },
+      where: { id },
     });
     if (!order) {
       throw new NotFoundException('주문이 존재하지 않습니다.');
     }
-    if (order.user_id !== authUser.user_id) {
-      throw new NotFoundException('권한이 없습니다.');
-    }
+    // if (order.user_id !== authUser.user_id) {
+    //   throw new NotFoundException('권한이 없습니다.');
+    // }
     const orderDetail = await this.orderDetailRepository.findOne({
       where: { order_detail_id },
     });
-    const orderDetails = await this.orderDetailRepository.find({
-      where: { order_id },
-    });
-    console.log(orderDetail);
-    if (orderDetails.length === 0) {
-      order.order_status = '0';
-      await this.orderRepository.save(order);
-    }
+    // const orderDetails = await this.orderDetailRepository.find({
+    //   where: { order_id },
+    // });
+    // console.log(orderDetail);
+    // if (orderDetails.length === 0) {
+    //   order.order_status = '0';
+    //   await this.orderRepository.save(order);
+    // }
     if (!orderDetail) {
       throw new NotFoundException('상세 주문이 존재하지 않습니다.');
     }
@@ -119,18 +119,18 @@ export class OrdersService {
 
   //-- 주문 취소하기 --//
   async cancelOrder(
-    order_id: number,
+    id: number,
     authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
     const order = await this.orderRepository.findOne({
-      where: { order_id },
+      where: { id },
     });
     if (!order) {
       throw new NotFoundException('주문이 존재하지 않습니다.');
     }
-    if (order.user_id !== authUser.user_id) {
-      throw new NotFoundException('권한이 없습니다.');
-    }
+    // if (order.user_id !== authUser.user_id) {
+    //   throw new NotFoundException('권한이 없습니다.');
+    // }
     order.order_status = '0';
     await this.orderRepository.save(order);
     return { status: true, message: '주문이 취소되었습니다.' };
@@ -139,11 +139,11 @@ export class OrdersService {
   //-- 주문 상태 변경(판매자) --//
   async sellerOrder(
     authUser: RequestUserInterface,
-    order_id: number,
+    id: number,
     data: OrderStatusDto,
   ): Promise<ResultableInterface> {
     const order = await this.orderRepository.findOne({
-      where: { order_id },
+      where: { id },
     });
     if (!order) {
       throw new NotFoundException('주문이 존재하지 않습니다.');

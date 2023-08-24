@@ -9,6 +9,7 @@ import { IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 import { CategoryEntity } from '../../products/entities/category.entity';
 import { ShopsEntity } from './shops.entity';
 import { LikeEntity } from './likes.entity';
+import { OrderDetailsEntity } from 'src/orders/entities/order-detail.entity';
 
 @Entity({ name: 'products' })
 export class ProductsEntity {
@@ -45,4 +46,7 @@ export class ProductsEntity {
 
   @OneToMany(() => LikeEntity, (like) => like.product)
   public likes: LikeEntity[];
+
+  @OneToMany(() => OrderDetailsEntity, (orderDetails) => orderDetails.product)
+  public order_detail: OrderDetailsEntity[];
 }
