@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from 'class-validator';
-import { UsersEntity } from 'src/users/entities/users.entity';
+import { UsersEntity } from 'src/common/entities/users.entity';
 import {
   Column,
   CreateDateColumn,
@@ -47,10 +47,6 @@ export class QnasEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: string;
 
-  // @ManyToOne(() => UsersEntity, (user) => user.qna)
-  // public user: UsersEntity;
-
-  // //user entity에 넣어두기
-  // @OneToMany(() => QnasEntity, (qna) => qna.user)
-  // public qna: QnasEntity[];
+  @ManyToOne(() => UsersEntity, (user) => user.qna)
+  public user: UsersEntity;
 }

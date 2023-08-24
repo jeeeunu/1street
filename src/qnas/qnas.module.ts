@@ -3,7 +3,7 @@ import { QnasController } from './qnas.controller';
 import { QnasService } from './qnas.service';
 import { QnasEntity } from './entities/qnas.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersEntity } from 'src/users/entities/users.entity';
+import { UsersEntity } from 'src/common/entities/users.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([QnasEntity, UsersEntity])],
