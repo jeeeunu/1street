@@ -57,19 +57,24 @@ export class UserService {
     // TODO :: 장바구니 개수, orders_details 불러오기
     const user = await this.usersEntity
       .createQueryBuilder('user')
-      .leftJoin('user.orders', 'orders')
-      .loadRelationCountAndMap('user.like_count', 'user.likes')
-      .loadRelationCountAndMap('user.order_count', 'user.orders')
+      .leftJoinAndSelect('user.orders', 'orders')
+      .leftJoinAndSelect('user.qna', 'qna')
+      .leftJoinAndSelect('orders.order_details', 'order_details')
+      .leftJoinAndSelect('order_details.product', 'product')
+      .where('user.id = :id', { id: user_id })
+      .loadRelationCountAndMap('user.like_count', 'user.likes') // Add this line
       .select([
         'user.id',
-        'user.email',
-        'user.name',
-        'user.phone_number',
-        'user.address',
-        'user.point',
-        'user.profile_image',
+        'orders.id',
+        'orders.order_payment_amount',
+        'orders.created_at',
+        'order_details.id',
+        'order_details.order_quantity',
+        'product.id',
+        'product.product_name',
+        'product.product_thumbnail',
+        'qna.id',
       ])
-      .where('user.id = :id', { id: user_id })
       .getOne();
 
     if (!user) {
