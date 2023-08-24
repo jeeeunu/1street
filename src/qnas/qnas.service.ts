@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QnasEntity } from './entities/qnas.entity';
+import { QnasEntity } from 'src/common/entities/qnas.entity';
 import { RequestUserInterface } from 'src/users/interfaces';
 import { ResultableInterface } from 'src/common/interfaces';
 import { UpdateQnasDto } from './dto/update-qna.dto';

@@ -14,11 +14,6 @@ export class QnasEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  // @Column()
-  // @IsNotEmpty()
-  // @IsString()
-  // public user_id: number; // 다른 테이블이랑 Join하는 방식으로
-
   @Column()
   @IsNotEmpty()
   @IsString()
