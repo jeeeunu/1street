@@ -2,6 +2,27 @@ textarea {
   resize: none;
 }
 
+.error-message {
+  text-align: left;
+  color: #ef476f;
+}
+
+.label {
+  display: block;
+  margin-bottom: 10px;
+  color: #7fad39;
+  font-size: 14px;
+  text-align: left;
+}
+
+.read-only {
+  width: 100%;
+  padding: 10px;
+  background-color: #f6f6f6;
+  border-radius: 5px;
+  text-align: left;
+}
+
 input,
 textarea,
 button {
