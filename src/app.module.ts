@@ -6,11 +6,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { UsersEntity } from './common/entities/users.entity';
 import { GoogleStrategy } from './auth/strategies/google.strategy';
 import { QnasModule } from './qnas/qnas.module';
 import { OrdersModule } from './orders/orders.module';
-import { OrdersEntity } from './common/entities/orders.entity';
 import { ShopsModule } from './shops/shops.module';
 import { ProductsModule } from './products/products.module';
 import { LikesModule } from './likes/likes.module';
@@ -20,6 +18,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UploadsModule } from './uploads/uploads.module';
 import { CartsController } from './carts/carts.controller';
 import { CartsModule } from './carts/carts.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -37,7 +36,17 @@ import { CartsModule } from './carts/carts.module';
       synchronize: true,
       namingStrategy: new SnakeNamingStrategy(),
     }),
+    //-- Redis --//
 
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => {
+        return {
+          host: process.env.REDIS_HOST,
+          port: process.env.REDIS_PORT,
+        };
+      },
+    }),
     //-- jwt --//
     JwtModule.register({
       secret: process.env.DB_JWT_SECRET_KEY,
