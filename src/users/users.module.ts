@@ -16,5 +16,6 @@ import * as multer from 'multer';
   ],
   controllers: [UserController],
   providers: [UserService, UploadsService],
+  exports: [UserService],
 })
 export class UsersModule {}

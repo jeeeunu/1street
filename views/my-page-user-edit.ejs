@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+
+  <script>
+    //-- 유저 수정 api --//
+    const userEdit = async () => {
+      try {
+        const profileImageInput = document.querySelector('#profileInput');
+        const passwordInput = document.querySelector('#passwordInput');
+        const passwordConfirmInput = document.querySelector(
+          '#passwordConfirmInput',
+        );
+        const nameInput = document.querySelector('#nameInput');
+        const phoneNumberInput = document.querySelector('#phoneNumberInput');
+        const addressInput = document.querySelector('#addressInput');
+
+        if (passwordInput.value !== passwordConfirmInput.value) {
+          alert('비밀번호를 확인해주세요.');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('files', profileImageInput.files[0]);
+        formData.append('password', passwordInput.value);
+        formData.append('name', nameInput.value);
+        formData.append('phone_number', phoneNumberInput.value);
+        formData.append('address', addressInput.value);
+
+        const response = await fetch('/users', {
+          method: 'PATCH',
+          headers: { Accept: 'application/json' },
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('회원 정보 수정이 완료되었습니다.');
+          window.location.href = '/my-page';
+        } else {
+          console.log(data);
+          alert(data.message);
+        }
+      } catch (error) {
+        console.error('에러 발생:', error);
+        alert('회원 정보 수정을 실패했습니다.');
+      }
+    };
+  </script>
+
+  <body>
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %> error-message-div
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+    <!-- sign-form -->
+    <main class="hero container sign-form">
+      <form>
+        <legend class="tit-page">회원 정보 수정</legend>
+        <div class="content-wrap">
+          <% if (user.provider === "none") { %>
+          <div class="edit-img-container">
+            <div class="edit-img-wrap">
+              <img src="<%- user.profile_image %>" alt="" />
+            </div>
+            <input
+              type="file"
+              id="profileInput"
+              onchange="setThumbnail(event)"
+            />
+          </div>
+          <% } %>
+          <div class="user-box">
+            <span class="label">email</span>
+            <p class="read-only"><%- user.email %></p>
+          </div>
+          <div class="user-box">
+            <input type="password" id="passwordInput" name="" />
+            <label>Password</label>
+          </div>
+          <div class="user-box">
+            <input type="password" id="passwordConfirmInput" name="" />
+            <label>Password Confirm</label>
+          </div>
+          <div class="user-box">
+            <input
+              type="text"
+              id="nameInput"
+              name=""
+              required=""
+              value="<%- user.name %>"
+            />
+            <label>Name</label>
+          </div>
+          <div class="user-box">
+            <input
+              type="text"
+              id="phoneNumberInput"
+              name=""
+              required=""
+              value="<%- user.phone_number %>"
+            />
+            <label>Phone Number</label>
+          </div>
+          <div class="user-box">
+            <input
+              type="text"
+              id="addressInput"
+              name=""
+              required=""
+              value="<%- user.address %>"
+            />
+            <label>Adress</label>
+          </div>
+          <button
+            type="button"
+            class="btn-primary-m btn-sign-in"
+            onclick="userEdit()"
+          >
+            회원가입
+          </button>
+        </div>
+      </form>
+    </main>
+
+    <!-- Footer Section Begin -->
+    <footer class="footer spad">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="footer__about">
+              <div class="footer__about__logo">
+                <a href="/"><img src="img/logo.png" alt="" /></a>
+              </div>
+              <ul>
+                <li>Address: 60-49 Road 11378 New York</li>
+                <li>Phone: +65 11.188.888</li>
+                <li>Email: hello@colorlib.com</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
+            <div class="footer__widget">
+              <h6>Useful Links</h6>
+              <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">About Our Shop</a></li>
+                <li><a href="#">Secure Shopping</a></li>
+                <li><a href="#">Delivery infomation</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Our Sitemap</a></li>
+              </ul>
+              <ul>
+                <li><a href="#">Who We Are</a></li>
+                <li><a href="#">Our Services</a></li>
+                <li><a href="#">Projects</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#">Innovation</a></li>
+                <li><a href="#">Testimonials</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-12">
+            <div class="footer__widget">
+              <h6>Join Our Newsletter Now</h6>
+              <p>
+                Get E-mail updates about our latest shop and special offers.
+              </p>
+              <form action="#">
+                <input type="text" placeholder="Enter your mail" />
+                <button type="submit" class="site-btn">Subscribe</button>
+              </form>
+              <div class="footer__widget__social">
+                <a href="#"><i class="fa fa-facebook"></i></a>
+                <a href="#"><i class="fa fa-instagram"></i></a>
+                <a href="#"><i class="fa fa-twitter"></i></a>
+                <a href="#"><i class="fa fa-pinterest"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="footer__copyright">
+              <div class="footer__copyright__text">
+                <p>
+                  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                  Copyright &copy;
+                  <script>
+                    document.write(new Date().getFullYear());
+                  </script>
+                  All rights reserved | This template is made with
+                  <i class="fa fa-heart" aria-hidden="true"></i> by
+                  <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                  <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                </p>
+              </div>
+              <div class="footer__copyright__payment">
+                <img src="img/payment-item.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- Footer Section End -->
+
+    <!-- Js Plugins -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.nice-select.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/jquery.slicknav.js"></script>
+    <script src="js/mixitup.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
