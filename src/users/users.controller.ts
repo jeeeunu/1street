@@ -10,13 +10,11 @@ import {
   Patch,
   UploadedFiles,
   UseInterceptors,
-  Param,
-  NotFoundException,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { CreateUserDto, EditUserDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
-import { RequestUserInterface, userInfo } from './interfaces/index';
+import { RequestUserInterface } from './interfaces/index';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser } from '../auth/auth.decorator';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -39,21 +37,8 @@ export class UserController {
   //-- 유저 조회 --//
   @Get('/:category')
   @UseGuards(AuthGuard)
-  async getUserInfo(
-    @AuthUser() authUser: RequestUserInterface,
-    @Param('category') category: string,
-  ): Promise<any> {
-    if (category === 'user') {
-      return await this.userService.find(authUser.user_id);
-    } else if (category === 'orders') {
-      return await this.userService.getOrders(authUser.user_id);
-    } else if (category === 'likes') {
-      return await this.userService.getLikes(authUser.user_id);
-    } else if (category === 'qnas') {
-      return await this.userService.getQnas(authUser.user_id);
-    } else {
-      throw new NotFoundException('잘못된 접근입니다.');
-    }
+  async getUserInfo(@AuthUser() authUser: RequestUserInterface): Promise<any> {
+    return await this.userService.find(authUser.user_id);
   }
 
   //-- 유저 수정 --//
