@@ -13,6 +13,10 @@ button {
   cursor: pointer;
 }
 
+.btn-user-delete {
+  text-decoration: underline;
+}
+
 .error-message {
   text-align: left;
   color: #ef476f;
