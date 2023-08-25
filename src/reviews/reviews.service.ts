@@ -43,9 +43,6 @@ export class ReviewsService {
         uploadFile.review_id = reviewFind.id;
         uploadFile.url = imageDetail.imageUrl;
         uploadFile.original_name = imageDetail.originalName;
-        uploadFile.encoding = imageDetail.encoding;
-        uploadFile.mime_type = imageDetail.mimeType;
-        uploadFile.size = imageDetail.size;
         uploadFile.e_tag = imageDetail.eTag;
 
         await this.reviewImageEntity.save(uploadFile);
