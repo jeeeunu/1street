@@ -10,6 +10,7 @@ import { CategoryEntity } from '../../products/entities/category.entity';
 import { ShopsEntity } from './shops.entity';
 import { LikeEntity } from './likes.entity';
 import { OrderDetailsEntity } from 'src/orders/entities/order-detail.entity';
+import { QnasEntity } from './qnas.entity';
 
 @Entity({ name: 'products' })
 export class ProductsEntity {
@@ -49,4 +50,7 @@ export class ProductsEntity {
 
   @OneToMany(() => OrderDetailsEntity, (orderDetails) => orderDetails.product)
   public order_detail: OrderDetailsEntity[];
+
+  @OneToMany(() => QnasEntity, (qna) => qna.product)
+  public qna: QnasEntity[];
 }
