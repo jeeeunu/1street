@@ -23,6 +23,7 @@ export class AuthenticationMiddleware implements NestMiddleware {
           user_id: payload.user_id,
           email: payload.email,
           user_name: payload.user_name,
+          profile_image: payload.profile_image,
           isAdmin: payload.isAdmin || false,
         };
         req.user = user;

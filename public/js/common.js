@@ -44,7 +44,7 @@ const logout = async () => {
           console.error('로그아웃 중 오류가 발생했습니다.');
         }
 
-        location.reload();
+        window.location.href = '/';
       } catch (error) {
         alert(error);
       }

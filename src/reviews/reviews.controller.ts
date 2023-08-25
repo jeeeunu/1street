@@ -8,6 +8,8 @@ import {
   UseGuards,
   ValidationPipe,
   Query,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { ResultableInterface } from 'src/common/interfaces';
@@ -16,6 +18,7 @@ import { AuthUser } from '../auth/auth.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RequestUserInterface } from '../users/interfaces';
 import { ReviewInterface } from './interfaces';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -25,8 +28,10 @@ export class ReviewsController {
   @Post('/:order_detail_id')
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
+  @UseInterceptors(FilesInterceptor('files'))
   async signUp(
     @Param('order_detail_id') orderDetailId: number,
+    @UploadedFiles() files: Express.Multer.File[],
     @Body() createReviewsDto: CreateReviewsDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
@@ -34,6 +39,7 @@ export class ReviewsController {
       authUser.user_id,
       orderDetailId,
       createReviewsDto,
+      files,
     );
   }
 
