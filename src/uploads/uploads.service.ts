@@ -7,11 +7,8 @@ export class UploadsService {
   private s3: AWS.S3 = new AWS.S3({ region: 'ap-northeast-2' }); // S3 초기화
   private bucketName = '1street';
 
-  //-- 공통 : S3 저장 후 eTag 반환 --//
-  private async uploadPromise(
-    file: Express.Multer.File,
-    key: string,
-  ): Promise<string> {
+  //-- 공통 : S3 저장 --//
+  private async uploadPromise(file: Express.Multer.File, key: string) {
     const params: AWS.S3.PutObjectRequest = {
       Bucket: this.bucketName,
       Key: key,
@@ -19,8 +16,7 @@ export class UploadsService {
       ACL: 'public-read-write',
     };
 
-    const response = await this.s3.putObject(params).promise();
-    return response.ETag;
+    await this.s3.putObject(params).promise();
   }
 
   //-- 공통 : S3 삭제 --//
@@ -40,7 +36,7 @@ export class UploadsService {
     const uploadPromises: Promise<void>[] = files.map(async (file) => {
       const uniqueId = uuidv4();
       key = `uploads-profile/${uniqueId}`; // Assign the value to the key variable
-      const eTag = await this.uploadPromise(file, key);
+      await this.uploadPromise(file, key);
     });
 
     await Promise.all(uploadPromises);
@@ -60,7 +56,7 @@ export class UploadsService {
     const uploadPromises: Promise<void>[] = files.map(async (file) => {
       const uniqueId = uuidv4();
       key = `uploads-profile/${uniqueId}`; // Assign the value to the key variable
-      const eTag = await this.uploadPromise(file, key);
+      await this.uploadPromise(file, key);
     });
 
     await Promise.all(uploadPromises);
