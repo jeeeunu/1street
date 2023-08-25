@@ -42,6 +42,7 @@ export class AuthService {
     const payload = {
       user_id: user.id,
       email: loginDto.email,
+      profile_image: user.profile_image,
       user_name: user.name,
       isAdmin: user.seller_flag,
     };
