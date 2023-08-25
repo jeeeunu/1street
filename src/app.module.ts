@@ -19,6 +19,8 @@ import { UploadsModule } from './uploads/uploads.module';
 import { CartsController } from './carts/carts.controller';
 import { CartsModule } from './carts/carts.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-redis-store';
+import { UsersEntity } from './common/entities';
 
 @Module({
   imports: [
@@ -42,6 +44,7 @@ import { CacheModule } from '@nestjs/cache-manager';
       isGlobal: true,
       useFactory: async () => {
         return {
+          store: redisStore,
           host: process.env.REDIS_HOST,
           port: process.env.REDIS_PORT,
         };
