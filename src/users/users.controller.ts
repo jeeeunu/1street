@@ -10,6 +10,7 @@ import {
   Patch,
   UploadedFiles,
   UseInterceptors,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { CreateUserDto, EditUserDto } from './dtos';
@@ -17,6 +18,7 @@ import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from './interfaces/index';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser } from '../auth/auth.decorator';
+import { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
@@ -55,11 +57,15 @@ export class UserController {
 
   //-- 유저 탈퇴 --//
   @Delete()
-  @UseGuards(AuthGuard)
-  @UsePipes(ValidationPipe)
   async deleteUser(
     @AuthUser() authUser: RequestUserInterface,
-  ): Promise<ResultableInterface> {
-    return await this.userService.delete(authUser.user_id);
+    @Res() res: Response,
+  ): Promise<any> {
+    res.clearCookie('Authentication');
+    const message = await this.userService.delete(authUser.user_id);
+    return res.json({
+      status: true,
+      message: message,
+    });
   }
 }

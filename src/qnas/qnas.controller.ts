@@ -25,9 +25,7 @@ export class QnasController {
   // QNA 조회
   @Get()
   @UseGuards(AuthGuard)
-  async getQnas(
-    @Query('product_id') productId?: number,
-  ): Promise<QnasEntity[]> {
+  async getQnas(@Query('product_id') productId: number): Promise<QnasEntity[]> {
     if (productId) {
       // product_id를 사용하여 Q&A 항목을 조회하는 서비스 메서드를 호출
       return await this.qnasService.getForProduct(productId);
@@ -36,13 +34,15 @@ export class QnasController {
   }
 
   // QNA 등록
-  @Post('/qnas')
+  @Post()
   @UseGuards(AuthGuard)
   async createQna(
     @Body() data: CreateQnasDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
+    // const productId = data.product_id;
     return await this.qnasService.create(data, authUser);
+    //, productId);
   }
 
   // QNA 수정
