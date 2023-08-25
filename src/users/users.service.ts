@@ -69,7 +69,11 @@ export class UserService {
       .loadRelationCountAndMap('orders.orders_count', 'user.orders') // Add this line
       .select([
         'user.id',
+        'user.email',
+        'user.name',
         'user.profile_image',
+        'user.address',
+        'user.phone_number',
         'user.provider',
         'user.point',
         'orders.id',
@@ -179,6 +183,7 @@ export class UserService {
   async edit(
     user_id: number,
     editUserDto: EditUserDto,
+    files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
     const existingUser = await this.usersEntity.findOne({
       where: { id: user_id },
@@ -186,6 +191,16 @@ export class UserService {
 
     if (!existingUser) {
       throw new UserNotFoundException();
+    }
+
+    if (files.length !== 0) {
+      const imageUrl = await this.uploadsService.editS3Images(
+        existingUser.profile_image,
+        files,
+      );
+      existingUser.profile_image = imageUrl;
+
+      if (!imageUrl) throw new BadRequestException();
     }
 
     Object.assign(existingUser, editUserDto);
