@@ -9,7 +9,7 @@ export enum OrderReviewStatus {
 @Entity({ name: 'order_details' })
 export class OrderDetailsEntity {
   @PrimaryGeneratedColumn()
-  public order_detail_id: number;
+  public id: number;
 
   @Column()
   public order_quantity: number;

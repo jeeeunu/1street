@@ -20,15 +20,6 @@ export class ReviewImageEntity {
   @Column()
   original_name: string;
 
-  @Column()
-  encoding: string;
-
-  @Column()
-  mime_type: string;
-
-  @Column('decimal', { precision: 10, scale: 2 })
-  size: number;
-
   @Column({ comment: 's3 업로드된 localtion url' })
   url: string;
 
