@@ -7,9 +7,9 @@ export class CreateQnasDto {
 
   @IsNotEmpty()
   @IsString()
-  readonly name: string;
+  readonly qna_name: string;
 
   @IsNotEmpty()
   @IsString()
-  readonly content: string;
+  readonly qna_content: string;
 }
