@@ -44,8 +44,8 @@ export class UserService {
 
     const createUser = await this.usersEntity.save(userDto);
 
-    if (files.length !== 0) {
-      const imageUrl = await this.uploadsService.createS3Images(files);
+    if (files !== undefined) {
+      const imageUrl = await this.uploadsService.createProfileImage(files);
       createUser.profile_image = imageUrl;
 
       if (!imageUrl) throw new BadRequestException();
@@ -56,7 +56,7 @@ export class UserService {
   }
 
   //-- 유저 조회 --//
-  async find(user_id: number): Promise<userInfo> {
+  async find(userId: number): Promise<userInfo> {
     // TODO :: 장바구니 개수, orders_details 불러오기
     const user = await this.usersEntity
       .createQueryBuilder('user')
@@ -64,7 +64,7 @@ export class UserService {
       .leftJoinAndSelect('user.qna', 'qna')
       .leftJoinAndSelect('orders.order_details', 'order_details')
       .leftJoinAndSelect('order_details.product', 'product')
-      .where('user.id = :id', { id: user_id })
+      .where('user.id = :id', { id: userId })
       .loadRelationCountAndMap('user.like_count', 'user.likes') // Add this line
       .loadRelationCountAndMap('orders.orders_count', 'user.orders') // Add this line
       .select([
@@ -95,98 +95,14 @@ export class UserService {
     return { status: true, results: user };
   }
 
-  //-- 유저 조회 : 좋아요 리스트 --//
-  // async getLikes(user_id: number): Promise<userInfo> {
-  //   const userLikes = await this.usersEntity
-  //     .createQueryBuilder('user')
-  //     .leftJoinAndSelect('user.likes', 'likes')
-  //     .leftJoinAndSelect('likes.product', 'product')
-  //     .where('user.id = :id', { id: user_id })
-  //     .select([
-  //       'user.id',
-  //       'user.provider',
-  //       'likes.id',
-  //       'likes.created_at',
-  //       'product.id',
-  //       'product.product_name',
-  //       'product.product_price',
-  //       'product.product_thumbnail',
-  //     ])
-  //     .getOne();
-
-  //   if (!userLikes) {
-  //     throw new UserNotFoundException();
-  //   }
-
-  //   return { status: true, results: userLikes };
-  // }
-
-  //-- 유저 조회 : 주문 리스트 --//
-  // async getOrders(user_id: number): Promise<userInfo> {
-  //   const userOrders = await this.usersEntity
-  //     .createQueryBuilder('user')
-  //     .leftJoinAndSelect('user.orders', 'orders')
-  //     .leftJoinAndSelect('orders.order_details', 'order_details')
-  //     .leftJoinAndSelect('order_details.product', 'product')
-  //     .where('user.id = :id', { id: user_id })
-  //     .select([
-  //       'user.id',
-  //       'orders.id',
-  //       'orders.order_payment_amount',
-  //       'orders.created_at',
-  //       'order_details.id',
-  //       'order_details.order_quantity',
-  //       'product.id',
-  //       'product.product_name',
-  //       'product.product_thumbnail',
-  //     ])
-  //     .getOne();
-
-  //   if (!userOrders) {
-  //     throw new UserNotFoundException();
-  //   }
-
-  //   return { status: true, results: userOrders };
-  // }
-
-  //-- 유저 조회 : qna 리스트 --//
-  // async getQnas(user_id: number): Promise<userInfo> {
-  //   const userOrders = await this.usersEntity
-  //     .createQueryBuilder('user')
-  //     .leftJoinAndSelect('user.orders', 'orders')
-  //     .leftJoinAndSelect('user.qna', 'qna')
-  //     .leftJoinAndSelect('orders.order_details', 'order_details')
-  //     .leftJoinAndSelect('order_details.product', 'product')
-  //     .where('user.id = :id', { id: user_id })
-  //     .select([
-  //       'user.id',
-  //       'orders.id',
-  //       'orders.order_payment_amount',
-  //       'orders.created_at',
-  //       'order_details.id',
-  //       'order_details.order_quantity',
-  //       'product.id',
-  //       'product.product_name',
-  //       'product.product_thumbnail',
-  //       'qna.id',
-  //     ])
-  //     .getOne();
-
-  //   if (!userOrders) {
-  //     throw new UserNotFoundException();
-  //   }
-
-  //   return { status: true, results: userOrders };
-  // }
-
   //-- 유저 수정 --//
   async edit(
-    user_id: number,
+    userId: number,
     editUserDto: EditUserDto,
     files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
     const existingUser = await this.usersEntity.findOne({
-      where: { id: user_id },
+      where: { id: userId },
     });
 
     if (!existingUser) {
@@ -194,7 +110,7 @@ export class UserService {
     }
 
     if (files.length !== 0) {
-      const imageUrl = await this.uploadsService.editS3Images(
+      const imageUrl = await this.uploadsService.editProfileImage(
         existingUser.profile_image,
         files,
       );
@@ -210,13 +126,18 @@ export class UserService {
   }
 
   //-- 유저 탈퇴 --//
-  async delete(userId: number): Promise<ResultableInterface> {
-    const deletedUser = await this.usersEntity.delete(userId);
+  async delete(userId: number): Promise<string> {
+    const existingUser = await this.usersEntity.findOne({
+      where: { id: userId },
+    });
 
-    if (deletedUser.affected === 0)
-      throw new NotFoundException('사용자를 찾지 못했습니다.');
+    if (existingUser.profile_image) {
+      await this.uploadsService.deleteProfileImage(existingUser.profile_image);
+    }
 
-    return { status: true, message: '회원탈퇴가 완료되었습니다.' };
+    await this.usersEntity.delete(existingUser.id);
+
+    return '회원탈퇴가 완료되었습니다.';
   }
 
   // TODO :: 삭제 예정
