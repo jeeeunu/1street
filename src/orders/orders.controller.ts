@@ -53,7 +53,7 @@ export class OrdersController {
     return await this.ordersService.cancelOrder(authUser.user_id, order_id);
   }
   //-- 주문 부분 취소하기 --//
-  @Patch('/:order_id/:order_detail_id/selleccancel')
+  @Patch('/:order_id/:order_detail_id/select')
   @UseGuards(AuthGuard)
   async partialCancel(
     @AuthUser() authUser: RequestUserInterface,
