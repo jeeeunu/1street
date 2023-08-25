@@ -2,7 +2,6 @@ import { UsersEntity } from 'src/common/entities/users.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
