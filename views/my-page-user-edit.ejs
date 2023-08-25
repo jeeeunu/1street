@@ -4,11 +4,10 @@
   <%- include('includes/head') %>
 
   <script>
-    //-- 회원가입 api --//
-    const signUp = async () => {
+    //-- 유저 수정 api --//
+    const userEdit = async () => {
       try {
         const profileImageInput = document.querySelector('#profileInput');
-        const emailInput = document.querySelector('#emailInput');
         const passwordInput = document.querySelector('#passwordInput');
         const passwordConfirmInput = document.querySelector(
           '#passwordConfirmInput',
@@ -22,22 +21,15 @@
           return;
         }
 
-        const sellerRadio = document.querySelector(
-          'input[name="user-type"][value="seller"]',
-        );
-        const seller_flag = sellerRadio?.checked ?? false;
-
         const formData = new FormData();
         formData.append('files', profileImageInput.files[0]);
-        formData.append('email', emailInput.value);
         formData.append('password', passwordInput.value);
         formData.append('name', nameInput.value);
         formData.append('phone_number', phoneNumberInput.value);
         formData.append('address', addressInput.value);
-        formData.append('seller_flag', seller_flag);
 
         const response = await fetch('/users', {
-          method: 'POST',
+          method: 'PATCH',
           headers: { Accept: 'application/json' },
           body: formData,
         });
@@ -45,15 +37,15 @@
         const data = await response.json();
 
         if (response.ok) {
-          alert('회원가입이 완료되었습니다.');
-          window.location.href = '/sign-in';
+          alert('회원 정보 수정이 완료되었습니다.');
+          window.location.href = '/my-page';
         } else {
           console.log(data);
           alert(data.message);
         }
       } catch (error) {
         console.error('에러 발생:', error);
-        alert('회원가입을 실패했습니다.');
+        alert('회원 정보 수정을 실패했습니다.');
       }
     };
   </script>
@@ -67,58 +59,30 @@
     <!-- sign-form -->
     <main class="hero container sign-form">
       <form>
-        <legend class="tit-page">회원가입</legend>
-        <div class="radios">
-          <div class="radio-wrap">
-            <label>
-              <input type="radio" name="user-type" value="user" checked />
-              <span>사용자</span>
-            </label>
-          </div>
-          <div class="radio-wrap">
-            <label>
-              <input type="radio" name="user-type" value="seller" />
-              <span>판매자</span>
-            </label>
-          </div>
-        </div>
+        <legend class="tit-page">회원 정보 수정</legend>
         <div class="content-wrap">
+          <% if (user.provider === "none") { %>
           <div class="edit-img-container">
-            <div class="edit-img-wrap"></div>
+            <div class="edit-img-wrap">
+              <img src="<%- user.profile_image %>" alt="" />
+            </div>
             <input
               type="file"
               id="profileInput"
               onchange="setThumbnail(event)"
             />
           </div>
+          <% } %>
           <div class="user-box">
-            <input
-              type="text"
-              id="emailInput"
-              name=""
-              required=""
-              value="bsn23@naver.com"
-            />
-            <label class="required">Email</label>
+            <span class="label">email</span>
+            <p class="read-only"><%- user.email %></p>
           </div>
           <div class="user-box">
-            <input
-              type="password"
-              id="passwordInput"
-              name=""
-              required=""
-              value="7982wldms"
-            />
+            <input type="password" id="passwordInput" name="" />
             <label>Password</label>
           </div>
           <div class="user-box">
-            <input
-              type="password"
-              id="passwordConfirmInput"
-              name=""
-              required=""
-              value="7982wldms"
-            />
+            <input type="password" id="passwordConfirmInput" name="" />
             <label>Password Confirm</label>
           </div>
           <div class="user-box">
@@ -127,7 +91,7 @@
               id="nameInput"
               name=""
               required=""
-              value="유지은"
+              value="<%- user.name %>"
             />
             <label>Name</label>
           </div>
@@ -137,7 +101,7 @@
               id="phoneNumberInput"
               name=""
               required=""
-              value="010-6698-7769"
+              value="<%- user.phone_number %>"
             />
             <label>Phone Number</label>
           </div>
@@ -147,14 +111,14 @@
               id="addressInput"
               name=""
               required=""
-              value="화이린"
+              value="<%- user.address %>"
             />
             <label>Adress</label>
           </div>
           <button
             type="button"
             class="btn-primary-m btn-sign-in"
-            onclick="signUp()"
+            onclick="userEdit()"
           >
             회원가입
           </button>

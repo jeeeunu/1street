@@ -44,11 +44,13 @@ export class UserController {
   //-- 유저 수정 --//
   @Patch()
   @UseGuards(AuthGuard)
+  @UseInterceptors(FilesInterceptor('files'))
   async editUser(
+    @UploadedFiles() files: Express.Multer.File[],
     @Body() editUserDto: EditUserDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    return await this.userService.edit(authUser.user_id, editUserDto);
+    return await this.userService.edit(authUser.user_id, editUserDto, files);
   }
 
   //-- 유저 탈퇴 --//
