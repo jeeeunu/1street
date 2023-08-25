@@ -1,41 +1,115 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { UserService } from './users/users.service';
+import { AuthUser } from './auth/auth.decorator';
+import { RequestUserInterface } from './users/interfaces';
 
 @Controller()
 export class AppController {
+  constructor(private readonly userService: UserService) {}
+
   //-- 메인 페이지 --//
   @Get()
-  main(@Req() request: Request, @Res() response: Response): void {
+  main(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): void {
     const isIndexPath = request.url === '/';
     response.render('index', {
       isIndexPath,
+      authUser,
+    });
+  }
+
+  //-- 회원가입 --//
+  @Get('sign-up')
+  singUp(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): void {
+    const isIndexPath = request.url === '/';
+
+    response.render('sign-up', {
+      isIndexPath,
+      authUser,
     });
   }
 
   //-- 로그인 --//
   @Get('sign-in')
-  singIn(@Res() response: Response): void {
+  singIn(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): void {
+    const isIndexPath = request.url === '/';
     response.render('sign-in', {
-      title: '테스트',
-      subtitle: '서브 테스트',
+      isIndexPath,
+      authUser,
+    });
+  }
+
+  //-- 회원정보 수정 --//
+  @Get('my-page-user-edit')
+  async userEdit(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const isIndexPath = request.url === '/';
+    const userInfo = await this.userService.find(authUser.user_id);
+    const user = userInfo.results;
+    response.render('my-page-user-edit', {
+      isIndexPath,
+      authUser,
+      user,
+    });
+  }
+
+  //-- 마이 페이지 --//
+  @Get('my-page')
+  async myPage(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const isIndexPath = request.url === '/';
+    const userInfo = await this.userService.find(authUser.user_id);
+    const user = userInfo.results;
+    response.render('my-page', {
+      isIndexPath,
+      authUser,
+      user,
     });
   }
 
   //-- 장바구니 --//
   @Get('cart')
-  cart(@Res() response: Response): void {
+  cart(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): void {
+    const isIndexPath = request.url === '/';
     response.render('cart', {
-      title: '테스트',
-      subtitle: '서브 테스트',
+      isIndexPath,
+      authUser,
     });
   }
 
   //-- 상품 상세보가 --//
   @Get('product-detail')
-  productDetail(@Res() response: Response): void {
+  productDetail(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): void {
+    const isIndexPath = request.url === '/';
     response.render('product-detail', {
-      title: '테스트',
-      subtitle: '서브 테스트',
+      isIndexPath,
+      authUser,
     });
   }
 }

@@ -1,6 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
+import { LikeEntity, OrdersEntity, ShopsEntity } from '.';
+import { QnasEntity } from './qnas.entity';
 
 export enum Provider {
   Local,
@@ -49,4 +51,16 @@ export class UsersEntity {
 
   @Column({ default: 'none' })
   public provider: string;
+
+  @OneToMany(() => OrdersEntity, (order) => order.user)
+  public orders: OrdersEntity[];
+
+  @OneToMany(() => ShopsEntity, (shop) => shop.user)
+  public shops: ShopsEntity[];
+
+  @OneToMany(() => LikeEntity, (like) => like.user)
+  public likes: LikeEntity[];
+
+  @OneToMany(() => QnasEntity, (qna) => qna.user)
+  public qna: QnasEntity[];
 }

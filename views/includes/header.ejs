@@ -1,4 +1,7 @@
 <!-- Humberger Begin -->
+<!-- <% if (authUser) { %>
+<h1><%- authUser.user_id %></h1>
+<% } %> -->
 <div class="humberger__menu__overlay"></div>
 <div class="humberger__menu__wrapper">
   <div class="humberger__menu__logo">
@@ -37,7 +40,6 @@
         </ul>
       </li>
       <li><a href="./blog.html">Blog</a></li>
-      <li><a href="./contact.html">Contact</a></li>
     </ul>
   </nav>
   <div id="mobile-menu-wrap"></div>
@@ -64,16 +66,17 @@
         <div class="col-lg-6 col-md-6"></div>
         <div class="col-lg-6 col-md-6">
           <div class="header__top__right">
-            <!-- <div class="header__top__right__social">
-                                    <a href="#"><i class="fa fa-google"></i></a>
-                                </div> -->
             <div class="header__top__right__auth">
+              <% if (authUser) { %>
+              <button type="button" id="logoutButton" onclick="logout()">
+                <i class="fa fa-sign-out"></i> Logout
+              </button>
+              <button type="button" onclick="location.href='/my-page'">
+                <i class="fa fa-user"></i> Mypage
+              </button>
+              <% } else { %>
               <a href="/sign-in"><i class="fa fa-user"></i> Login</a>
-              <!-- TODO :: logout 시에 아래 내용 보이도록 작업 -->
-              <!-- <div class="d-flex g-10">
-                                        <a href="#"><i class="fa fa-user"></i> Logout</a>
-                                        <a href="#"></i> mypage</a>
-                                    </div> -->
+              <% } %>
             </div>
           </div>
         </div>
@@ -102,7 +105,6 @@
               </ul>
             </li>
             <li><a href="./blog.html">Blog</a></li>
-            <li><a href="./contact.html">Contact</a></li>
           </ul>
         </nav>
       </div>
@@ -121,7 +123,9 @@
               <a href="#"><i class="fa fa-eye"></i></a>
             </li>
           </ul>
+          <% if (authUser) { %>
           <div class="header__cart__price">item: <span>$150.00</span></div>
+          <% } %>
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsNotEmpty,
   IsString,
@@ -6,14 +7,14 @@ import {
   Length,
   Matches,
 } from 'class-validator';
-export class UserCreateDto {
+export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   readonly email: string;
 
   @IsNotEmpty()
   @IsString()
-  @Matches(/^(?=.*[a-z])(?=.*[0-9])[a-z0-9]+$/, {
+  @Matches(/^(?=.*[a-z])(?=.*[0-9])[a-z0-9!@#$%^&*]+$/i, {
     message: '비밀번호는 최소 하나의 소문자와 하나의 숫자를 포함해야 합니다.',
   })
   @Length(8, 20, {
@@ -36,10 +37,16 @@ export class UserCreateDto {
   readonly point: number;
 
   @IsOptional()
+  @Transform(({ obj, key }) => {
+    return obj[key] === 'true' ? true : obj[key] === 'false' ? false : obj[key];
+  })
   @IsBoolean()
   readonly seller_flag: boolean;
 
   @IsOptional()
   @IsString()
   readonly provider: string;
+
+  @IsOptional()
+  readonly files: Express.Multer.File[];
 }

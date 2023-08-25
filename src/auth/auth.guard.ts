@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { UsersEntity } from '../users/entities/users.entity';
+import { UsersEntity } from '../common/entities/users.entity';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -33,6 +33,7 @@ export class AuthGuard implements CanActivate {
           user_id: payload.user_id,
           email: payload.email,
           user_name: payload.user_name,
+          profile_image: payload.profile_image,
           isAdmin: payload.isAdmin || false,
         };
 

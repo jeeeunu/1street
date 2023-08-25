@@ -5,6 +5,8 @@ import { NestFactory } from '@nestjs/core';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { CustomValidationException } from './common/exceptions';
+import * as AWS from 'aws-sdk';
+import { GlobalCatchException } from './common/exceptions/global-catch.exception';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -23,10 +25,19 @@ async function bootstrap() {
     }),
   );
 
+  //-- 글로벌 예외 처리 --//
+  app.useGlobalFilters(new GlobalCatchException()); // try, catch문 생략 가능
+
   //-- ejs --//
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', '/views'));
   app.setViewEngine('ejs');
+
+  //-- aws --//
+  AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  });
 
   await app.listen(3000);
 }

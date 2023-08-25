@@ -7,13 +7,19 @@ import {
   UseGuards,
   ValidationPipe,
   Delete,
+  Patch,
+  UploadedFiles,
+  UseInterceptors,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './users.service';
-import { UserCreateDto } from './dto';
+import { CreateUserDto, EditUserDto } from './dtos';
+import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from './interfaces/index';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser } from '../auth/auth.decorator';
-import { ResultableInterface } from 'src/common/interfaces';
+import { Response } from 'express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
@@ -22,26 +28,44 @@ export class UserController {
   //-- 일반 회원가입 --//
   @Post()
   @UsePipes(ValidationPipe)
-  async signUp(@Body() userDto: UserCreateDto): Promise<ResultableInterface> {
-    return await this.userService.signUp(userDto);
+  @UseInterceptors(FilesInterceptor('files'))
+  async signUp(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<ResultableInterface> {
+    return await this.userService.signUp(createUserDto, files);
   }
 
-  //-- TODO :: AuthGuard/AuthUser 테스트용, 삭제 예정 --//
-  @Get()
+  //-- 유저 조회 --//
+  @Get('/:category')
   @UseGuards(AuthGuard)
-  async test(
-    @AuthUser() authUser: RequestUserInterface, // user 정보 받아올 수 있음
-  ): Promise<any> {
-    return console.log(authUser);
+  async getUserInfo(@AuthUser() authUser: RequestUserInterface): Promise<any> {
+    return await this.userService.find(authUser.user_id);
   }
 
-  //-- 회원 탈퇴 --//
-  @Delete()
+  //-- 유저 수정 --//
+  @Patch()
   @UseGuards(AuthGuard)
-  @UsePipes(ValidationPipe)
-  async deleteUser(
+  @UseInterceptors(FilesInterceptor('files'))
+  async editUser(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body() editUserDto: EditUserDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    return await this.userService.delete(authUser.user_id);
+    return await this.userService.edit(authUser.user_id, editUserDto, files);
+  }
+
+  //-- 유저 탈퇴 --//
+  @Delete()
+  async deleteUser(
+    @AuthUser() authUser: RequestUserInterface,
+    @Res() res: Response,
+  ): Promise<any> {
+    res.clearCookie('Authentication');
+    const message = await this.userService.delete(authUser.user_id);
+    return res.json({
+      status: true,
+      message: message,
+    });
   }
 }

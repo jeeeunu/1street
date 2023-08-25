@@ -7,15 +7,12 @@ import {
   Post,
   UsePipes,
   UseGuards,
-  HttpException,
-  HttpStatus,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto';
-import { ResultableInterface } from 'src/common/interfaces';
+import { LoginDto } from './dtos';
 
 @Controller('auth')
 export class AuthController {
@@ -38,46 +35,31 @@ export class AuthController {
 
   //-- 로그아웃 --//
   @Post('/logout')
-  @UsePipes(ValidationPipe)
-  async logout(
-    @Req() req,
-    @Res() response: Response,
-  ): Promise<ResultableInterface> {
-    if (req.user) {
-      response.clearCookie('access_token');
-
-      return {
-        status: true,
-        message: '로그아웃이 완료되었습니다.',
-      };
-    } else {
-      throw new HttpException(
-        { status: false, message: '이미 로그아웃 되었습니다.' },
-        HttpStatus.NOT_FOUND,
-      );
-    }
+  async logout(@Res() res: Response): Promise<Response> {
+    res.clearCookie('Authentication');
+    return res.json({
+      status: true,
+      message: '로그아웃 되었습니다.',
+    });
   }
 
   //-- google --//
   @Get('/google/login/callback')
   @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req) {
-    return req;
+  async googleAuth(@Res() res: Response): Promise<void> {
+    return res.redirect('/google/redirect');
   }
 
-  @Get('/google/redirect') // 고정
+  @Get('/google/redirect')
   @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(
-    @Req() req,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ status: boolean; access_token: string }> {
+  ): Promise<void> {
     const access_token = await this.authService.googleLogin(req);
     res.cookie('Authentication', access_token);
-    return {
-      status: true,
-      access_token,
-    };
+    res.redirect('/');
   }
 }
