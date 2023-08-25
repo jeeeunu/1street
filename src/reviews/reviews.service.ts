@@ -34,7 +34,7 @@ export class ReviewsService {
     }
 
     if (files.length !== 0) {
-      const imageDetails = await this.uploadsService.createS3ImagesDetails(
+      const imageDetails = await this.uploadsService.createProfileImageDetails(
         files,
       );
 
