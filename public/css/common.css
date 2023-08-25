@@ -1,5 +1,20 @@
+/* 초기화 */
 textarea {
   resize: none;
+}
+
+button {
+  background: inherit;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  overflow: visible;
+  cursor: pointer;
+}
+
+.btn-user-delete {
+  text-decoration: underline;
 }
 
 .error-message {

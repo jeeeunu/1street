@@ -1,11 +1,13 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MulterModule } from '@nestjs/platform-express';
 import { UserService } from './users.service';
 import { UserController } from './users.controller';
 import { UsersEntity } from '../common/entities/users.entity';
 import { UploadsService } from 'src/uploads/uploads.service';
+import * as cookieParser from 'cookie-parser';
 import * as multer from 'multer';
+import { AuthController } from 'src/auth/auth.controller';
 
 @Module({
   imports: [
@@ -18,4 +20,8 @@ import * as multer from 'multer';
   providers: [UserService, UploadsService],
   exports: [UserService],
 })
-export class UsersModule {}
+export class UsersModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(cookieParser()).forRoutes(AuthController);
+  }
+}

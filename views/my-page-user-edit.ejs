@@ -3,53 +3,6 @@
   <!-- include : head -->
   <%- include('includes/head') %>
 
-  <script>
-    //-- 유저 수정 api --//
-    const userEdit = async () => {
-      try {
-        const profileImageInput = document.querySelector('#profileInput');
-        const passwordInput = document.querySelector('#passwordInput');
-        const passwordConfirmInput = document.querySelector(
-          '#passwordConfirmInput',
-        );
-        const nameInput = document.querySelector('#nameInput');
-        const phoneNumberInput = document.querySelector('#phoneNumberInput');
-        const addressInput = document.querySelector('#addressInput');
-
-        if (passwordInput.value !== passwordConfirmInput.value) {
-          alert('비밀번호를 확인해주세요.');
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append('files', profileImageInput.files[0]);
-        formData.append('password', passwordInput.value);
-        formData.append('name', nameInput.value);
-        formData.append('phone_number', phoneNumberInput.value);
-        formData.append('address', addressInput.value);
-
-        const response = await fetch('/users', {
-          method: 'PATCH',
-          headers: { Accept: 'application/json' },
-          body: formData,
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          alert('회원 정보 수정이 완료되었습니다.');
-          window.location.href = '/my-page';
-        } else {
-          console.log(data);
-          alert(data.message);
-        }
-      } catch (error) {
-        console.error('에러 발생:', error);
-        alert('회원 정보 수정을 실패했습니다.');
-      }
-    };
-  </script>
-
   <body>
     <!-- include : preloder -->
     <%- include('includes/preloder') %> error-message-div
@@ -208,14 +161,51 @@
     </footer>
     <!-- Footer Section End -->
 
-    <!-- Js Plugins -->
-    <script src="js/jquery-3.3.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.nice-select.min.js"></script>
-    <script src="js/jquery-ui.min.js"></script>
-    <script src="js/jquery.slicknav.js"></script>
-    <script src="js/mixitup.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <script src="js/main.js"></script>
+    <script>
+      //-- 유저 수정 api --//
+      const userEdit = async () => {
+        try {
+          const profileImageInput = document.querySelector('#profileInput');
+          const passwordInput = document.querySelector('#passwordInput');
+          const passwordConfirmInput = document.querySelector(
+            '#passwordConfirmInput',
+          );
+          const nameInput = document.querySelector('#nameInput');
+          const phoneNumberInput = document.querySelector('#phoneNumberInput');
+          const addressInput = document.querySelector('#addressInput');
+
+          if (passwordInput.value !== passwordConfirmInput.value) {
+            alert('비밀번호를 확인해주세요.');
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append('files', profileImageInput.files[0]);
+          formData.append('password', passwordInput.value);
+          formData.append('name', nameInput.value);
+          formData.append('phone_number', phoneNumberInput.value);
+          formData.append('address', addressInput.value);
+
+          const response = await fetch('/users', {
+            method: 'PATCH',
+            headers: { Accept: 'application/json' },
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert('회원 정보 수정이 완료되었습니다.');
+            window.location.href = '/my-page';
+          } else {
+            console.log(data);
+            alert(data.message);
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('회원 정보 수정을 실패했습니다.');
+        }
+      };
+    </script>
   </body>
 </html>

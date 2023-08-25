@@ -78,7 +78,6 @@ export class AppController {
     const isIndexPath = request.url === '/';
     const userInfo = await this.userService.find(authUser.user_id);
     const user = userInfo.results;
-    console.log(user);
     response.render('my-page', {
       isIndexPath,
       authUser,

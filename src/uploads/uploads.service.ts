@@ -34,7 +34,7 @@ export class UploadsService {
   }
 
   //-- 이미지 저장 : 유저 프로필 --//
-  async createS3Images(files: Express.Multer.File[]): Promise<string> {
+  async createProfileImage(files: Express.Multer.File[]): Promise<string> {
     let key: string;
 
     const uploadPromises: Promise<void>[] = files.map(async (file) => {
@@ -48,7 +48,7 @@ export class UploadsService {
   }
 
   //-- 이미지 수정 : 유저 프로필 --//
-  async editS3Images(
+  async editProfileImage(
     url: string,
     files: Express.Multer.File[],
   ): Promise<string> {
@@ -67,8 +67,16 @@ export class UploadsService {
     return `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`; // Use the
   }
 
+  //-- 이미지 삭제 : 유저 프로필 --//
+  async deleteProfileImage(url: string): Promise<string> {
+    const baseUrl = 'https://1street.s3.ap-northeast-2.amazonaws.com/';
+    const fileKey = url.replace(baseUrl, '');
+    await this.deleteFile(fileKey);
+    return '이미지 파일 삭제 완료';
+  }
+
   //-- 이미지 저장 : 리뷰 이미지 --//
-  async createS3ImagesDetails(files: Express.Multer.File[]): Promise<any> {
+  async createProfileImageDetails(files: Express.Multer.File[]): Promise<any> {
     const uploadPromises: Promise<object>[] = files.map(async (file) => {
       const uniqueId = uuidv4();
       const key = `uploads-reviews/${uniqueId}`;
