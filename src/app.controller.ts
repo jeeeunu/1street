@@ -160,4 +160,25 @@ export class AppController {
       user,
     });
   }
+
+  //-- admin : 스토어 등록 --//
+  @Get('admin-create-store')
+  async adminCreateStore(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    if (!authUser.isAdmin) {
+      response.status(403).render('error-page', {
+        errorMessage: '접근이 불가능합니다.',
+      });
+      return;
+    }
+    const userInfo = await this.userService.find(authUser.user_id);
+    const user = userInfo.results;
+    response.render('admin-create-store', {
+      authUser,
+      user,
+    });
+  }
 }

@@ -8,6 +8,7 @@
         <span><%- authUser.user_name %> 님</span>
         <a href="/my-page-user-edit"> >내 정보 수정</a>
       </div>
+      <!-- 고객 -->
       <% if (authUser && authUser.isAdmin === false) { %>
       <div>
         <span>충전금액: </span>
@@ -21,6 +22,8 @@
         <span>잔여 쿠폰: </span>
         <span>2개</span>
       </div>
+      <% } %> <% if (authUser && authUser.isAdmin === true) { %>
+      <a href="/admin-create-store" style="font-weight: 800">스토어 만들기</a>
       <% } %>
     </div>
     <hr />

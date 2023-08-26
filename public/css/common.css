@@ -131,6 +131,7 @@ img {
   border-radius: 50%;
   font: bold 35px monospace;
   transition: opacity 0.5s, transform 0.5s;
+  z-index: 100;
 }
 
 #scroll-btn.show {
@@ -515,7 +516,7 @@ fieldset {
 }
 
 .edit-img-container {
-  margin-bottom: 50px;
+  margin-bottom: 30px;
   text-align: center;
 }
 
@@ -640,19 +641,28 @@ fieldset {
   display: flex;
 }
 
-.input-box label {
+.label {
+  flex-shrink: 0;
   width: 8%;
-  margin-right: 10px;
+  margin: 0 10px 0 0;
   font-size: 14px;
 }
 
 .input-box input {
   width: 92%;
-  padding: 5px;
-  font-size: 15px;
+  padding: 5px 30px;
+  font-size: 14px;
   border: 0;
-  border-radius: 12px;
+  border-radius: 10px;
   outline: none;
   padding-left: 10px;
   background-color: rgb(233, 233, 233);
+}
+
+.content-box {
+  margin-bottom: 40px;
+}
+
+.basic-input-box .edit-img-wrap {
+  margin: 0;
 }

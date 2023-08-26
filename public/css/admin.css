@@ -44,9 +44,35 @@
   font-size: 12px;
 }
 
+.section-title {
+  text-align: left;
+}
+
 .create-title {
   margin-bottom: 30px;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 400;
   color: #6f6f6f;
+}
+
+.input-box input {
+  max-width: 400px;
+}
+
+.input-box + .input-box,
+.input-box + .basic-input-box {
+  margin-top: 15px;
+}
+
+.edit-img-container + .edit-img-container {
+  margin-left: 10px;
+}
+
+.edit-img-container .edit-img-wrap {
+  width: 200px;
+  height: 200px;
+}
+
+.edit-img-container input {
+  width: 130px;
 }

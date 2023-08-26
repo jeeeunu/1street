@@ -325,13 +325,13 @@
             );
             newData.forEach((item) => {
               allProductsContainer.innerHTML += `
-              <div class="col-lg-3 col-md-4 col-sm-6 mix category${
-                item.category.category_number
-              }">
+              <div class="col-lg-3 col-md-4 col-sm-6 mix category">
                 <div class="featured__item">
                   <div
                     class="featured__item__pic set-bg"
-                    data-setbg="img/featured/feature-1.jpg"
+                    style="background-image: url('${
+                      item.product_image[0].url
+                    }');"
                   >
                     <ul class="featured__item__pic__hover">
                       <li>
