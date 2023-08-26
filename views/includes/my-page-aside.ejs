@@ -1,0 +1,43 @@
+<aside class="col-lg-3">
+  <div class="proflie-info-container">
+    <div class="primary-img-wrap">
+      <img src="<%- user.profile_image %> " alt="" />
+    </div>
+    <div class="text-wrap">
+      <div class="name-wrap">
+        <span><%- authUser.user_name %> 님</span>
+        <a href="/my-page-user-edit"> >내 정보 수정</a>
+      </div>
+      <% if (authUser && authUser.isAdmin === false) { %>
+      <div>
+        <span>충전금액: </span>
+        <span><%- user.point %>원</span>
+      </div>
+      <div>
+        <span>포인트: </span>
+        <span><%- user.point %>원</span>
+      </div>
+      <div>
+        <span>잔여 쿠폰: </span>
+        <span>2개</span>
+      </div>
+      <% } %>
+    </div>
+    <hr />
+    <div class="provider-text">
+      <% if (user.provider === "google") { %>
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
+        style="width: 15px; height: 15px; margin-right: 7px"
+        alt=""
+      />구글 로그인 <% } %>
+    </div>
+    <button
+      type="button"
+      class="gray-text btn-user-delete"
+      onclick="userDelete()"
+    >
+      회원 탈퇴
+    </button>
+  </div>
+</aside>

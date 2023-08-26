@@ -132,11 +132,30 @@ export class AppController {
       return;
     }
 
-    const isIndexPath = request.url === '/';
     const userInfo = await this.userService.find(authUser.user_id);
     const user = userInfo.results;
     response.render('admin-my-page', {
-      isIndexPath,
+      authUser,
+      user,
+    });
+  }
+
+  //-- admin : 상품 등록 --//
+  @Get('admin-create-product')
+  async adminCreateProduct(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    if (!authUser.isAdmin) {
+      response.status(403).render('error-page', {
+        errorMessage: '접근이 불가능합니다.',
+      });
+      return;
+    }
+    const userInfo = await this.userService.find(authUser.user_id);
+    const user = userInfo.results;
+    response.render('admin-create-product', {
       authUser,
       user,
     });

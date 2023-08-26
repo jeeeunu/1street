@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+
+  <body>
+    <!-- include : top-button -->
+    <%- include('includes/top-button') %>
+
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
+
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+    <!-- 내정보 (일반) -->
+    <main class="mypage container mypage-info create-product-container">
+      <h2 class="title">관리자 페이지</h2>
+      <div class="row">
+        <!-- include : aside -->
+        <%- include('includes/my-page-aside') %>
+
+        <section class="col-lg-9">
+          <section>
+            <h2 class="section-title">상품 등록</h2>
+            <p class="create-title">*상품의 카테고리를 선택해주세요.</p>
+            <div class="radios">
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" checked />
+                  <span>의류</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>뷰티</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>유아동</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>식품</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>주방용품</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>생활용품</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>인테리어</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>가전 디지털</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>스포츠 / 레저</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>자동차 용품</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>도서 / 음반 / DVD</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>완구 / 취미</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>문구 / 오피스 </span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>반려동물 용품</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="contact" value="phone" />
+                  <span>헬스 / 건강식품</span>
+                </label>
+              </div>
+            </div>
+            <div class="input-container">
+              <h2 class="create-title">*상품정보를 등록해주세요</h2>
+              <div class="input-box">
+                <label class="required">상품명</label>
+                <input type="text" id="emailInput" name="" required="" />
+              </div>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <!-- include : footer -->
+    <%- include('includes/footer') %>
+
+    <script></script>
+  </body>
+</html>
