@@ -44,11 +44,12 @@ export class UserService {
 
     const createUser = await this.usersEntity.save(userDto);
 
-    if (files !== undefined) {
+    if (files.length > 0) {
       const imageUrl = await this.uploadsService.createProfileImage(files);
       createUser.profile_image = imageUrl;
-
       if (!imageUrl) throw new BadRequestException();
+    } else {
+      createUser.profile_image = null;
     }
 
     await this.usersEntity.save(createUser);
