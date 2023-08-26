@@ -6,10 +6,13 @@ import {
   Param,
   Post,
   Query,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { AuthUser } from '../auth/auth.decorator';
 import { AuthGuard } from '../auth/auth.guard';
 import { ProductsEntity } from '../common/entities/products.entity';
@@ -57,7 +60,9 @@ export class ProductsController {
   //-- 상품 등록 --//
   @Post()
   @UseGuards(AuthGuard)
+  @UseInterceptors(FilesInterceptor('files'))
   async createProduct(
+    @UploadedFiles() files: Express.Multer.File[],
     @Body() data: ProductCreateDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
