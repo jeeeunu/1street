@@ -34,7 +34,6 @@ export class ShopsController {
     @Body() shopData: ShopCreateDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    //TODO:: 유저 아이디 받아오기
     return await this.shopsService.create(shopData, authUser);
   }
 

@@ -168,7 +168,7 @@
               <button
                 type="button"
                 class="btn-primary-m"
-                onclick="saveTinyData()"
+                onclick="createProduct()"
               >
                 상품등록 하기
               </button>
@@ -189,7 +189,7 @@
       });
 
       //-- 상품등록 api --//
-      const saveTinyData = async () => {
+      const createProduct = async () => {
         try {
           const radios = document.getElementsByName('category');
           let category;

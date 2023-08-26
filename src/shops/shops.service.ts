@@ -50,18 +50,11 @@ export class ShopsService {
     });
     if (foundShop)
       throw new ForbiddenException('스토어는 계정당 1개만 만들 수 있습니다.');
-    try {
-      await this.shopRepository.insert({
-        user: { id: user.id },
-        ...shopData,
-      });
-      return { status: true, message: '스토어 생성에 성공했습니다.' };
-    } catch (err) {
-      console.log(err.message);
-      throw new InternalServerErrorException(
-        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-      );
-    }
+    await this.shopRepository.insert({
+      user: { id: user.id },
+      ...shopData,
+    });
+    return { status: true, message: '스토어 생성에 성공했습니다.' };
   }
 
   //-- 스토어 수정 --//

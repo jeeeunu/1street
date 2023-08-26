@@ -28,17 +28,17 @@
                 <h2 class="create-title">*스토어 정보를 등록해주세요</h2>
                 <div class="input-box">
                   <label class="label required">스토어명: </label>
-                  <input type="text" id="storeName" name="" required="" />
+                  <input type="text" id="shopName" name="" required="" />
                 </div>
                 <div class="input-box">
                   <label class="required label">스토어 설명: </label>
-                  <input type="text" id="storeDomestic" name="" required="" />
+                  <input type="text" id="shopDesc" name="" required="" />
                 </div>
               </div>
               <button
                 type="button"
                 class="btn-primary-m"
-                onclick="saveTinyData()"
+                onclick="createStore()"
               >
                 스토어 만들기
               </button>
@@ -53,22 +53,28 @@
 
     <script>
       //-- 스토어 생성 api --//
-      const saveTinyData = async () => {
+      const createStore = async () => {
         try {
-          const productName = document.querySelector('#productName');
-          const productPrice = document.querySelector('#productPrice');
+          const shopName = document.querySelector('#shopName');
+          const shopDesc = document.querySelector('#shopDesc');
+
+          const requestData = {
+            shop_name: shopName.value,
+            shop_desc: shopDesc.value,
+          };
 
           const response = await fetch('shops', {
             method: 'POST',
-            headers: { Accept: 'application/json' },
-            body: formData,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
           });
 
           const data = await response.json();
 
           if (response.ok) {
             alert(data.message);
-
             window.location.href = '/';
           } else {
             console.log(data.message);
