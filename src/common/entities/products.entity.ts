@@ -11,6 +11,7 @@ import { ShopsEntity } from './shops.entity';
 import { LikeEntity } from './likes.entity';
 import { OrderDetailsEntity } from 'src/orders/entities/order-detail.entity';
 import { QnasEntity } from './qnas.entity';
+import { ProductImageEntity } from 'src/products/entities/product_image.entity';
 
 @Entity({ name: 'products' })
 export class ProductsEntity {
@@ -53,4 +54,7 @@ export class ProductsEntity {
 
   @OneToMany(() => QnasEntity, (qna) => qna.product)
   public qna: QnasEntity[];
+
+  @OneToMany(() => ProductImageEntity, (product_image) => product_image.product)
+  public product_image: ProductImageEntity[];
 }

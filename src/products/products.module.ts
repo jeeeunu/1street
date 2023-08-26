@@ -4,6 +4,7 @@ import { CategoryEntity } from './entities/category.entity';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 import { ProductsEntity, ShopsEntity, UsersEntity } from '../common/entities';
+import { ProductImageEntity } from './entities/product_image.entity';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ProductsEntity, ShopsEntity, UsersEntity } from '../common/entities';
       CategoryEntity,
       UsersEntity,
       ShopsEntity,
+      ProductImageEntity,
     ]),
   ],
   providers: [ProductsService],
