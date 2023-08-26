@@ -29,22 +29,32 @@ export class ProductsEntity {
   @IsString()
   public product_desc: string;
 
+  //-- 상품 원산지 --//
+  @Column({ nullable: false })
+  @IsString()
+  public product_domestic: string;
+
   //-- 상품 가격 --//
   @Column({ nullable: false })
   @IsNumber()
   public product_price: number;
 
   //-- 상품 썸네일 --//
-  @Column({ nullable: true })
-  @IsOptional()
-  @IsString()
-  public product_thumbnail?: string;
+  // @Column({ nullable: true })
+  // @IsOptional()
+  // @IsString()
+  // public product_thumbnail?: string;
+
+  //-- 상품 카테고리 --//
+  @Column({ nullable: false })
+  @IsNumber()
+  public category_number: number;
 
   @ManyToOne(() => ShopsEntity, (shop) => shop.products)
   public shop: ShopsEntity;
 
-  @ManyToOne(() => CategoryEntity, (category) => category.products)
-  public category: CategoryEntity;
+  // @ManyToOne(() => CategoryEntity, (category) => category.products)
+  // public category: CategoryEntity;
 
   @OneToMany(() => LikeEntity, (like) => like.product)
   public likes: LikeEntity[];

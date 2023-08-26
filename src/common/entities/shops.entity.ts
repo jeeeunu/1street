@@ -25,12 +25,6 @@ export class ShopsEntity {
   @IsString()
   public shop_desc: string;
 
-  //-- 스토어 썸네일 --//
-  @Column({ nullable: true })
-  @IsOptional()
-  @IsString()
-  public shop_image?: string;
-
   @ManyToOne(() => UsersEntity, (user) => user.shops)
   public user: UsersEntity;
 

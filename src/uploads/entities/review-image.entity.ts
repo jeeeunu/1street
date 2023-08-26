@@ -14,12 +14,6 @@ export class ReviewImageEntity {
   @Column()
   review_id: number;
 
-  @Column()
-  e_tag: string;
-
-  @Column()
-  original_name: string;
-
   @Column({ comment: 's3 업로드된 localtion url' })
   url: string;
 
