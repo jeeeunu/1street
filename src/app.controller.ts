@@ -16,6 +16,11 @@ export class AppController {
     @Res() response: Response,
   ): void {
     const isIndexPath = request.url === '/';
+
+    if (authUser && authUser !== null && authUser.isAdmin === true) {
+      return response.redirect('admin-my-page');
+    }
+
     response.render('index', {
       isIndexPath,
       authUser,
@@ -110,6 +115,30 @@ export class AppController {
     response.render('product-detail', {
       isIndexPath,
       authUser,
+    });
+  }
+
+  //-- admin : 메인 - 마이 페이지 --//
+  @Get('admin-my-page')
+  async adminMyPage(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    if (!authUser.isAdmin) {
+      response.status(403).render('error-page', {
+        errorMessage: '접근이 불가능합니다.',
+      });
+      return;
+    }
+
+    const isIndexPath = request.url === '/';
+    const userInfo = await this.userService.find(authUser.user_id);
+    const user = userInfo.results;
+    response.render('admin-my-page', {
+      isIndexPath,
+      authUser,
+      user,
     });
   }
 }

@@ -71,10 +71,11 @@
               <button type="button" id="logoutButton" onclick="logout()">
                 <i class="fa fa-sign-out"></i> Logout
               </button>
+              <% if (authUser && authUser.isAdmin === false) { %>
               <button type="button" onclick="location.href='/my-page'">
                 <i class="fa fa-user"></i> Mypage
               </button>
-              <% } else { %>
+              <% } %> <% } else { %>
               <a href="/sign-in"><i class="fa fa-user"></i> Login</a>
               <% } %>
             </div>
@@ -83,6 +84,8 @@
       </div>
     </div>
   </div>
+
+  <% if (!authUser || authUser.isAdmin === false) { %>
   <div class="container">
     <div class="row">
       <div class="col-lg-3">
@@ -133,5 +136,6 @@
       <i class="fa fa-bars"></i>
     </div>
   </div>
+  <% } %>
 </header>
 <!-- Header Section End -->

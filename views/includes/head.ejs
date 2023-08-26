@@ -40,4 +40,7 @@
   <link rel="stylesheet" href="css/slicknav.min.css" type="text/css" />
   <link rel="stylesheet" href="css/style.css" type="text/css" />
   <link rel="stylesheet" href="css/my-page.css" type="text/css" />
+  <% if (authUser && authUser.isAdmin === true) { %>
+  <link rel="stylesheet" href="css/admin.css" type="text/css" />
+  <% } %>
 </head>
