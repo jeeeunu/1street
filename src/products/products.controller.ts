@@ -7,6 +7,8 @@ import {
   Post,
   Query,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthUser } from '../auth/auth.decorator';
 import { AuthGuard } from '../auth/auth.guard';
@@ -15,10 +17,20 @@ import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
 import { ProductCreateDto, ProductUpdateDto } from './dtos';
 import { ProductsService } from './products.service';
+import { PaginationDto } from 'src/common/dtos';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
+
+  //-- 상품 전체보기 --//
+  @Get()
+  @UsePipes(ValidationPipe)
+  async getProducts(
+    @Query() paginationDto: PaginationDto,
+  ): Promise<ProductsEntity[]> {
+    return this.productsService.findAll(paginationDto);
+  }
 
   //-- 상품 상세보기 --//
   @Get(':id')

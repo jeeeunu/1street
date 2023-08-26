@@ -11,6 +11,7 @@ import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
 import { ProductCreateDto, ProductUpdateDto } from './dtos';
 import { CategoryEntity } from './entities/category.entity';
+import { PaginationDto } from 'src/common/dtos';
 
 @Injectable()
 export class ProductsService {
@@ -23,18 +24,28 @@ export class ProductsService {
     private shopRepository: Repository<ShopsEntity>,
   ) {}
 
+  //-- 상품 전체보기 --//
+  async findAll(paginationDto: PaginationDto): Promise<ProductsEntity[]> {
+    const { limit, cursor } = paginationDto;
+
+    const query = this.productRepository
+      .createQueryBuilder('product')
+      .orderBy('product.id', 'ASC')
+      .leftJoinAndSelect('product.category', 'category')
+      .take(limit || 10);
+
+    if (cursor) {
+      query.where('product.id > :cursor', { cursor });
+    }
+
+    return query.getMany();
+  }
+
   //-- 상품 상세보기 --//
   async findById(id: number): Promise<ProductsEntity> {
-    try {
-      const product = await this.productRepository.findOne({ where: { id } });
-      if (!product)
-        throw new NotFoundException('해당 상품이 존재하지 않습니다.');
-      return product;
-    } catch (err) {
-      throw new InternalServerErrorException(
-        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-      );
-    }
+    const product = await this.productRepository.findOne({ where: { id } });
+    if (!product) throw new NotFoundException('해당 상품이 존재하지 않습니다.');
+    return product;
   }
 
   //-- 상품 검색 (검색어)--//
