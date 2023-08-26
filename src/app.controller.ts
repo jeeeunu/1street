@@ -17,10 +17,10 @@ export class AppController {
   ): void {
     const isIndexPath = request.url === '/';
 
+    console.log(authUser);
     if (authUser && authUser !== null && authUser.isAdmin === true) {
       return response.redirect('admin-my-page');
     }
-
     response.render('index', {
       isIndexPath,
       authUser,
@@ -176,6 +176,7 @@ export class AppController {
     }
     const userInfo = await this.userService.find(authUser.user_id);
     const user = userInfo.results;
+    // console.log(authUser);
     response.render('admin-create-store', {
       authUser,
       user,

@@ -84,7 +84,6 @@ export class UserService {
         'order_details.order_quantity',
         'product.id',
         'product.product_name',
-        'product.product_thumbnail',
         'qna.id',
       ])
       .getOne();

@@ -9,12 +9,15 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dtos';
 import { UsersEntity } from '../common/entities/users.entity';
+import { ShopsEntity } from 'src/common/entities';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UsersEntity)
     private usersRepository: Repository<UsersEntity>,
+    @InjectRepository(ShopsEntity)
+    private shopsEntity: Repository<ShopsEntity>,
     private jwtService: JwtService,
   ) {}
 

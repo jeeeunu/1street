@@ -7,10 +7,16 @@ import { UsersEntity } from 'src/common/entities/users.entity';
 import { UserService } from 'src/users/users.service';
 import { OrderDetailsEntity } from './entities/order-detail.entity';
 import { UploadsService } from 'src/uploads/uploads.service';
+import { ShopsEntity } from 'src/common/entities';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([OrdersEntity, UsersEntity, OrderDetailsEntity]),
+    TypeOrmModule.forFeature([
+      OrdersEntity,
+      UsersEntity,
+      OrderDetailsEntity,
+      ShopsEntity,
+    ]),
   ],
   controllers: [OrdersController],
   providers: [OrdersService, UserService, UploadsService],
