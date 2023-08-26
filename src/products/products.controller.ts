@@ -50,12 +50,12 @@ export class ProductsController {
   }
 
   //-- 상품 검색 (카테고리 번호)--//
-  @Get('search/:category')
-  async searchCategory(
-    @Param('category') category: number,
-  ): Promise<ProductsEntity[]> {
-    return await this.productsService.findByCategory(category);
-  }
+  // @Get('search/:category')
+  // async searchCategory(
+  //   @Param('category') category: number,
+  // ): Promise<ProductsEntity[]> {
+  //   return await this.productsService.findByCategory(category);
+  // }
 
   //-- 상품 등록 --//
   @Post()
@@ -66,19 +66,19 @@ export class ProductsController {
     @Body() data: ProductCreateDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    return await this.productsService.create(data, authUser);
+    return await this.productsService.create(data, authUser, files);
   }
 
   //-- 상품 수정 --//
-  @Post(':id')
-  @UseGuards(AuthGuard)
-  async updateProduct(
-    @Param('id') id: number,
-    @Body() data: ProductUpdateDto,
-    @AuthUser() authUser: RequestUserInterface,
-  ): Promise<ResultableInterface> {
-    return await this.productsService.update(id, data, authUser);
-  }
+  // @Post(':id')
+  // @UseGuards(AuthGuard)
+  // async updateProduct(
+  //   @Param('id') id: number,
+  //   @Body() data: ProductUpdateDto,
+  //   @AuthUser() authUser: RequestUserInterface,
+  // ): Promise<ResultableInterface> {
+  //   return await this.productsService.update(id, data, authUser);
+  // }
 
   //-- 상품 삭제 --//
   @Delete(':id')

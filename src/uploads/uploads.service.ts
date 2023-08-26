@@ -35,12 +35,12 @@ export class UploadsService {
 
     const uploadPromises: Promise<void>[] = files.map(async (file) => {
       const uniqueId = uuidv4();
-      key = `uploads-profile/${uniqueId}`; // Assign the value to the key variable
+      key = `uploads-profile/${uniqueId}`;
       await this.uploadPromise(file, key);
     });
 
     await Promise.all(uploadPromises);
-    return `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`; // Use the
+    return `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`;
   }
 
   //-- 이미지 수정 : 유저 프로필 --//
@@ -55,12 +55,12 @@ export class UploadsService {
     let key: string;
     const uploadPromises: Promise<void>[] = files.map(async (file) => {
       const uniqueId = uuidv4();
-      key = `uploads-profile/${uniqueId}`; // Assign the value to the key variable
+      key = `uploads-profile/${uniqueId}`;
       await this.uploadPromise(file, key);
     });
 
     await Promise.all(uploadPromises);
-    return `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`; // Use the
+    return `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`;
   }
 
   //-- 이미지 삭제 : 유저 프로필 --//
@@ -71,21 +71,16 @@ export class UploadsService {
     return '이미지 파일 삭제 완료';
   }
 
-  //-- 이미지 저장 : 리뷰 이미지 --//
-  async createProfileImageDetails(files: Express.Multer.File[]): Promise<any> {
-    const uploadPromises: Promise<object>[] = files.map(async (file) => {
+  //-- 이미지 저장 : 상품 이미지 --//
+  async createProductImages(files: Express.Multer.File[]): Promise<string[]> {
+    const uploadPromises: Promise<string>[] = files.map(async (file) => {
       const uniqueId = uuidv4();
-      const key = `uploads-reviews/${uniqueId}`;
-      const eTag = await this.uploadPromise(file, key);
-
-      return {
-        imageUrl: `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`,
-        originalName: file.originalname,
-        eTag: eTag,
-      };
+      const key = `uploads-product/${uniqueId}`;
+      await this.uploadPromise(file, key);
+      return `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`;
     });
 
-    const uploadedImages = await Promise.all(uploadPromises);
-    return uploadedImages;
+    const uploadedUrls = await Promise.all(uploadPromises);
+    return uploadedUrls;
   }
 }
