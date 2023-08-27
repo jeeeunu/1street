@@ -16,11 +16,9 @@ import { AuthenticationMiddleware } from './auth/auth.middleware';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UploadsModule } from './uploads/uploads.module';
-import { CartsController } from './carts/carts.controller';
 import { CartsModule } from './carts/carts.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
-import { UsersEntity } from './common/entities';
 
 @Module({
   imports: [
@@ -46,7 +44,7 @@ import { UsersEntity } from './common/entities';
         return {
           store: redisStore,
           host: process.env.REDIS_HOST,
-          port: process.env.REDIS_PORT,
+          port: Number(process.env.REDIS_PORT),
         };
       },
     }),
@@ -66,7 +64,7 @@ import { UsersEntity } from './common/entities';
     UploadsModule,
     CartsModule,
   ],
-  controllers: [AppController, CartsController],
+  controllers: [AppController],
   providers: [AppService, GoogleStrategy],
 })
 export class AppModule implements NestModule {

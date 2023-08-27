@@ -1,5 +1,4 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { RedisService } from 'nestjs-redis';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { ResultableInterface } from 'src/common/interfaces';
@@ -21,7 +20,7 @@ export class CartsService {
     return { status: true, message: '상품이 장바구니에 추가되었습니다.' };
   }
 
-  async getCart(user_id: number) {
+  async getCart(user_id: number): Promise<any> {
     const redisClient = this.cacheManager.get(`${user_id}`);
     return redisClient;
   }

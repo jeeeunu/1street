@@ -1,9 +1,9 @@
 import { Controller, Post, Get, Body, Param, UseGuards } from '@nestjs/common';
 import { CartsService } from './carts.service';
 import { AuthUser } from '../auth/auth.decorator';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { RequestUserInterface } from 'src/users/interfaces';
-import { ResultableInterface } from 'src/common/interfaces';
+import { AuthGuard } from '../auth/auth.guard';
+import { ResultableInterface } from '../common/interfaces';
+import { RequestUserInterface } from '../users/interfaces';
 
 @Controller('cart')
 export class CartsController {
@@ -24,7 +24,8 @@ export class CartsController {
   }
 
   @Get(':user_id')
-  async getCart(@Param('user_id') user_id: number) {
+  @UseGuards(AuthGuard)
+  async getCart(@Param('user_id') user_id: number): Promise<any> {
     const cartItems = await this.cartsService.getCart(user_id);
     return cartItems;
   }
