@@ -41,7 +41,7 @@ export class AuthGuard implements CanActivate {
           user_name: payload.user_name,
           profile_image: payload.profile_image,
           isAdmin: payload.isAdmin || false,
-          shop_id: shop ? shop.user_id : undefined,
+          shop_id: shop ? shop.id : undefined,
         };
 
         request.user = user;

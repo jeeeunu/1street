@@ -13,16 +13,15 @@
     <!-- include : header -->
     <%- include('includes/header') %>
 
-
     <!-- 내정보 (일반) -->
     <main class="mypage container mypage-info">
       <h2 class="title">관리자 페이지</h2>
       <div class="row">
-      <!-- include : aside -->
-      <%- include('includes/my-page-aside') %>
+        <!-- include : aside -->
+        <%- include('includes/my-page-aside') %>
 
-      <!-- shop 존재시 -->
-      <% if (authUser.shop_id !== undefined) { %>
+        <!-- shop 존재시 -->
+        <% if (authUser.shop_id !== undefined) { %>
         <section class="col-lg-9">
           <section class="status-container">
             <ul class="status-list">
@@ -33,20 +32,17 @@
               <li class="status-item">
                 <p>배송중</p>
                 <p>
-                  <a href="">
-              
-                  </a>
-               </p>
+                  <a href=""> </a>
+                </p>
               </li>
               <li class="status-item">
                 <p>배송완료</p>
-                <p><a href="">
-                  <% if (user.like_count) { %>
-                    <%= user.like_count %>
-                  <% } else { %>
-                    0 
-                  <% } %>
-                  건</a></p>
+                <p>
+                  <a href="">
+                    <% if (user.like_count) { %> <%= user.like_count %> <% }
+                    else { %> 0 <% } %> 건</a
+                  >
+                </p>
               </li>
               <li class="status-item">
                 <p>새 리뷰</p>
@@ -77,7 +73,7 @@
                 <li class="td">확인/신청</li>
               </ul>
               <ul class="t-body">
-                <li class="tr">
+                <!-- <li class="tr">
                   <div class="td">
                     <p class="date-text">2023.01.01</p>
                   </div>
@@ -102,17 +98,48 @@
                     <span>배송완료</spㄴ>
                   </div>
                   <div class="td">
-                    <!-- TODO :: 버튼 각 상황에 맞게 -->
                     <button type="button" class="btn-primary-s">배송완료 확인</button>
                   </div>
+                </li> -->
+                <% products.forEach((product) => { %>
+                <li class="tr">
+                  <div class="td">
+                    <p class="date-text"><%= '2023.01.01' %></p>
+                  </div>
+                  <div class="td">
+                    <div class="order-info-wrap">
+                      <div class="img-wrap">
+                        <img src="<%= '이미지 URL' %>" alt="" />
+                      </div>
+                      <div class="text-wrap">
+                        <a href="">
+                          <span><%= product.id %></span>
+                          <span class="product-title"
+                            ><%= product.product_name %></span
+                          >
+                          <span><%= product.product_desc %></span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="td status-wrap">
+                    <span><%= '배송완료' %></span>
+                  </div>
+                  <div class="td">
+                    <!-- TODO :: 버튼 각 상황에 맞게 -->
+                    <button type="button" class="btn-primary-s">
+                      배송완료 확인
+                    </button>
+                  </div>
                 </li>
+                <% }); %>
               </ul>
             </div>
           </section>
         </section>
-       <% } %>
-      <!-- shop 없을시 -->
-      <% if (authUser.shop_id === undefined) { %>
+        <% } %>
+        <!-- shop 없을시 -->
+        <% if (authUser.shop_id === undefined) { %>
         <section class="col-lg-9">
           <section>
             <h2 class="section-title">스토어 등록</h2>
@@ -140,15 +167,15 @@
             </div>
           </section>
         </section>
-      <% } %>
+        <% } %>
       </div>
     </main>
     <!-- include : footer -->
     <%- include('includes/footer') %>
 
     <script>
-    //-- 스토어 생성 api --//
-    const createStore = async () => {
+      //-- 스토어 생성 api --//
+      const createStore = async () => {
         try {
           const shopName = document.querySelector('#shopName');
           const shopDesc = document.querySelector('#shopDesc');
@@ -187,70 +214,72 @@
           alert('오류가 발생했습니다.');
         }
       };
-    //-- 유저 탈퇴 api --//
-    const userDelete = async () => {
-      const firstConfirm = window.confirm('회원 탈퇴 하시겠습니까?');
+      //-- 유저 탈퇴 api --//
+      const userDelete = async () => {
+        const firstConfirm = window.confirm('회원 탈퇴 하시겠습니까?');
 
-      if (firstConfirm) {
-        const secondConfirm = window.confirm('다시 되돌릴 수 없습니다. 정말 탈퇴하시겠습니까?');
+        if (firstConfirm) {
+          const secondConfirm = window.confirm(
+            '다시 되돌릴 수 없습니다. 정말 탈퇴하시겠습니까?',
+          );
 
-        if (secondConfirm) {
-          try {
-            const response = await fetch('users', {
-              method: 'DELETE',
-            });
+          if (secondConfirm) {
+            try {
+              const response = await fetch('users', {
+                method: 'DELETE',
+              });
 
-            const data = await response.json();
-            console.log(data)
+              const data = await response.json();
+              console.log(data);
 
-            if (response.ok) {
-              alert(data.message);
-              window.location.href = '/';
-            } else {
-              alert(data.message);
-              console.error('회원 탈퇴중 오류가 발생했습니다.');
-              window.location.href = '/';
+              if (response.ok) {
+                alert(data.message);
+                window.location.href = '/';
+              } else {
+                alert(data.message);
+                console.error('회원 탈퇴중 오류가 발생했습니다.');
+                window.location.href = '/';
+              }
+            } catch (error) {
+              console.error('Error:', error);
+              alert('오류가 발생했습니다.');
             }
-
-          } catch (error) {
-            console.error('Error:', error);
-            alert('오류가 발생했습니다.');
           }
         }
-      }
-    };
-    //-- 스토어 삭제 api --// 
-    const shopDelete = async () => {
-      const firstConfirm = window.confirm('스토어를 삭제 하시겠습니까?');
+      };
+      //-- 스토어 삭제 api --//
+      const shopDelete = async () => {
+        const firstConfirm = window.confirm('스토어를 삭제 하시겠습니까?');
 
-      if (firstConfirm) {
-        const secondConfirm = window.confirm('다시 되돌릴 수 없습니다. 정말 삭제하시겠습니까?');
+        if (firstConfirm) {
+          const secondConfirm = window.confirm(
+            '다시 되돌릴 수 없습니다. 정말 삭제하시겠습니까?',
+          );
 
-        if (secondConfirm) {
-          try {
-            const response = await fetch('shops', {
-              method: 'DELETE',
-            });
+          if (secondConfirm) {
+            try {
+              const response = await fetch('shops', {
+                method: 'DELETE',
+              });
 
-            const data = await response.json();
-            console.log(data)
+              const data = await response.json();
+              console.log(data);
 
-            if (response.ok) {
-              alert(data.message);
-              window.location.href = '/';
-            } else {
-              alert(data.message);
-              console.error('스토어 삭제중 오류가 발생했습니다.');
-              window.location.href = '/';
+              if (response.ok) {
+                alert(data.message);
+                window.location.href = '/';
+              } else {
+                alert(data.message);
+                console.error('스토어 삭제중 오류가 발생했습니다.');
+                window.location.href = '/';
+              }
+            } catch (error) {
+              console.error('Error:', error);
+              alert('오류가 발생했습니다.');
             }
-
-          } catch (error) {
-            console.error('Error:', error);
-            alert('오류가 발생했습니다.');
           }
         }
-      }
-    };
-  </script>
+      };
+    </script>
   </body>
 </html>

@@ -4,12 +4,14 @@ import { UserService } from './users/users.service';
 import { AuthUser } from './auth/auth.decorator';
 import { RequestUserInterface } from './users/interfaces';
 import { ShopsService } from './shops/shops.service';
+import { ProductsService } from './products/products.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly userService: UserService,
     private readonly shopsService: ShopsService,
+    private readonly productsService: ProductsService,
   ) {}
 
   //-- 공통 : admin --//
@@ -146,10 +148,16 @@ export class AppController {
     @Res() response: Response,
   ): Promise<void> {
     const { user, shop } = await this.adminPageData(authUser, response);
+    const products = await this.productsService.findRegisteredAll(
+      authUser.shop_id,
+    );
+    console.log(authUser);
+    console.log(products);
     response.render('admin-my-page', {
       authUser,
       user,
       shop,
+      products,
     });
   }
 

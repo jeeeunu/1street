@@ -47,12 +47,14 @@ export class ProductsService {
   }
 
   //-- admin : 등록된 상품  보기 --//
-  // async findRegisteredAll(userId: number): Promise<[ProductsEntity]> {
-  //   const products = await this.productRepository.find({
-  //     where: {}
-  //   })
-  //   return products;
-  // }
+  async findRegisteredAll(shopId: number): Promise<ProductsEntity[]> {
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .where('product.shop_id = :shopId', { shopId })
+      .getMany();
+
+    return products;
+  }
 
   //-- 상품 상세보기 --//
   async findById(id: number): Promise<ProductsEntity> {
@@ -97,6 +99,7 @@ export class ProductsService {
       throw new NotFoundException('해당하는 카테고리가 없습니다.');
 
     const createProduct = await this.productRepository.save({
+      user_id: authUser.shop_id,
       product_name: data.product_name,
       product_desc: data.product_desc,
       product_price: data.product_price,

@@ -41,6 +41,10 @@ export class AuthService {
     if (!isPasswordMatching)
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
 
+    const shop = await this.shopsEntity.findOne({
+      where: { user_id: user.id },
+    });
+
     // JWT 토큰에 포함될 payload
     const payload = {
       user_id: user.id,
@@ -48,6 +52,7 @@ export class AuthService {
       profile_image: user.profile_image,
       user_name: user.name,
       isAdmin: user.seller_flag,
+      shop_id: shop.id,
     };
 
     const access_token = await this.jwtService.signAsync(payload);
