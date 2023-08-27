@@ -32,23 +32,19 @@ export class AuthGuard implements CanActivate {
     if (authToken) {
       try {
         const payload = this.jwtService.verify(authToken);
+        const shop = await this.shopsEntity.findOne({
+          where: { user_id: payload.user_id },
+        });
         const user = {
           user_id: payload.user_id,
           email: payload.email,
           user_name: payload.user_name,
           profile_image: payload.profile_image,
           isAdmin: payload.isAdmin || false,
-          isValidShop: false,
+          shop_id: shop ? shop.user_id : undefined,
         };
 
-        const isValidShopData = await this.shopsEntity.findOne({
-          where: { user_id: payload.id },
-        });
-
-        user.isValidShop = isValidShopData ? true : false;
-
         request.user = user;
-
         return true;
       } catch (err) {
         console.error(err, err.stack);

@@ -26,20 +26,17 @@ export class AuthenticationMiddleware implements NestMiddleware {
     if (authToken) {
       try {
         const payload = this.jwtService.verify(authToken);
+        const shop = await this.shopsEntity.findOne({
+          where: { user_id: payload.user_id },
+        });
         const user = {
           user_id: payload.user_id,
           email: payload.email,
           user_name: payload.user_name,
           profile_image: payload.profile_image,
           isAdmin: payload.isAdmin || false,
-          isValidShop: payload.isValidShop,
+          shop_id: shop ? shop.user_id : undefined,
         };
-
-        const isValidShopData = await this.shopsEntity.findOne({
-          where: { user_id: payload.user_id },
-        });
-
-        user.isValidShop = isValidShopData ? true : false;
 
         req.user = user;
       } catch (err) {

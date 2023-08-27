@@ -26,7 +26,7 @@ import { PaginationDto } from 'src/common/dtos';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  //-- 상품 전체보기 --//
+  //-- 유저단 : 상품 전체보기 --//
   @Get()
   @UsePipes(ValidationPipe)
   async getProducts(

@@ -22,7 +22,7 @@
       <%- include('includes/my-page-aside') %>
 
       <!-- shop 존재시 -->
-      <% if (authUser.isValidShop === true) { %>
+      <% if (authUser.shop_id !== undefined) { %>
         <section class="col-lg-9">
           <section class="status-container">
             <ul class="status-list">
@@ -66,7 +66,7 @@
           </section>
           <section class="list-container">
             <div class="title-wrap">
-              <h3>최근 주문 내역</h3>
+              <h3>등록된 상품</h3>
               <a href="">더보기</a>
             </div>
             <div class="order-list-table">
@@ -112,7 +112,7 @@
         </section>
        <% } %>
       <!-- shop 없을시 -->
-      <% if (authUser.isValidShop === false) { %>
+      <% if (authUser.shop_id === undefined) { %>
         <section class="col-lg-9">
           <section>
             <h2 class="section-title">스토어 등록</h2>

@@ -29,7 +29,7 @@ export class ProductsService {
     private uploadsService: UploadsService,
   ) {}
 
-  //-- 상품 전체보기 --//
+  //-- 유저단 : 상품 전체보기 --//
   async findAll(paginationDto: PaginationDto): Promise<ProductsEntity[]> {
     const { limit, cursor } = paginationDto;
 
@@ -45,6 +45,14 @@ export class ProductsService {
 
     return query.getMany();
   }
+
+  //-- admin : 등록된 상품  보기 --//
+  // async findRegisteredAll(userId: number): Promise<[ProductsEntity]> {
+  //   const products = await this.productRepository.find({
+  //     where: {}
+  //   })
+  //   return products;
+  // }
 
   //-- 상품 상세보기 --//
   async findById(id: number): Promise<ProductsEntity> {

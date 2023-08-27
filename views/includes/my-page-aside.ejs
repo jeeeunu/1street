@@ -27,7 +27,7 @@
       <!-- 관리자 -->
       <% if (authUser && authUser.isAdmin === true) { %>
       <!-- 스토어 생성 전, 후 -->
-      <% if (authUser.isValidShop === true) { %>
+      <% if (authUser.shop_id !== undefined) { %>
       <div class="text-wrap">
         <span>스토어 명: </span>
         <span><%- shop.shop_name %>원</span>
@@ -63,8 +63,8 @@
       회원 탈퇴
     </button>
     <!-- 관리자 -->
-    <% if (authUser && authUser.isAdmin === true && authUser.isValidShop ===
-    true) { %>
+    <% if (authUser && authUser.isAdmin === true && authUser.shop_id !==
+    undefined) { %>
     <button
       type="button"
       class="gray-text btn-user-delete"
