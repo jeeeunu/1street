@@ -88,8 +88,6 @@ export class ProductsService {
     if (!isValidCategory)
       throw new NotFoundException('해당하는 카테고리가 없습니다.');
 
-    console.log(data.category);
-
     const createProduct = await this.productRepository.save({
       product_name: data.product_name,
       product_desc: data.product_desc,
@@ -100,7 +98,7 @@ export class ProductsService {
 
     if (files.length > 0) {
       const imageDetails = await this.uploadsService.createProductImages(files);
-      console.log('파일 처리중');
+      console.log('이미지 파일 저장');
 
       for (const imageDetail of imageDetails) {
         const uploadFile = new ProductImageEntity();
