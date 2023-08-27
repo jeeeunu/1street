@@ -21,6 +21,8 @@
       <!-- include : aside -->
       <%- include('includes/my-page-aside') %>
 
+      <!-- shop 존재시 -->
+      <% if (authUser.isValidShop === true) { %>
         <section class="col-lg-9">
           <section class="status-container">
             <ul class="status-list">
@@ -108,13 +110,83 @@
             </div>
           </section>
         </section>
+       <% } %>
+      <!-- shop 없을시 -->
+      <% if (authUser.isValidShop === false) { %>
+        <section class="col-lg-9">
+          <section>
+            <h2 class="section-title">스토어 등록</h2>
+            <div class="input-container">
+              <div class="content-box">
+                <h2 class="create-title">*스토어 정보를 등록해주세요</h2>
+                <!-- include : terms -->
+                <%- include('includes/terms') %>
+                <div class="input-box">
+                  <label class="label required">스토어명: </label>
+                  <input type="text" id="shopName" name="" required="" />
+                </div>
+                <div class="input-box">
+                  <label class="required label">스토어 설명: </label>
+                  <input type="text" id="shopDesc" name="" required="" />
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn-primary-m"
+                onclick="createStore()"
+              >
+                스토어 만들기
+              </button>
+            </div>
+          </section>
+        </section>
+      <% } %>
       </div>
     </main>
-
     <!-- include : footer -->
     <%- include('includes/footer') %>
 
     <script>
+    //-- 스토어 생성 api --//
+    const createStore = async () => {
+        try {
+          const shopName = document.querySelector('#shopName');
+          const shopDesc = document.querySelector('#shopDesc');
+
+          const requestData = {
+            shop_name: shopName.value,
+            shop_desc: shopDesc.value,
+          };
+
+          const response = await fetch('shops', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message);
+            window.location.href = '/';
+          } else {
+            console.log(data.message);
+            if (Array.isArray(data.message)) {
+              data.message.forEach((message) => {
+                alert(message.messages);
+              });
+            } else {
+              alert(data.message);
+            }
+            // window.location.href = '/';
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('오류가 발생했습니다.');
+        }
+      };
     //-- 유저 탈퇴 api --//
     const userDelete = async () => {
       const firstConfirm = window.confirm('회원 탈퇴 하시겠습니까?');
@@ -147,6 +219,38 @@
         }
       }
     };
-    </script>
+    //-- 스토어 삭제 api --// 
+    const shopDelete = async () => {
+      const firstConfirm = window.confirm('스토어를 삭제 하시겠습니까?');
+
+      if (firstConfirm) {
+        const secondConfirm = window.confirm('다시 되돌릴 수 없습니다. 정말 삭제하시겠습니까?');
+
+        if (secondConfirm) {
+          try {
+            const response = await fetch('shops', {
+              method: 'DELETE',
+            });
+
+            const data = await response.json();
+            console.log(data)
+
+            if (response.ok) {
+              alert(data.message);
+              window.location.href = '/';
+            } else {
+              alert(data.message);
+              console.error('스토어 삭제중 오류가 발생했습니다.');
+              window.location.href = '/';
+            }
+
+          } catch (error) {
+            console.error('Error:', error);
+            alert('오류가 발생했습니다.');
+          }
+        }
+      }
+    };
+  </script>
   </body>
 </html>

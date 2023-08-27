@@ -182,12 +182,25 @@
     <%- include('includes/footer') %>
 
     <script>
+      let productDescValue = '';
+      const escapeHtml = (text) => {
+        const element = document.createElement('div');
+        element.innerText = text;
+        return element.innerHTML;
+      };
+
       tinymce.init({
         selector: '#myTextarea',
         plugins: 'image paste',
         images_file_types: 'jpg,svg,webp',
+        height: 450,
+        setup: function (editor) {
+          editor.on('input', function () {
+            const productDesc = editor.getContent();
+            productDescValue = escapeHtml(productDesc);
+          });
+        },
       });
-
       //-- 상품등록 api --//
       const createProduct = async () => {
         try {
@@ -201,12 +214,12 @@
           const productName = document.querySelector('#productName');
           const productPrice = document.querySelector('#productPrice');
           const productDomestic = document.querySelector('#productDomestic');
-          const productDesc = tinymce.get('myTextarea').getContent();
+          // const productDesc = tinymce.get('myTextarea').getContent();
           const formData = new FormData();
           formData.append('category', category);
           formData.append('product_name', productName.value);
           formData.append('product_domestic', productDomestic.value);
-          formData.append('product_desc', productDesc);
+          formData.append('product_desc', productDescValue);
           formData.append('product_price', productPrice.value);
           let productImgfiles = [];
           document.querySelectorAll('.profile-input').forEach((file) => {
@@ -215,6 +228,7 @@
             }
           });
 
+          console.log(productDescValue);
           const response = await fetch('products', {
             method: 'POST',
             headers: { Accept: 'application/json' },
@@ -236,7 +250,7 @@
             } else {
               alert(data.message);
             }
-            // window.location.href = '/';
+            window.location.href = '/';
           }
         } catch (error) {
           console.error('에러 발생:', error);

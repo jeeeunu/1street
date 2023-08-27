@@ -20,31 +20,7 @@
         <!-- include : aside -->
         <%- include('includes/my-page-aside') %>
 
-        <section class="col-lg-9">
-          <section>
-            <h2 class="section-title">스토어 등록</h2>
-            <div class="input-container">
-              <div class="content-box">
-                <h2 class="create-title">*스토어 정보를 등록해주세요</h2>
-                <div class="input-box">
-                  <label class="label required">스토어명: </label>
-                  <input type="text" id="shopName" name="" required="" />
-                </div>
-                <div class="input-box">
-                  <label class="required label">스토어 설명: </label>
-                  <input type="text" id="shopDesc" name="" required="" />
-                </div>
-              </div>
-              <button
-                type="button"
-                class="btn-primary-m"
-                onclick="createStore()"
-              >
-                스토어 만들기
-              </button>
-            </div>
-          </section>
-        </section>
+
       </div>
     </main>
 
@@ -52,46 +28,7 @@
     <%- include('includes/footer') %>
 
     <script>
-      //-- 스토어 생성 api --//
-      const createStore = async () => {
-        try {
-          const shopName = document.querySelector('#shopName');
-          const shopDesc = document.querySelector('#shopDesc');
-
-          const requestData = {
-            shop_name: shopName.value,
-            shop_desc: shopDesc.value,
-          };
-
-          const response = await fetch('shops', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-          });
-
-          const data = await response.json();
-
-          if (response.ok) {
-            alert(data.message);
-            window.location.href = '/';
-          } else {
-            console.log(data.message);
-            if (Array.isArray(data.message)) {
-              data.message.forEach((message) => {
-                alert(message.messages);
-              });
-            } else {
-              alert(data.message);
-            }
-            // window.location.href = '/';
-          }
-        } catch (error) {
-          console.error('에러 발생:', error);
-          alert('오류가 발생했습니다.');
-        }
-      };
+     
     </script>
   </body>
 </html>
