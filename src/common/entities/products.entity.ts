@@ -25,7 +25,7 @@ export class ProductsEntity {
   public product_name: string;
 
   //-- 상품 설명 --//
-  @Column({ nullable: false })
+  @Column({ nullable: false, length: 4000 })
   @IsString()
   public product_desc: string;
 
