@@ -3,10 +3,10 @@
     <div class="primary-img-wrap">
       <img src="<%- user.profile_image %> " alt="" />
     </div>
-    <div class="text-wrap">
+    <div>
       <div class="name-wrap">
         <span><%- authUser.user_name %> 님</span>
-        <a href="/my-page-user-edit"> >내 정보 수정</a>
+        <a href="/my-page-user-edit"> > 내 정보 수정</a>
       </div>
       <!-- 고객 -->
       <% if (authUser && authUser.isAdmin === false) { %>
@@ -22,18 +22,40 @@
         <span>잔여 쿠폰: </span>
         <span>2개</span>
       </div>
-      <% } %> <% if (authUser && authUser.isAdmin === true) { %>
-      <a href="/admin-create-store" style="font-weight: 800">스토어 만들기</a>
       <% } %>
+      <!-- 고객 End -->
+      <!-- 관리자 -->
+      <% if (authUser && authUser.isAdmin === true) { %>
+      <!-- 스토어 생성 전, 후 -->
+      <% if (authUser.isValidShop === false) { %>
+      <a href="/admin-create-store" style="font-weight: 800">스토어 만들기</a>
+      <% } else { %>
+      <div class="text-wrap">
+        <span>스토어 명: </span>
+        <span><%- shop.shop_name %>원</span>
+      </div>
+      <div class="text-wrap">
+        <span>스토어 설명: </span>
+        <span><%- shop.shop_desc %>원</span>
+      </div>
+      <a
+        href="/admin-edit-store"
+        style="display: block; padding-top: 10px; font-size: 12px"
+        >> 스토어정보 수정하기</a
+      >
+      <% } %> <% } %>
+      <!-- 관리자 End -->
     </div>
-    <hr />
     <div class="provider-text">
+      <!-- 구글 로그인 시, -->
       <% if (user.provider === "google") { %>
+      <hr />
       <img
         src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
         style="width: 15px; height: 15px; margin-right: 7px"
         alt=""
       />구글 로그인 <% } %>
+      <!-- 구글 로그인 시, End -->
     </div>
     <button
       type="button"

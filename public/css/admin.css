@@ -77,3 +77,23 @@
 .edit-img-container input {
   width: 130px;
 }
+
+.proflie-info-container .text-wrap {
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #fafafa;
+}
+
+.proflie-info-container .text-wrap + .text-wrap {
+  margin-top: 5px;
+}
+
+.proflie-info-container .text-wrap span {
+  font-size: 12px;
+}
+
+.proflie-info-container .text-wrap span:first-child {
+  padding-right: 5px;
+  font-weight: 500;
+}

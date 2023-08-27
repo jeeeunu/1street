@@ -20,6 +20,15 @@ export class ShopsService {
     private userService: UserService,
   ) {}
 
+  //-- 유저 아이디로 스토어 찾기 --//
+  async findByUserId(id: number): Promise<ShopsEntity> {
+    const shop = await this.shopRepository.findOne({
+      where: { user_id: id },
+    });
+    if (!shop) throw new NotFoundException('스토어가 존재하지 않습니다.');
+    return shop;
+  }
+
   //-- 스토어 아이디로 스토어 찾기 --//
   async find(id: number): Promise<ShopsEntity> {
     try {
@@ -62,9 +71,10 @@ export class ShopsService {
     shopData: ShopUpdateDto,
     authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    const shop = await this.find(shopData.id);
-    if (shop.user.id !== authUser.user_id)
-      throw new ForbiddenException('판매자만 스토어를 수정 할 수 있습니다.');
+    const shop = await this.shopRepository.findOne({
+      where: { user_id: authUser.user_id },
+    });
+    if (!shop) throw new NotFoundException('스토어를 찾을 수 없습니다.');
     const updateShop = Object.assign(shop, shopData);
     try {
       await this.shopRepository.save(updateShop);

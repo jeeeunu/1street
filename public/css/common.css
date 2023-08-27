@@ -666,3 +666,12 @@ fieldset {
 .basic-input-box .edit-img-wrap {
   margin: 0;
 }
+
+.text-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.text-wrap b {
+  padding-right: 5px;
+}
