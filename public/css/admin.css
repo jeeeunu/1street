@@ -1,0 +1,99 @@
+.mypage {
+  padding: 100px 0;
+}
+
+.my-page-content-list {
+  display: flex;
+  gap: 5%;
+}
+
+.my-page-content-list li {
+  width: 50%;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+}
+
+.my-page-content-list li a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 12px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #555;
+}
+
+.create-product-container .radio-wrap {
+  min-width: 30%;
+}
+
+.create-product-container .radio-wrap label {
+  margin-bottom: 0;
+}
+
+.create-product-container [type='radio'] {
+  width: 20px;
+  height: 20px;
+}
+
+.create-product-container .radio-wrap span {
+  font-size: 12px;
+}
+
+.section-title {
+  text-align: left;
+}
+
+.create-title {
+  margin-bottom: 30px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #6f6f6f;
+}
+
+.input-box input {
+  flex: 1;
+  max-width: 400px;
+}
+
+.input-box + .input-box,
+.input-box + .basic-input-box {
+  margin-top: 15px;
+}
+
+.edit-img-container + .edit-img-container {
+  margin-left: 10px;
+}
+
+.edit-img-container .edit-img-wrap {
+  width: 200px;
+  height: 200px;
+}
+
+.edit-img-container input {
+  width: 130px;
+}
+
+.proflie-info-container .text-wrap {
+  align-items: center;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #fafafa;
+}
+
+.proflie-info-container .text-wrap + .text-wrap {
+  margin-top: 5px;
+}
+
+.proflie-info-container .text-wrap span {
+  font-size: 12px;
+}
+
+.proflie-info-container .text-wrap span:first-child {
+  padding-right: 5px;
+  font-weight: 500;
+}

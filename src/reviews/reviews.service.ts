@@ -33,21 +33,21 @@ export class ReviewsService {
       throw new ConflictException('이미 리뷰를 작성하셨습니다.');
     }
 
-    if (files.length !== 0) {
-      const imageDetails = await this.uploadsService.createProfileImageDetails(
-        files,
-      );
+    // if (files.length !== 0) {
+    //   const imageDetails = await this.uploadsService.createProfileImageDetails(
+    //     files,
+    //   );
 
-      for (const imageDetail of imageDetails) {
-        const uploadFile = new ReviewImageEntity();
-        uploadFile.review_id = reviewFind.id;
-        uploadFile.url = imageDetail.imageUrl;
-        uploadFile.original_name = imageDetail.originalName;
-        uploadFile.e_tag = imageDetail.eTag;
+    //   for (const imageDetail of imageDetails) {
+    //     const uploadFile = new ReviewImageEntity();
+    //     uploadFile.review_id = reviewFind.id;
+    //     uploadFile.url = imageDetail.imageUrl;
+    //     uploadFile.original_name = imageDetail.originalName;
+    //     uploadFile.e_tag = imageDetail.eTag;
 
-        await this.reviewImageEntity.save(uploadFile);
-      }
-    }
+    //     await this.reviewImageEntity.save(uploadFile);
+    //   }
+    // }
 
     await this.reviewsEntity.save({
       user_id,

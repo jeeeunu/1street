@@ -44,11 +44,12 @@ export class UserService {
 
     const createUser = await this.usersEntity.save(userDto);
 
-    if (files !== undefined) {
+    if (files.length > 0) {
       const imageUrl = await this.uploadsService.createProfileImage(files);
       createUser.profile_image = imageUrl;
-
       if (!imageUrl) throw new BadRequestException();
+    } else {
+      createUser.profile_image = null;
     }
 
     await this.usersEntity.save(createUser);
@@ -65,8 +66,8 @@ export class UserService {
       .leftJoinAndSelect('orders.order_details', 'order_details')
       .leftJoinAndSelect('order_details.product', 'product')
       .where('user.id = :id', { id: userId })
-      .loadRelationCountAndMap('user.like_count', 'user.likes') // Add this line
-      .loadRelationCountAndMap('orders.orders_count', 'user.orders') // Add this line
+      .loadRelationCountAndMap('user.like_count', 'user.likes')
+      .loadRelationCountAndMap('orders.orders_count', 'user.orders')
       .select([
         'user.id',
         'user.email',
@@ -83,7 +84,6 @@ export class UserService {
         'order_details.order_quantity',
         'product.id',
         'product.product_name',
-        'product.product_thumbnail',
         'qna.id',
       ])
       .getOne();

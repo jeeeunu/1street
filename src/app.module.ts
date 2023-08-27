@@ -18,6 +18,7 @@ import { AuthenticationMiddleware } from './auth/auth.middleware';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UploadsModule } from './uploads/uploads.module';
+import { ShopsEntity } from './common/entities';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UploadsModule } from './uploads/uploads.module';
       synchronize: true,
       namingStrategy: new SnakeNamingStrategy(),
     }),
+    TypeOrmModule.forFeature([UsersEntity, ShopsEntity]),
 
     //-- jwt --//
     JwtModule.register({

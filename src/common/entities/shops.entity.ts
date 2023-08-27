@@ -1,13 +1,15 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsNumber, IsString, MaxLength } from 'class-validator';
 import { ProductsEntity } from './products.entity';
-import { UsersEntity } from './users.entity';
+import { UsersEntity } from '.';
 
 @Entity({ name: 'shops' })
 export class ShopsEntity {
@@ -25,13 +27,13 @@ export class ShopsEntity {
   @IsString()
   public shop_desc: string;
 
-  //-- 스토어 썸네일 --//
-  @Column({ nullable: true })
-  @IsOptional()
-  @IsString()
-  public shop_image?: string;
+  //-- 유저 아이디 --//
+  @Column({ nullable: false })
+  @IsNumber()
+  public user_id: number;
 
-  @ManyToOne(() => UsersEntity, (user) => user.shops)
+  @OneToOne(() => UsersEntity, (user) => user.shop)
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   public user: UsersEntity;
 
   @OneToMany(() => ProductsEntity, (product) => product.shop)

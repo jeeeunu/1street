@@ -55,14 +55,23 @@ const logout = async () => {
 //-- 프로필 이미지 미리보기 --//
 const setThumbnail = (event) => {
   const reader = new FileReader();
-  const previewWrap = document.querySelector('.edit-img-wrap');
+  const inputElement = event.target;
+  const previewWrap = inputElement.previousElementSibling;
+  if (!previewWrap) {
+    return;
+  }
 
-  reader.onload = (event) => {
-    previewWrap.innerHTML = '';
+  previewWrap.innerHTML = '';
+
+  for (const file of inputElement.files) {
     const img = document.createElement('img');
-    img.src = event.target.result;
-    previewWrap.appendChild(img);
-  };
+    img.classList.add('thumbnail');
 
-  reader.readAsDataURL(event.target.files[0]);
+    reader.onload = (e) => {
+      img.src = e.target.result;
+      previewWrap.appendChild(img);
+    };
+
+    reader.readAsDataURL(file);
+  }
 };
