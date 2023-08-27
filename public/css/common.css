@@ -95,9 +95,10 @@ img {
 }
 
 .date-text {
+  margin-bottom: 0;
   font-size: 12px;
   font-weight: 400;
-  color: #aaa;
+  color: #777;
 }
 
 .product-title {
@@ -581,12 +582,12 @@ fieldset {
 
 .order-list-table .t-head .td:first-child,
 .order-list-table .t-body .tr .td:first-child {
-  width: 18%;
+  width: 20%;
 }
 
 .order-list-table .t-head .td:nth-child(2),
 .order-list-table .t-body .tr .td:nth-child(2) {
-  width: 50%;
+  width: 45%;
   justify-content: start;
 }
 
@@ -614,6 +615,7 @@ fieldset {
 }
 
 .order-info-wrap .img-wrap {
+  flex-shrink: 0;
   width: 80px;
   height: 80px;
   overflow: hidden;
@@ -629,12 +631,12 @@ fieldset {
 }
 
 .order-info-wrap .text-wrap span:first-child {
-  margin-bottom: 10px;
-  font-size: 10px;
+  margin-bottom: 5px;
+  font-size: 12px;
 }
 
 .order-info-wrap .text-wrap span:nth-child(3) {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .input-box {
@@ -693,4 +695,18 @@ fieldset {
   height: 100%;
   text-align: left;
   overflow: hidden;
+}
+
+.btns {
+  flex-direction: column;
+}
+
+.btns a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btns a + a {
+  margin-top: 3px;
 }

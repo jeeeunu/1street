@@ -1,9 +1,12 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 import { CategoryEntity } from '../../products/entities/category.entity';
@@ -39,22 +42,25 @@ export class ProductsEntity {
   @IsNumber()
   public product_price: number;
 
-  //-- 상품 썸네일 --//
-  // @Column({ nullable: true })
-  // @IsOptional()
-  // @IsString()
-  // public product_thumbnail?: string;
-
-  //-- 상품 카테고리 --//
+  //-- 카테고리 아이디 --//
   @Column({ nullable: false })
   @IsNumber()
-  public category_number: number;
+  public category_id: number;
+
+  //-- 스토어 아이디 --//
+  @Column({ nullable: false })
+  @IsNumber()
+  public shop_id: number;
 
   @ManyToOne(() => ShopsEntity, (shop) => shop.products)
+  @JoinColumn({ name: 'shop_id', referencedColumnName: 'id' })
   public shop: ShopsEntity;
 
-  // @ManyToOne(() => CategoryEntity, (category) => category.products)
-  // public category: CategoryEntity;
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: string;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: string;
 
   @OneToMany(() => LikeEntity, (like) => like.product)
   public likes: LikeEntity[];
@@ -67,4 +73,8 @@ export class ProductsEntity {
 
   @OneToMany(() => ProductImageEntity, (product_image) => product_image.product)
   public product_image: ProductImageEntity[];
+
+  @ManyToOne(() => CategoryEntity, (category) => category.products)
+  @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
+  public category: CategoryEntity;
 }
