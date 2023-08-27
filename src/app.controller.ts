@@ -3,10 +3,30 @@ import { Request, Response } from 'express';
 import { UserService } from './users/users.service';
 import { AuthUser } from './auth/auth.decorator';
 import { RequestUserInterface } from './users/interfaces';
+import { ShopsService } from './shops/shops.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly shopsService: ShopsService,
+  ) {}
+
+  //-- 공통 : admin --//
+  async adminPageData(authUser: RequestUserInterface, response: Response) {
+    if (!authUser.isAdmin) {
+      response.status(403).render('error-page', {
+        errorMessage: '접근이 불가능합니다.',
+      });
+      return;
+    }
+
+    const userInfo = await this.userService.find(authUser.user_id);
+    const user = userInfo.results;
+    const shop = await this.shopsService.findByUserId(authUser.user_id);
+
+    return { user, shop };
+  }
 
   //-- 메인 페이지 --//
   @Get()
@@ -125,39 +145,11 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    if (!authUser.isAdmin) {
-      response.status(403).render('error-page', {
-        errorMessage: '접근이 불가능합니다.',
-      });
-      return;
-    }
-
-    const userInfo = await this.userService.find(authUser.user_id);
-    const user = userInfo.results;
+    const { user, shop } = await this.adminPageData(authUser, response);
     response.render('admin-my-page', {
       authUser,
       user,
-    });
-  }
-
-  //-- admin : 상품 등록 --//
-  @Get('admin-create-product')
-  async adminCreateProduct(
-    @AuthUser() authUser: RequestUserInterface,
-    @Req() request: Request,
-    @Res() response: Response,
-  ): Promise<void> {
-    if (!authUser.isAdmin) {
-      response.status(403).render('error-page', {
-        errorMessage: '접근이 불가능합니다.',
-      });
-      return;
-    }
-    const userInfo = await this.userService.find(authUser.user_id);
-    const user = userInfo.results;
-    response.render('admin-create-product', {
-      authUser,
-      user,
+      shop,
     });
   }
 
@@ -168,18 +160,41 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    if (!authUser.isAdmin) {
-      response.status(403).render('error-page', {
-        errorMessage: '접근이 불가능합니다.',
-      });
-      return;
-    }
-    const userInfo = await this.userService.find(authUser.user_id);
-    const user = userInfo.results;
-    // console.log(authUser);
+    const { user, shop } = await this.adminPageData(authUser, response);
     response.render('admin-create-store', {
       authUser,
       user,
+      shop,
+    });
+  }
+
+  //-- admin : 스토어 정보 수정 --//
+  @Get('admin-edit-store')
+  async adminEditStore(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { user, shop } = await this.adminPageData(authUser, response);
+    response.render('admin-edit-store', {
+      authUser,
+      user,
+      shop,
+    });
+  }
+
+  //-- admin : 상품 등록 --//
+  @Get('admin-create-product')
+  async adminCreateProduct(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { user, shop } = await this.adminPageData(authUser, response);
+    response.render('admin-create-product', {
+      authUser,
+      user,
+      shop,
     });
   }
 }
