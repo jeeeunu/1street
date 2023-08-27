@@ -718,3 +718,19 @@ fieldset {
   padding-top: 5px;
   font-size: 14px !important;
 }
+
+.edit-img-wrap {
+  position: relative;
+}
+
+.btn-delete-img {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.55);
+  border-radius: 10px;
+  z-index: 90;
+}

@@ -1,7 +1,8 @@
 import {
+  BadGatewayException,
+  BadRequestException,
   ForbiddenException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -59,7 +60,11 @@ export class ProductsService {
 
   //-- 상품 상세보기 --//
   async findById(id: number): Promise<ProductsEntity> {
-    const product = await this.productRepository.findOne({ where: { id } });
+    const product = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .where('product.id = :id', { id })
+      .getOne();
     if (!product) throw new NotFoundException('해당 상품이 존재하지 않습니다.');
     return product;
   }
@@ -93,13 +98,11 @@ export class ProductsService {
   ): Promise<ResultableInterface> {
     const isValidCategory = await this.categoryRepository.findOne({
       where: {
-        id: data.category,
+        id: data.category_id,
       },
     });
     if (!isValidCategory)
       throw new NotFoundException('해당하는 카테고리가 없습니다.');
-
-    console.log(data);
 
     const createProduct = await this.productRepository.save({
       shop_id: authUser.shop_id,
@@ -107,7 +110,7 @@ export class ProductsService {
       product_desc: data.product_desc,
       product_price: data.product_price,
       product_domestic: data.product_domestic,
-      category_id: data.category,
+      category_id: data.category_id,
     });
 
     if (files.length > 0) {
@@ -131,47 +134,43 @@ export class ProductsService {
   }
 
   //-- 상품 수정 --//
-  // async update(
-  //   id: number,
-  //   data: ProductUpdateDto,
-  //   authUser: RequestUserInterface,
-  // ): Promise<ResultableInterface> {
-  //   try {
-  //     const shop = await this.shopRepository.findOne({
-  //       where: { products: { id } },
-  //       relations: ['user', 'products'],
-  //     });
-  //     if (!shop)
-  //       throw new NotFoundException('해당 스토어가 존재하지 않습니다.');
-  //     if (shop.user.id !== authUser.user_id)
-  //       throw new ForbiddenException(
-  //         '해당 스토어를 개설한 판매자만 상품을 추가할 수 있습니다.',
-  //       );
-  //     const {
-  //       product_name,
-  //       product_desc,
-  //       product_price,
-  //       product_thumbnail,
-  //       category,
-  //     } = data;
-  //     const categoryId = await this.findCategory(category);
-  //     await this.productRepository.update(
-  //       { id },
-  //       {
-  //         category: { id: categoryId },
-  //         product_name,
-  //         product_desc,
-  //         product_price,
-  //         // product_thumbnail,
-  //       },
-  //     );
-  //     return { status: true, message: '상품을 성공적으로 수정했습니다' };
-  //   } catch (err) {
-  //     throw new InternalServerErrorException(
-  //       '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-  //     );
-  //   }
-  // }
+  async update(
+    productId: number,
+    data: ProductUpdateDto,
+    files: Express.Multer.File[],
+    // authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
+    const existingProduct = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .where('product.id = :productId', { productId })
+      .getOne();
+
+    for (const index of data.delete_imgs) {
+      if (existingProduct.product_image.length === 1) {
+        throw new BadGatewayException(
+          '상품에는 한개 이상의 썸네일 이미지가 있어야합니다.',
+        );
+      }
+      console.log(existingProduct.product_image);
+      const imageToDelete = existingProduct.product_image[index].url;
+
+      // 이미지 서비스에서 이미지 삭제
+      await this.uploadsService.deleteImage(imageToDelete);
+
+      // 데이터베이스에서 이미지 삭제
+      await this.productImageRepository.delete({ url: imageToDelete });
+
+      // 이미지 배열에서 삭제
+      existingProduct.product_image.splice(index, 1);
+      console.log('이미지 삭제');
+    }
+
+    Object.assign(existingProduct, data);
+    await this.productRepository.save(existingProduct);
+
+    return { status: true, message: '상품을 성공적으로 수정했습니다' };
+  }
 
   //-- 상품 삭제 --//
   async delete(

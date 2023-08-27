@@ -164,7 +164,7 @@
                   </div>
                 </div>
               </div>
-              <textarea id="myTextarea">Hello, TinyMCE!</textarea>
+              <textarea id="myTextarea"></textarea>
               <button
                 type="button"
                 class="btn-primary-m"
@@ -216,7 +216,7 @@
           const productDomestic = document.querySelector('#productDomestic');
           // const productDesc = tinymce.get('myTextarea').getContent();
           const formData = new FormData();
-          formData.append('category', category);
+          formData.append('category_id', category);
           formData.append('product_name', productName.value);
           formData.append('product_domestic', productDomestic.value);
           formData.append('product_desc', productDescValue);

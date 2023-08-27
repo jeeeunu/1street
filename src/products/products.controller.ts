@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UploadedFiles,
@@ -66,19 +67,25 @@ export class ProductsController {
     @Body() data: ProductCreateDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
+    console.log(files);
+    console.log(data);
     return await this.productsService.create(data, authUser, files);
   }
 
   //-- 상품 수정 --//
-  // @Post(':id')
-  // @UseGuards(AuthGuard)
-  // async updateProduct(
-  //   @Param('id') id: number,
-  //   @Body() data: ProductUpdateDto,
-  //   @AuthUser() authUser: RequestUserInterface,
-  // ): Promise<ResultableInterface> {
-  //   return await this.productsService.update(id, data, authUser);
-  // }
+  @Patch(':id')
+  @UseGuards(AuthGuard)
+  @UseInterceptors(FilesInterceptor('files'))
+  async updateProduct(
+    @Param('id') productId: number,
+    @Body() data: ProductUpdateDto,
+    @UploadedFiles() files: Express.Multer.File[],
+    // @AuthUser() authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
+    console.log(files);
+    console.log(data);
+    return await this.productsService.update(productId, data, files);
+  }
 
   //-- 상품 삭제 --//
   @Delete(':id')
