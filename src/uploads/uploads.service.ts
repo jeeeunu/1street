@@ -63,8 +63,8 @@ export class UploadsService {
     return `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`;
   }
 
-  //-- 이미지 삭제 : 유저 프로필 --//
-  async deleteProfileImage(url: string): Promise<string> {
+  //-- 이미지 삭제 -//
+  async deleteImage(url: string): Promise<string> {
     const baseUrl = 'https://1street.s3.ap-northeast-2.amazonaws.com/';
     const fileKey = url.replace(baseUrl, '');
     await this.deleteFile(fileKey);

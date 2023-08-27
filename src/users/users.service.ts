@@ -132,7 +132,7 @@ export class UserService {
     });
 
     if (existingUser.profile_image) {
-      await this.uploadsService.deleteProfileImage(existingUser.profile_image);
+      await this.uploadsService.deleteImage(existingUser.profile_image);
     }
 
     await this.usersEntity.delete(existingUser.id);

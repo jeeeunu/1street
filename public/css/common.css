@@ -631,7 +631,6 @@ fieldset {
 }
 
 .order-info-wrap .text-wrap span:first-child {
-  margin-bottom: 5px;
   font-size: 12px;
 }
 
@@ -674,6 +673,10 @@ fieldset {
   flex-wrap: wrap;
 }
 
+.text-wrap small {
+  color: #555;
+}
+
 .text-wrap b {
   padding-right: 5px;
 }
@@ -709,4 +712,25 @@ fieldset {
 
 .btns a + a {
   margin-top: 3px;
+}
+
+.product-title {
+  padding-top: 5px;
+  font-size: 14px !important;
+}
+
+.edit-img-wrap {
+  position: relative;
+}
+
+.btn-delete-img {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.55);
+  border-radius: 10px;
+  z-index: 90;
 }
