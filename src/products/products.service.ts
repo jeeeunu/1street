@@ -51,15 +51,9 @@ export class ProductsService {
     const products = await this.productRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.product_image', 'product_image')
+      .leftJoinAndSelect('product.category', 'category')
       .where('product.shop_id = :shopId', { shopId })
       .getMany();
-
-    // const category = await this.categoryRepository.findOne({
-    //   where: {
-    //     id: products.category_number,
-    //   },
-    // });
-
     return products;
   }
 

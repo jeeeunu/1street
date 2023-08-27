@@ -62,8 +62,7 @@
           </section>
           <section class="list-container">
             <div class="title-wrap">
-              <h3>등록된 상품</h3>
-              <a href="">더보기</a>
+              <h3>등록된 상품 ( <%= products.length %> )</h3>
             </div>
             <div class="order-list-table">
               <ul class="t-head">
@@ -115,9 +114,14 @@
                       </div>
                       <div class="text-wrap">
                         <div>
-                          <span><%= product.id %></span>
+                          <span><small>id:</small> <%= product.id %></span>
+                          <span
+                            ><small>카테고리:</small> <%=
+                            product.category.category_name %></span
+                          >
                           <span class="product-title"
-                            ><%= product.product_name %></span
+                            ><small>상품명:</small> <%= product.product_name
+                            %></span
                           >
                         </div>
                       </div>
@@ -127,7 +131,12 @@
                     <span>판매중</span>
                   </div>
                   <div class="td btns">
-                    <a href="" class="btn-primary-s">수정하기</a>
+                    <a
+                      href="/admin-edit-product/<%= product.id
+                    %>"
+                      class="btn-primary-s"
+                      >수정하기</a
+                    >
                     <a href="" class="btn-primary-s">삭제하기</a>
                   </div>
                 </li>
@@ -169,8 +178,6 @@
         <% } %>
       </div>
     </main>
-    <!-- include : footer -->
-    <%- include('includes/footer') %>
 
     <script>
       //-- 스토어 생성 api --//
