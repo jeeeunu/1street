@@ -50,8 +50,15 @@ export class ProductsService {
   async findRegisteredAll(shopId: number): Promise<ProductsEntity[]> {
     const products = await this.productRepository
       .createQueryBuilder('product')
+      .leftJoinAndSelect('product.product_image', 'product_image')
       .where('product.shop_id = :shopId', { shopId })
       .getMany();
+
+    // const category = await this.categoryRepository.findOne({
+    //   where: {
+    //     id: products.category_number,
+    //   },
+    // });
 
     return products;
   }
@@ -98,13 +105,15 @@ export class ProductsService {
     if (!isValidCategory)
       throw new NotFoundException('해당하는 카테고리가 없습니다.');
 
+    console.log(data);
+
     const createProduct = await this.productRepository.save({
-      user_id: authUser.shop_id,
+      shop_id: authUser.shop_id,
       product_name: data.product_name,
       product_desc: data.product_desc,
       product_price: data.product_price,
       product_domestic: data.product_domestic,
-      category_number: data.category,
+      category_id: data.category,
     });
 
     if (files.length > 0) {
