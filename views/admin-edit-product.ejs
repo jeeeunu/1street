@@ -371,39 +371,6 @@
           alert('오류가 발생했습니다.');
         }
       };
-      //-- 상품삭제 api --//
-      const deleteProduct = async () => {
-        const firstConfirm = window.confirm('상품 삭제 하시겠습니까?');
-
-        if (firstConfirm) {
-          const secondConfirm = window.confirm(
-            '다시 되돌릴 수 없습니다. 정말 삭제하시겠습니까?',
-          );
-
-          if (secondConfirm) {
-            try {
-              const response = await fetch('products', {
-                method: 'DELETE',
-              });
-
-              const data = await response.json();
-              console.log(data);
-
-              if (response.ok) {
-                alert(data.message);
-                window.location.href = '/';
-              } else {
-                alert(data.message);
-                console.error('상품삭제중 오류가 발생했습니다.');
-                window.location.href = '/';
-              }
-            } catch (error) {
-              console.error('Error:', error);
-              alert('오류가 발생했습니다.');
-            }
-          }
-        }
-      };
     </script>
   </body>
 </html>

@@ -28,7 +28,7 @@ export class ProductImageEntity {
   updated_at: Date;
 
   @ManyToOne(() => ProductsEntity, (product) => product.product_image, {
-    cascade: true,
+    onDelete: 'CASCADE',
   })
   product: ProductsEntity;
 }

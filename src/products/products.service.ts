@@ -196,15 +196,16 @@ export class ProductsService {
     id: number,
     authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    const shop = await this.shopRepository.findOne({
-      where: { products: { id } },
-      relations: ['user', 'products'],
-    });
-    if (!shop) throw new NotFoundException('해당 스토어가 존재하지 않습니다.');
-    if (shop.user.id !== authUser.user_id)
-      throw new ForbiddenException(
-        '해당 스토어를 개설한 판매자만 상품을 삭제할 수 있습니다.',
-      );
+    // const shop = await this.shopRepository.findOne({
+    //   where: { products: { id } },
+    //   relations: ['user', 'products'],
+    // });
+    // if (!shop) throw new NotFoundException('해당 스토어가 존재하지 않습니다.');
+    // if (shop.user.id !== authUser.user_id)
+    //   throw new ForbiddenException(
+    //     '해당 스토어를 개설한 판매자만 상품을 삭제할 수 있습니다.',
+    //   );
+
     await this.productRepository.delete({ id });
     return { status: true, message: '상품을 성공적으로 삭제했습니다' };
   }
