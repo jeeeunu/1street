@@ -129,17 +129,20 @@ export class AppController {
     });
   }
 
-  //-- 상품 상세보가 --//
-  @Get('product-detail')
-  productDetail(
+  //-- 상품 상세보기 --//
+  @Get('product-detail/:product_id')
+  async productDetail(
+    @Param('product_id') productId: number,
     @AuthUser() authUser: RequestUserInterface,
     @Req() request: Request,
     @Res() response: Response,
-  ): void {
+  ): Promise<void> {
     const isIndexPath = request.url === '/';
+    const product = await this.productsService.findById(productId);
     response.render('product-detail', {
       isIndexPath,
       authUser,
+      product,
     });
   }
 
@@ -214,7 +217,7 @@ export class AppController {
   //-- admin : 상품 수정 --//
   @Get('admin-edit-product/:product_id')
   async adminEditProduct(
-    @Param('product_id') product_id: number,
+    @Param('product_id') productId: number,
     @AuthUser() authUser: RequestUserInterface,
     @Req() request: Request,
     @Res() response: Response,
@@ -223,7 +226,7 @@ export class AppController {
       authUser,
       response,
     );
-    const product = await this.productsService.findById(product_id);
+    const product = await this.productsService.findById(productId);
     response.render('admin-edit-product', {
       authUser,
       user,

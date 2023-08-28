@@ -52,7 +52,9 @@ export class ProductsEntity {
   @IsNumber()
   public shop_id: number;
 
-  @ManyToOne(() => ShopsEntity, (shop) => shop.products, { cascade: true })
+  @ManyToOne(() => ShopsEntity, (shop) => shop.products, {
+    onDelete: 'CASCADE',
+  })
   // @JoinColumn({ name: 'shop_id', referencedColumnName: 'id' })
   public shop: ShopsEntity;
 
