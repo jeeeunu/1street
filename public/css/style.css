@@ -1682,6 +1682,7 @@ ol {
 }
 
 .product__details__pic__item {
+  height: 475px;
   margin-bottom: 20px;
 }
 
@@ -3520,4 +3521,13 @@ ol {
   .blog__details__hero__text h2 {
     font-size: 24px;
   }
+}
+
+.owl-carousel.owl-drag .owl-item {
+  height: 120px;
+}
+
+.owl-carousel.owl-drag .owl-item img {
+  width: 100%;
+  object-fit: cover;
 }

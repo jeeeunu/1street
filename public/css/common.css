@@ -502,10 +502,6 @@ fieldset {
 /* sign END */
 
 /* add */
-.sticky-wrap {
-  position: sticky;
-  top: 300px;
-}
 
 .store-content {
   margin-top: 15px;
