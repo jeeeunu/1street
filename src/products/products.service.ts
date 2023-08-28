@@ -26,7 +26,10 @@ export class ProductsService {
   //-- 상품 상세보기 --//
   async findById(id: number): Promise<ProductsEntity> {
     try {
-      const product = await this.productRepository.findOne({ where: { id } });
+      const product = await this.productRepository.findOne({
+        where: { id },
+        relations: ['shop'],
+      });
       if (!product)
         throw new NotFoundException('해당 상품이 존재하지 않습니다.');
       return product;
