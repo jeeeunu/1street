@@ -27,5 +27,5 @@ export class ProductUpdateDto {
 
   //-- 삭제할 이미지 --//
   @IsOptional()
-  public delete_imgs: number[];
+  public delete_imgs: string;
 }

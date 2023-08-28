@@ -5,14 +5,22 @@ import { AuthUser } from './auth/auth.decorator';
 import { RequestUserInterface } from './users/interfaces';
 import { ShopsService } from './shops/shops.service';
 import { ProductsService } from './products/products.service';
+import { CategorysService } from './categorys/categorys.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly userService: UserService,
+    private readonly categorysService: CategorysService,
     private readonly shopsService: ShopsService,
     private readonly productsService: ProductsService,
   ) {}
+
+  //-- 공통 : 유저 --//
+  async userPageData() {
+    const categories = await this.categorysService.findAll();
+    return { categories };
+  }
 
   //-- 공통 : admin --//
   async adminPageData(authUser: RequestUserInterface, response: Response) {
@@ -26,55 +34,60 @@ export class AppController {
     const userInfo = await this.userService.find(authUser.user_id);
     const user = userInfo.results;
     const shop = await this.shopsService.findByUserId(authUser.user_id);
+    const categories = await this.categorysService.findAll();
 
-    return { user, shop };
+    return { user, shop, categories };
   }
 
   //-- 메인 페이지 --//
   @Get()
-  main(
+  async main(
     @AuthUser() authUser: RequestUserInterface,
     @Req() request: Request,
     @Res() response: Response,
-  ): void {
+  ): Promise<void> {
     const isIndexPath = request.url === '/';
+    const { categories } = await this.userPageData();
 
-    console.log(authUser);
     if (authUser && authUser !== null && authUser.isAdmin === true) {
       return response.redirect('admin-my-page');
     }
     response.render('index', {
       isIndexPath,
       authUser,
+      categories,
     });
   }
 
   //-- 회원가입 --//
   @Get('sign-up')
-  singUp(
+  async singUp(
     @AuthUser() authUser: RequestUserInterface,
     @Req() request: Request,
     @Res() response: Response,
-  ): void {
+  ): Promise<void> {
     const isIndexPath = request.url === '/';
-
+    const { categories } = await this.userPageData();
     response.render('sign-up', {
       isIndexPath,
       authUser,
+      categories,
     });
   }
 
   //-- 로그인 --//
   @Get('sign-in')
-  singIn(
+  async singIn(
     @AuthUser() authUser: RequestUserInterface,
     @Req() request: Request,
     @Res() response: Response,
-  ): void {
+  ): Promise<void> {
     const isIndexPath = request.url === '/';
+    const { categories } = await this.userPageData();
     response.render('sign-in', {
       isIndexPath,
       authUser,
+      categories,
     });
   }
 
@@ -86,12 +99,11 @@ export class AppController {
     @Res() response: Response,
   ): Promise<void> {
     const isIndexPath = request.url === '/';
-    const userInfo = await this.userService.find(authUser.user_id);
-    const user = userInfo.results;
+    const { categories } = await this.userPageData();
     response.render('my-page-user-edit', {
       isIndexPath,
       authUser,
-      user,
+      categories,
     });
   }
 
@@ -103,40 +115,68 @@ export class AppController {
     @Res() response: Response,
   ): Promise<void> {
     const isIndexPath = request.url === '/';
-    const userInfo = await this.userService.find(authUser.user_id);
-    const user = userInfo.results;
+    const { categories } = await this.userPageData();
     response.render('my-page', {
       isIndexPath,
       authUser,
-      user,
+      categories,
     });
   }
 
   //-- 장바구니 --//
   @Get('cart')
-  cart(
+  async cart(
     @AuthUser() authUser: RequestUserInterface,
     @Req() request: Request,
     @Res() response: Response,
-  ): void {
+  ): Promise<void> {
     const isIndexPath = request.url === '/';
+    const { categories } = await this.userPageData();
     response.render('cart', {
       isIndexPath,
       authUser,
+      categories,
     });
   }
 
-  //-- 상품 상세보가 --//
-  @Get('product-detail')
-  productDetail(
+  //-- 상품 상세보기 --//
+  @Get('product-detail/:product_id')
+  async productDetail(
+    @Param('product_id') productId: number,
     @AuthUser() authUser: RequestUserInterface,
     @Req() request: Request,
     @Res() response: Response,
-  ): void {
+  ): Promise<void> {
     const isIndexPath = request.url === '/';
+    const product = await this.productsService.findById(productId);
+    const { categories } = await this.userPageData();
     response.render('product-detail', {
       isIndexPath,
       authUser,
+      product,
+      categories,
+    });
+  }
+
+  //-- 스토어 --//
+  @Get('contact/:shop_id')
+  async contact(
+    @Param('shop_id') shopId: number,
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const isIndexPath = request.url === '/';
+    const { categories } = await this.userPageData();
+    const shop = await this.shopsService.find(shopId);
+    const products = await this.productsService.findRegisteredAll(shopId);
+
+    response.render('contact', {
+      isIndexPath,
+      authUser,
+      categories,
+      shop,
+      products,
     });
   }
 
@@ -196,29 +236,37 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { user, shop } = await this.adminPageData(authUser, response);
+    const { user, shop, categories } = await this.adminPageData(
+      authUser,
+      response,
+    );
     response.render('admin-create-product', {
       authUser,
       user,
       shop,
+      categories,
     });
   }
 
   //-- admin : 상품 수정 --//
   @Get('admin-edit-product/:product_id')
   async adminEditProduct(
-    @Param('product_id') product_id: number,
+    @Param('product_id') productId: number,
     @AuthUser() authUser: RequestUserInterface,
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { user, shop } = await this.adminPageData(authUser, response);
-    const product = await this.productsService.findById(product_id);
+    const { user, shop, categories } = await this.adminPageData(
+      authUser,
+      response,
+    );
+    const product = await this.productsService.findById(productId);
     response.render('admin-edit-product', {
       authUser,
       user,
       shop,
       product,
+      categories,
     });
   }
 }

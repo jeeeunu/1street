@@ -5,7 +5,7 @@ import { CategoryEntity } from './entities/category.entity';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 import { ProductsEntity, ShopsEntity, UsersEntity } from '../common/entities';
-import { ProductImageEntity } from './entities/product_image.entity';
+import { ProductImageEntity } from './entities/product-image.entity';
 import { UploadsService } from 'src/uploads/uploads.service';
 import * as multer from 'multer';
 
