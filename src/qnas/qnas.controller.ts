@@ -31,6 +31,8 @@ export class QnasController {
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
     // const productId = data.product_id;
+    // const qnaName = data.qna_name;
+    // const qnaContent = data.qna_content;
     return await this.qnasService.create(id, data, authUser);
     //, productId);
   }
@@ -60,7 +62,7 @@ export class QnasController {
   @Delete('/qnas/:qna_id')
   @UseGuards(AuthGuard)
   async deleteQna(
-    @Param('id') qnaId: number,
+    @Param('qna_id') qnaId: number,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
     return await this.qnasService.delete(qnaId, authUser);

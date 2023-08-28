@@ -53,7 +53,7 @@ export class QnasService {
   async getForProduct(productId: number): Promise<QnasEntity[]> {
     const qna = await this.qnaRepository.find({
       where: { product: { id: productId } },
-      relations: ['product'],
+      relations: ['user', 'product'],
     });
     return qna;
     // return { status: true, message: '질문이 조회되었습니다.' };
@@ -80,25 +80,36 @@ export class QnasService {
 
   //-- QNA 수정 --//
   async update(
-    qnaId: UpdateQnasDto,
+    qnaData: UpdateQnasDto,
     authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
     const qna = await this.qnaRepository.findOne({
-      where: { user: { id: qnaId.id } },
+      where: { user: { id: qnaData.id } }, // { user X / id: qnaId.id }
       relations: ['user'],
     });
     if (qna.user.id !== authUser.user_id)
       throw new ForbiddenException('질문을 등록한 사람만 수정할 수 있습니다.');
-    const updateQna = Object.assign(qna, qnaId);
-    console.log(updateQna);
-    //   try {
-    //     await this.qnaRepository.save(updateQna);
-    return { status: true, message: '질문이 수정되었습니다.' };
-    //   } catch (err) {
-    //     throw new InternalServerErrorException(
-    //       '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-    //     );
-    //   }
+
+    const { qna_name, qna_content } = qnaData;
+
+    if (qna_name !== undefined) {
+      qna.qna_name = qna_name;
+    }
+
+    if (qna_content !== undefined) {
+      qna.qna_content = qna_content;
+    }
+
+    // const updateQna = Object.assign(qna, qnaId);
+    // console.log(updateQna);
+    try {
+      await this.qnaRepository.save(qna);
+      return { status: true, message: '질문이 수정되었습니다.' };
+    } catch (err) {
+      throw new InternalServerErrorException(
+        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
+      );
+    }
   }
 
   //-- QNA 삭제 --//
@@ -107,7 +118,7 @@ export class QnasService {
     authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
     const qna = await this.qnaRepository.findOne({
-      where: { user: { id: qnaId } },
+      where: { user: { id: qnaId } }, // user X { id: qnaId}
       relations: ['user'],
     });
     if (qna.user.id !== authUser.user_id)
