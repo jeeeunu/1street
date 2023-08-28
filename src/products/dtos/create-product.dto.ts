@@ -39,5 +39,5 @@ export class ProductCreateDto {
   //-- 카테고리 번호 --//
   @IsNotEmpty({ message: '카테고리를 선택해주세요.' })
   @IsNumber()
-  public category: number;
+  public category_id: number;
 }

@@ -62,74 +62,82 @@
           </section>
           <section class="list-container">
             <div class="title-wrap">
-              <h3>등록된 상품</h3>
-              <a href="">더보기</a>
+              <h3>등록된 상품 ( <%= products.length %> )</h3>
             </div>
             <div class="order-list-table">
               <ul class="t-head">
-                <li class="td">날짜</li>
-                <li class="td">주문정보</li>
+                <li class="td">등록 날짜</li>
+                <li class="td">상품 정보</li>
                 <li class="td">상태</li>
-                <li class="td">확인/신청</li>
+                <li class="td">편집</li>
               </ul>
               <ul class="t-body">
                 <!-- <li class="tr">
-                  <div class="td">
-                    <p class="date-text">2023.01.01</p>
-                  </div>
-                  <div class="td">
-                    <div class="order-info-wrap">
-                      <div class="img-wrap">
-                        <img
-                          src="https://i.namu.wiki/i/slmFMXb1Fchs2zN0ZGOzqfuPDvhRS-H9eBp7Gp613-DNKi6i6Ct7eFkTUpauqv5HAYR97mrNqrvvcCDEyBdL_g.webp"
-                          alt=""
-                        />
-                      </div>
-                      <div class="text-wrap">
-                        <a href="">
-                          <span>20228284895894</span>
-                          <span class="product-title">텔레비전</span>
-                          <span>옵션1/2/3</span>
-                        </a>
-                      </div>
+                <div class="td">
+                  <p class="date-text">2023.01.01</p>
+                </div>
+                <div class="td">
+                  <div class="order-info-wrap">
+                    <div class="img-wrap">
+                      <img
+                        src="https://i.namu.wiki/i/slmFMXb1Fchs2zN0ZGOzqfuPDvhRS-H9eBp7Gp613-DNKi6i6Ct7eFkTUpauqv5HAYR97mrNqrvvcCDEyBdL_g.webp"
+                        alt=""
+                      />
+                    </div>
+                    <div class="text-wrap">
+                      <a href="">
+                        <span>20228284895894</span>
+                        <span class="product-title">텔레비전</span>
+                        <span>옵션1/2/3</span>
+                      </a>
                     </div>
                   </div>
-                  <div class="td status-wrap">
-                    <span>배송완료</spㄴ>
-                  </div>
-                  <div class="td">
-                    <button type="button" class="btn-primary-s">배송완료 확인</button>
-                  </div>
-                </li> -->
+                </div>
+                <div class="td status-wrap">
+                  <span>배송완료</spㄴ>
+                </div>
+                <div class="td">
+                  <button type="button" class="btn-primary-s">배송완료 확인</button>
+                </div>
+              </li> -->
                 <% products.forEach((product) => { %>
                 <li class="tr">
                   <div class="td">
-                    <p class="date-text"><%= '2023.01.01' %></p>
+                    <p class="date-text">
+                      <%= product.created_at.toISOString().substr(0, 10) %>
+                    </p>
                   </div>
                   <div class="td">
                     <div class="order-info-wrap">
                       <div class="img-wrap">
-                        <img src="<%= '이미지 URL' %>" alt="" />
+                        <img src="<%= product.product_image[0].url %>" alt="" />
                       </div>
                       <div class="text-wrap">
-                        <a href="">
-                          <span><%= product.id %></span>
-                          <span class="product-title"
-                            ><%= product.product_name %></span
+                        <div>
+                          <span><small>id:</small> <%= product.id %></span>
+                          <span
+                            ><small>카테고리:</small> <%=
+                            product.category.category_name %></span
                           >
-                          <span><%= product.product_desc %></span>
-                        </a>
+                          <span class="product-title"
+                            ><small>상품명:</small> <%= product.product_name
+                            %></span
+                          >
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div class="td status-wrap">
-                    <span><%= '배송완료' %></span>
+                    <span>판매중</span>
                   </div>
-                  <div class="td">
-                    <!-- TODO :: 버튼 각 상황에 맞게 -->
-                    <button type="button" class="btn-primary-s">
-                      배송완료 확인
-                    </button>
+                  <div class="td btns">
+                    <a
+                      href="/admin-edit-product/<%= product.id
+                    %>"
+                      class="btn-primary-s"
+                      >수정하기</a
+                    >
+                    <a href="" class="btn-primary-s">삭제하기</a>
                   </div>
                 </li>
                 <% }); %>
@@ -170,8 +178,6 @@
         <% } %>
       </div>
     </main>
-    <!-- include : footer -->
-    <%- include('includes/footer') %>
 
     <script>
       //-- 스토어 생성 api --//

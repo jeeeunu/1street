@@ -17,6 +17,6 @@ export class CategoryEntity {
   @IsNumber()
   public category_number: number;
 
-  // @OneToMany(() => ProductsEntity, (product) => product.category)
-  // public products: ProductsEntity[];
+  @OneToMany(() => ProductsEntity, (product) => product.category)
+  public products: ProductsEntity[];
 }

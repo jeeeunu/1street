@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Controller, Get, Param, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './users/users.service';
 import { AuthUser } from './auth/auth.decorator';
@@ -151,8 +151,6 @@ export class AppController {
     const products = await this.productsService.findRegisteredAll(
       authUser.shop_id,
     );
-    console.log(authUser);
-    console.log(products);
     response.render('admin-my-page', {
       authUser,
       user,
@@ -203,6 +201,24 @@ export class AppController {
       authUser,
       user,
       shop,
+    });
+  }
+
+  //-- admin : 상품 수정 --//
+  @Get('admin-edit-product/:product_id')
+  async adminEditProduct(
+    @Param('product_id') product_id: number,
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { user, shop } = await this.adminPageData(authUser, response);
+    const product = await this.productsService.findById(product_id);
+    response.render('admin-edit-product', {
+      authUser,
+      user,
+      shop,
+      product,
     });
   }
 }
