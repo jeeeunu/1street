@@ -20,15 +20,24 @@ import { RequestUserInterface } from 'src/users/interfaces';
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
+  //-- 장바구니 주문 작성 --//
+  @Post('create')
+  async createOrder(
+    @Body() data: OrderCreateDto,
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
+    return this.ordersService.createOrder(data, authUser.user_id);
+  }
+
   //-- 주문 작성 --//
   @Post()
   @UseGuards(AuthGuard)
   async postOrder(
     @Body() data: OrderCreateDto,
     @Req() req: Request,
+    @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    const authUser: RequestUserInterface = req['user'];
-    return await this.ordersService.postOrder(data, authUser);
+    return await this.ordersService.postOrder(data, authUser.user_id);
   }
   //-- 주문 확인 --//
   @Get()

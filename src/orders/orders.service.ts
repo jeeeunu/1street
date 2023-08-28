@@ -7,6 +7,7 @@ import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from 'src/users/interfaces';
 import { UserService } from 'src/users/users.service';
 import { OrderDetailsEntity } from './entities/order-detail.entity';
+import { CartsService } from 'src/carts/carts.service';
 
 @Injectable()
 export class OrdersService {
@@ -16,16 +17,50 @@ export class OrdersService {
     private userService: UserService,
     @InjectRepository(OrderDetailsEntity)
     private orderDetailRepository: Repository<OrderDetailsEntity>,
+    private cartsService: CartsService,
   ) {}
+  //-- 장바구니 주문 작성 --//
+  async createOrder(
+    data: OrderCreateDto,
+    user_id: number,
+  ): Promise<ResultableInterface> {
+    const carts = await this.cartsService.getCart(user_id);
+    if (!carts || carts.length === 0) {
+      return { status: false, message: '장바구니가 비어있습니다.' };
+    }
+    // 여기서 주문 생성 로직을 구현
+    // carts 기반으로 주문 생성, 주문 정보를 저장 등을 수행
+    const orderContent = await this.orderRepository.save({
+      user: { id: user_id },
+      order_receiver: data.order_receiver,
+      order_phone: data.order_phone,
+      order_email: data.order_email,
+      order_address: data.order_address,
+      order_payment_amount: data.order_payment_amount,
+    });
+
+    // 장바구니 항목을 주문 상세로 이동
+    const orderDetails: DeepPartial<OrderDetailsEntity>[] = carts.map(
+      (carts) => ({
+        product: { id: carts.product_id },
+        order_quantity: carts.quantity,
+        order: { id: orderContent.id },
+      }),
+    );
+    await this.orderDetailRepository.save(orderDetails);
+    // 주문 생성 성공 시, 장바구니 비우기
+    await this.cartsService.clearCart(user_id);
+
+    return { status: true, message: '주문이 생성되었습니다.' };
+  }
+
   //-- 주문 작성 --//
   async postOrder(
     data: OrderCreateDto,
-    authUser: RequestUserInterface,
+    user_id: number,
   ): Promise<ResultableInterface> {
-    const user = await this.userService.findOne(authUser.user_id);
-
     const orderContent = await this.orderRepository.save({
-      user: { id: user.id },
+      user: { id: user_id },
       order_receiver: data.order_receiver,
       order_phone: data.order_phone,
       order_email: data.order_email,

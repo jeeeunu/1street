@@ -8,6 +8,7 @@ import { UsersEntity } from '../common/entities/users.entity';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { GoogleStrategy } from './strategies/google.strategy';
+import { ShopsEntity } from 'src/common/entities';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
       secret: 'DB_JWT_SECRET_KEY',
       signOptions: { expiresIn: '2h' },
     }),
-    TypeOrmModule.forFeature([UsersEntity]),
+    TypeOrmModule.forFeature([UsersEntity, ShopsEntity]),
   ],
   providers: [AuthService, GoogleStrategy],
   controllers: [AuthController],

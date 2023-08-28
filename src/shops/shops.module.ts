@@ -10,5 +10,6 @@ import { UploadsService } from 'src/uploads/uploads.service';
   imports: [TypeOrmModule.forFeature([ShopsEntity, UsersEntity])],
   providers: [ShopsService, UserService, UploadsService],
   controllers: [ShopsController],
+  exports: [ShopsService],
 })
 export class ShopsModule {}

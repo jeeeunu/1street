@@ -10,12 +10,15 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { UsersEntity } from '../common/entities/users.entity';
+import { ShopsEntity } from 'src/common/entities';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
     @InjectRepository(UsersEntity)
     private userRepository: Repository<UsersEntity>,
+    @InjectRepository(ShopsEntity)
+    private shopsEntity: Repository<ShopsEntity>,
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector,
   ) {}
@@ -29,16 +32,19 @@ export class AuthGuard implements CanActivate {
     if (authToken) {
       try {
         const payload = this.jwtService.verify(authToken);
+        const shop = await this.shopsEntity.findOne({
+          where: { user_id: payload.user_id },
+        });
         const user = {
           user_id: payload.user_id,
           email: payload.email,
           user_name: payload.user_name,
           profile_image: payload.profile_image,
           isAdmin: payload.isAdmin || false,
+          shop_id: shop ? shop.id : undefined,
         };
 
         request.user = user;
-
         return true;
       } catch (err) {
         console.error(err, err.stack);

@@ -57,6 +57,7 @@ export class UserController {
 
   //-- 유저 탈퇴 --//
   @Delete()
+  @UseGuards(AuthGuard)
   async deleteUser(
     @AuthUser() authUser: RequestUserInterface,
     @Res() res: Response,

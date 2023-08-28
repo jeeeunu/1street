@@ -19,6 +19,7 @@ import { UploadsModule } from './uploads/uploads.module';
 import { CartsModule } from './carts/carts.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
+import { ShopsEntity, UsersEntity } from './common/entities';
 
 @Module({
   imports: [
@@ -33,21 +34,12 @@ import * as redisStore from 'cache-manager-redis-store';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
       namingStrategy: new SnakeNamingStrategy(),
     }),
-    //-- Redis --//
 
-    CacheModule.registerAsync({
-      isGlobal: true,
-      useFactory: async () => {
-        return {
-          store: redisStore,
-          host: process.env.REDIS_HOST,
-          port: Number(process.env.REDIS_PORT),
-        };
-      },
-    }),
+    TypeOrmModule.forFeature([UsersEntity, ShopsEntity]),
+
     //-- jwt --//
     JwtModule.register({
       secret: process.env.DB_JWT_SECRET_KEY,
@@ -63,6 +55,18 @@ import * as redisStore from 'cache-manager-redis-store';
     LikesModule,
     UploadsModule,
     CartsModule,
+    //-- Redis --//
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => {
+        return {
+          store: redisStore,
+          host: process.env.REDIS_HOST,
+          port: Number(process.env.REDIS_PORT),
+          ttl: 259200,
+        };
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy],
