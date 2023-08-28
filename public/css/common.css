@@ -734,3 +734,7 @@ fieldset {
 .proflie-info-container .text-wrap > div {
   width: 100%;
 }
+
+.tab-pane img {
+  width: auto;
+}

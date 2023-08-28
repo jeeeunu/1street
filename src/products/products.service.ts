@@ -1,6 +1,5 @@
 import {
   BadGatewayException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -63,6 +62,8 @@ export class ProductsService {
     const product = await this.productRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.product_image', 'product_image')
+      .leftJoinAndSelect('product.shop', 'shop')
+      .leftJoinAndSelect('shop.user', 'user')
       .where('product.id = :id', { id })
       .getOne();
     if (!product) throw new NotFoundException('해당 상품이 존재하지 않습니다.');

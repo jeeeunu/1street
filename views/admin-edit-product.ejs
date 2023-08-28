@@ -280,12 +280,13 @@
       tinymce.init({
         selector: '#myTextarea',
         plugins: 'image paste',
-        images_file_types: 'jpg,svg,webp',
+        images_file_types: 'jpg,svg,webp,svg',
         height: 450,
         setup: function (editor) {
           editor.on('input', function () {
             const productDesc = editor.getContent();
-            productDescValue = escapeHtml(productDesc);
+            // productDescValue = escapeHtml(productDesc);
+            productDescValue = productDesc;
           });
         },
       });
