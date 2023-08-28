@@ -25,7 +25,17 @@
             <h2 class="section-title">상품 수정</h2>
             <p class="create-title">*상품의 카테고리를 선택해주세요.</p>
             <div class="radios">
+              <% categories.forEach(category => { %>
               <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="<%=
+                  category.category_number %>" <%= product.category_id ===
+                  category.category_number ? 'checked' : '' %> />
+                  <span><%= category.category_name %></span>
+                </label>
+              </div>
+              <% }); %>
+              <!-- <div class="radio-wrap">
                 <label>
                   <input type="radio" name="category" value="1" <%=
                   product.category_id === 1 ? 'checked' : '' %> />
@@ -129,7 +139,7 @@
                   product.category_id === 15 ? 'checked' : '' %> />
                   <span>헬스 / 건강식품</span>
                 </label>
-              </div>
+              </div> -->
             </div>
             <div class="input-container">
               <div class="content-box">
