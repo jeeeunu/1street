@@ -1,8 +1,10 @@
+import { IsNumber } from 'class-validator';
 import { ProductsEntity } from 'src/common/entities';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -16,12 +18,18 @@ export class ProductImageEntity {
   @Column({ comment: 's3 업로드된 localtion url' })
   url: string;
 
+  @Column({ nullable: false })
+  @IsNumber()
+  public product_id: number;
+
   @CreateDateColumn()
   created_at: Date;
 
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => ProductsEntity, (product) => product.product_image)
+  @ManyToOne(() => ProductsEntity, (product) => product.product_image, {
+    cascade: true,
+  })
   product: ProductsEntity;
 }

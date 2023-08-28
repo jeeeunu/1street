@@ -168,6 +168,7 @@
                       <div class="edit-img-wrap">
                         <% if (product.product_image[0]) { %>
                         <img
+                          data-id="<%- product.product_image[0].id %>"
                           src="<%- product.product_image[0].url %>"
                           class="thumbnail"
                           alt=""
@@ -191,6 +192,7 @@
                       <div class="edit-img-wrap">
                         <% if (product.product_image[1]) { %>
                         <img
+                          data-id="<%- product.product_image[1].id %>"
                           src="<%- product.product_image[1].url %>"
                           class="thumbnail"
                           alt=""
@@ -215,6 +217,7 @@
                         <% if (product.product_image[2]) { %>
                         <img
                           src="<%- product.product_image[2].url %>"
+                          data-id="<%- product.product_image[2].id %>"
                           class="thumbnail"
                           alt=""
                         />
@@ -260,7 +263,6 @@
         element.innerText = text;
         return element.innerHTML;
       };
-
       tinymce.init({
         selector: '#myTextarea',
         plugins: 'image paste',
@@ -274,14 +276,15 @@
         },
       });
 
-      const deletedImageIndexes = [];
+      const deletedImagesId = [];
 
-      document.querySelectorAll('.btn-delete-img').forEach((btn, index) => {
+      document.querySelectorAll('.btn-delete-img').forEach((btn) => {
         btn.addEventListener('click', () => {
-          console.log('nono');
-          const imgWrap = btn.closest('.edit-img-container');
           if (confirm('해당 이미지를 삭제하시겠습니까?')) {
-            deletedImageIndexes.push(index);
+            const imgWrap = btn.closest('.edit-img-container');
+            const img = imgWrap.querySelector('img');
+            const imgId = img.getAttribute('data-id');
+            deletedImagesId.push(imgId);
             imgWrap.style.display = 'none';
 
             const newImageContainer = document.createElement('div');
@@ -314,11 +317,14 @@
           formData.append('category_id', category);
           formData.append('product_name', productName.value);
           formData.append('product_domestic', productDomestic.value);
-          formData.append('product_desc', productDescValue);
+          if (productDescValue.trim() !== '') {
+            formData.append('product_desc', productDescValue);
+          }
           formData.append('product_price', productPrice.value);
-          // formData.append('delete_imgs', deleteImgs);
-          formData.append('delete_imgs', deletedImageIndexes);
+          console.log(deletedImagesId);
+          formData.append('delete_imgs', deletedImagesId);
           let productImgfiles = [];
+          console.log(document.querySelectorAll('.profile-input'));
           document.querySelectorAll('.profile-input').forEach((file) => {
             if (file.files[0] !== undefined) {
               formData.append('files', file.files[0]);
@@ -326,7 +332,7 @@
           });
 
           const response = await fetch('/products/<%- product.id %>', {
-            method: 'PATCH',
+            method: 'PUT',
             headers: { Accept: 'application/json' },
             body: formData,
           });
@@ -335,8 +341,7 @@
 
           if (response.ok) {
             alert(data.message);
-
-            // window.location.href = '/';
+            window.location.href = '/';
           } else {
             console.log(data.message);
             if (Array.isArray(data.message)) {

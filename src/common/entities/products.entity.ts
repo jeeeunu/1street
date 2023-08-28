@@ -14,7 +14,7 @@ import { ShopsEntity } from './shops.entity';
 import { LikeEntity } from './likes.entity';
 import { OrderDetailsEntity } from 'src/orders/entities/order-detail.entity';
 import { QnasEntity } from './qnas.entity';
-import { ProductImageEntity } from 'src/products/entities/product_image.entity';
+import { ProductImageEntity } from 'src/products/entities/product-image.entity';
 
 @Entity({ name: 'products' })
 export class ProductsEntity {
@@ -53,7 +53,7 @@ export class ProductsEntity {
   public shop_id: number;
 
   @ManyToOne(() => ShopsEntity, (shop) => shop.products)
-  @JoinColumn({ name: 'shop_id', referencedColumnName: 'id' })
+  // @JoinColumn({ name: 'shop_id', referencedColumnName: 'id' })
   public shop: ShopsEntity;
 
   @CreateDateColumn({ type: 'timestamp' })
@@ -75,6 +75,6 @@ export class ProductsEntity {
   public product_image: ProductImageEntity[];
 
   @ManyToOne(() => CategoryEntity, (category) => category.products)
-  @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
+  // @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
   public category: CategoryEntity;
 }

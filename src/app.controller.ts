@@ -5,11 +5,13 @@ import { AuthUser } from './auth/auth.decorator';
 import { RequestUserInterface } from './users/interfaces';
 import { ShopsService } from './shops/shops.service';
 import { ProductsService } from './products/products.service';
+import { CategorysService } from './categorys/categorys.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly userService: UserService,
+    private readonly categorysService: CategorysService,
     private readonly shopsService: ShopsService,
     private readonly productsService: ProductsService,
   ) {}
@@ -26,8 +28,9 @@ export class AppController {
     const userInfo = await this.userService.find(authUser.user_id);
     const user = userInfo.results;
     const shop = await this.shopsService.findByUserId(authUser.user_id);
+    const categories = await this.categorysService.findAll();
 
-    return { user, shop };
+    return { user, shop, categories };
   }
 
   //-- 메인 페이지 --//
@@ -39,7 +42,7 @@ export class AppController {
   ): void {
     const isIndexPath = request.url === '/';
 
-    console.log(authUser);
+    // console.log(authUser);
     if (authUser && authUser !== null && authUser.isAdmin === true) {
       return response.redirect('admin-my-page');
     }
@@ -196,11 +199,15 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { user, shop } = await this.adminPageData(authUser, response);
+    const { user, shop, categories } = await this.adminPageData(
+      authUser,
+      response,
+    );
     response.render('admin-create-product', {
       authUser,
       user,
       shop,
+      categories,
     });
   }
 
@@ -212,13 +219,17 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { user, shop } = await this.adminPageData(authUser, response);
+    const { user, shop, categories } = await this.adminPageData(
+      authUser,
+      response,
+    );
     const product = await this.productsService.findById(product_id);
     response.render('admin-edit-product', {
       authUser,
       user,
       shop,
       product,
+      categories,
     });
   }
 }

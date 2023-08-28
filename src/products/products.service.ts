@@ -1,6 +1,5 @@
 import {
   BadGatewayException,
-  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -14,7 +13,7 @@ import { ProductCreateDto, ProductUpdateDto } from './dtos';
 import { CategoryEntity } from './entities/category.entity';
 import { PaginationDto } from 'src/common/dtos';
 import { UploadsService } from 'src/uploads/uploads.service';
-import { ProductImageEntity } from './entities/product_image.entity';
+import { ProductImageEntity } from './entities/product-image.entity';
 
 @Injectable()
 export class ProductsService {
@@ -138,37 +137,56 @@ export class ProductsService {
     productId: number,
     data: ProductUpdateDto,
     files: Express.Multer.File[],
-    // authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
     const existingProduct = await this.productRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.product_image', 'product_image')
       .where('product.id = :productId', { productId })
       .getOne();
+    Object.assign(existingProduct, data);
+    const updatedProduct = await this.productRepository.save(existingProduct);
 
-    for (const index of data.delete_imgs) {
-      if (existingProduct.product_image.length === 1) {
+    // 이미지 등록
+    if (files.length > 0) {
+      const imageDetails = await this.uploadsService.createProductImages(files);
+      for (const imageDetail of imageDetails) {
+        console.log(imageDetail, 'heheheheheheheheheheh');
+        const productImage = await this.productImageRepository.create({
+          url: imageDetail,
+          product_id: productId,
+        });
+
+        await this.productImageRepository.save(productImage);
+        console.log('이미지 등록 완료', imageDetail);
+      }
+    }
+
+    // 이미지 삭제
+    const deleteImgIds = data.delete_imgs.split(',').map(Number);
+    for (const deleteImgId of deleteImgIds) {
+      const updatedProductImg = await this.productImageRepository.find({
+        where: { product_id: updatedProduct.id },
+      });
+
+      if (updatedProductImg.length === 0) {
         throw new BadGatewayException(
           '상품에는 한개 이상의 썸네일 이미지가 있어야합니다.',
         );
       }
-      console.log(existingProduct.product_image);
-      const imageToDelete = existingProduct.product_image[index].url;
 
-      // 이미지 서비스에서 이미지 삭제
-      await this.uploadsService.deleteImage(imageToDelete);
+      const existingImage = await this.productImageRepository.findOne({
+        where: { id: deleteImgId },
+      });
 
-      // 데이터베이스에서 이미지 삭제
-      await this.productImageRepository.delete({ url: imageToDelete });
+      if (existingImage) {
+        await this.uploadsService.deleteImage(existingImage.url);
+        await this.productImageRepository.remove(existingImage);
 
-      // 이미지 배열에서 삭제
-      existingProduct.product_image.splice(index, 1);
-      console.log('이미지 삭제');
+        console.log('이미지 삭제 완료');
+      }
     }
 
-    Object.assign(existingProduct, data);
-    await this.productRepository.save(existingProduct);
-
+    console.log('COMPLETE :: 상품 수정 완료');
     return { status: true, message: '상품을 성공적으로 수정했습니다' };
   }
 

@@ -19,6 +19,7 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UploadsModule } from './uploads/uploads.module';
 import { ShopsEntity } from './common/entities';
+import { CategorysModule } from './categorys/categorys.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { ShopsEntity } from './common/entities';
     ProductsModule,
     LikesModule,
     UploadsModule,
+    CategorysModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy],
