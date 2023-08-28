@@ -137,7 +137,14 @@
                       class="btn-primary-s"
                       >수정하기</a
                     >
-                    <a href="" class="btn-primary-s">삭제하기</a>
+                    <button
+                      type="button"
+                      class="btn-primary-s"
+                      data-id="<%= product.id
+                    %>"
+                    >
+                      삭제하기
+                    </button>
                   </div>
                 </li>
                 <% }); %>

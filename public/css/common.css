@@ -704,13 +704,13 @@ fieldset {
   flex-direction: column;
 }
 
-.btns a {
+.btns .btn-primary-s {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.btns a + a {
+.btns .btn-primary-s + .btn-primary-s {
   margin-top: 3px;
 }
 
@@ -733,4 +733,8 @@ fieldset {
   background-color: rgba(0, 0, 0, 0.55);
   border-radius: 10px;
   z-index: 90;
+}
+
+.proflie-info-container .text-wrap > div {
+  width: 100%;
 }

@@ -46,13 +46,14 @@ export class ProductsService {
     return query.getMany();
   }
 
-  //-- admin : 등록된 상품  보기 --//
+  //-- admin : 등록된 상품 보기 --//
   async findRegisteredAll(shopId: number): Promise<ProductsEntity[]> {
     const products = await this.productRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.product_image', 'product_image')
       .leftJoinAndSelect('product.category', 'category')
       .where('product.shop_id = :shopId', { shopId })
+      .orderBy('product_image.id', 'ASC')
       .getMany();
     return products;
   }
