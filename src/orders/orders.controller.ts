@@ -21,7 +21,7 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   //-- 장바구니 주문 작성 --//
-  @Post('create')
+  @Post('carts')
   async createOrder(
     @Body() data: OrderCreateDto,
     @AuthUser() authUser: RequestUserInterface,
@@ -34,7 +34,6 @@ export class OrdersController {
   @UseGuards(AuthGuard)
   async postOrder(
     @Body() data: OrderCreateDto,
-    @Req() req: Request,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
     return await this.ordersService.postOrder(data, authUser.user_id);
