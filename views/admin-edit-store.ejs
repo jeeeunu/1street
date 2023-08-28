@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+
+  <body>
+    <!-- include : top-button -->
+    <%- include('includes/top-button') %>
+
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
+
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+    <!-- 내정보 (일반) -->
+    <main class="mypage container mypage-info create-product-container">
+      <h2 class="title">관리자 페이지</h2>
+      <div class="row">
+        <!-- include : aside -->
+        <%- include('includes/my-page-aside') %>
+
+        <section class="col-lg-9">
+          <section>
+            <h2 class="section-title">스토어정보 수정</h2>
+            <div class="input-container">
+              <div class="content-box">
+                <h2 class="create-title">*스토어 정보를 수정해주세요</h2>
+                <div class="input-box">
+                  <label class="label required">스토어명: </label>
+                  <input
+                    type="text"
+                    id="shopName"
+                    name=""
+                    value="<%- shop.shop_name %>"
+                  />
+                </div>
+                <div class="input-box">
+                  <label class="required label">스토어 설명: </label>
+                  <input
+                    type="text"
+                    id="shopDesc"
+                    name=""
+                    value="<%- shop.shop_desc %>"
+                    required
+                  />
+                </div>
+              </div>
+              <button type="button" class="btn-primary-m" onclick="editStore()">
+                스토어 수정하기
+              </button>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <!-- include : footer -->
+    <%- include('includes/footer') %>
+
+    <script>
+      //-- 스토어 생성 api --//
+      const editStore = async () => {
+        try {
+          const shopName = document.querySelector('#shopName');
+          const shopDesc = document.querySelector('#shopDesc');
+
+          const requestData = {
+            shop_name: shopName.value,
+            shop_desc: shopDesc.value,
+          };
+
+          const response = await fetch('shops', {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message);
+            window.location.href = '/';
+          } else {
+            console.log(data.message);
+            if (Array.isArray(data.message)) {
+              data.message.forEach((message) => {
+                alert(message.messages);
+              });
+            } else {
+              alert(data.message);
+            }
+            // window.location.href = '/';
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('오류가 발생했습니다.');
+        }
+      };
+    </script>
+  </body>
+</html>

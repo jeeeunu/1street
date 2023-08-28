@@ -1,4 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
 import { LikeEntity, OrdersEntity, ShopsEntity } from '.';
@@ -55,8 +61,8 @@ export class UsersEntity {
   @OneToMany(() => OrdersEntity, (order) => order.user)
   public orders: OrdersEntity[];
 
-  @OneToMany(() => ShopsEntity, (shop) => shop.user)
-  public shops: ShopsEntity[];
+  @OneToOne(() => ShopsEntity, (shop) => shop.user)
+  public shop: ShopsEntity;
 
   @OneToMany(() => LikeEntity, (like) => like.user)
   public likes: LikeEntity[];

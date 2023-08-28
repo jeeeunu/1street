@@ -1,15 +1,8 @@
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  MaxLength,
-} from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 export class ProductUpdateDto {
   //-- 상품 이름 --//
   @IsOptional()
   @IsString()
-  @MaxLength(30)
   public product_name: string;
 
   //-- 상품 설명 --//
@@ -22,13 +15,17 @@ export class ProductUpdateDto {
   @IsNumber()
   public product_price: number;
 
-  //-- 상품 썸네일 --//
-  @IsOptional()
-  @IsString()
-  public product_thumbnail: string;
-
   //-- 카테고리 번호 --//
   @IsOptional()
   @IsNumber()
-  public category: number;
+  public category_id: number;
+
+  //-- 상품 원산지 --//
+  @IsOptional()
+  @IsString()
+  public product_domestic: string;
+
+  //-- 삭제할 이미지 --//
+  @IsOptional()
+  public delete_imgs: number[];
 }

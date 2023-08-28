@@ -1,0 +1,79 @@
+<aside class="col-lg-3">
+  <div class="proflie-info-container">
+    <div class="primary-img-wrap">
+      <img src="<%- user.profile_image %> " alt="" />
+    </div>
+    <div>
+      <div class="name-wrap">
+        <span><%- authUser.user_name %> 님</span>
+        <a href="/my-page-user-edit"> > 내 정보 수정</a>
+      </div>
+      <!-- 고객 -->
+      <% if (authUser && authUser.isAdmin === false) { %>
+      <div>
+        <span>충전금액: </span>
+        <span><%- user.point %>원</span>
+      </div>
+      <div>
+        <span>포인트: </span>
+        <span><%- user.point %>원</span>
+      </div>
+      <div>
+        <span>잔여 쿠폰: </span>
+        <span>2개</span>
+      </div>
+      <% } %>
+      <!-- 고객 End -->
+      <!-- 관리자 -->
+      <% if (authUser && authUser.isAdmin === true) { %>
+      <!-- 스토어 생성 전, 후 -->
+      <% if (authUser.shop_id !== undefined) { %>
+      <div class="text-wrap">
+        <span>스토어 명: </span>
+        <span><%- shop.shop_name %>원</span>
+      </div>
+      <div class="text-wrap">
+        <span>스토어 설명: </span>
+        <span><%- shop.shop_desc %>원</span>
+      </div>
+      <a
+        href="/admin-edit-store"
+        style="display: block; padding-top: 10px; font-size: 12px"
+        >> 스토어정보 수정하기</a
+      >
+      <% } %> <% } %>
+      <!-- 관리자 End -->
+    </div>
+    <div class="provider-text">
+      <!-- 구글 로그인 시, -->
+      <% if (user.provider === "google") { %>
+      <hr />
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
+        style="width: 15px; height: 15px; margin-right: 7px"
+        alt=""
+      />구글 로그인 <% } %>
+      <!-- 구글 로그인 시, End -->
+    </div>
+    <button
+      type="button"
+      class="gray-text btn-user-delete"
+      onclick="userDelete()"
+    >
+      회원 탈퇴
+    </button>
+    <!-- 관리자 -->
+    <% if (authUser && authUser.isAdmin === true && authUser.shop_id !==
+    undefined) { %>
+    <button
+      type="button"
+      class="gray-text btn-user-delete"
+      style="margin-left: 10px"
+      onclick="shopDelete()"
+    >
+      스토어 삭제
+    </button>
+
+    <% } %>
+  </div>
+</aside>

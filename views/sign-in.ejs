@@ -3,66 +3,6 @@
   <!-- include : head -->
   <%- include('includes/head') %>
   <!-- script : sign-in -->
-  <script>
-    //-- 로그인 api --//
-    const login = async () => {
-      try {
-        const emailInput = document.querySelector('#emailInput');
-        const passwordInput = document.querySelector('#passwordInput');
-        const errorDiv = document.querySelector('.error-message-div');
-
-        const requestData = {
-          email: emailInput.value,
-          password: passwordInput.value,
-        };
-
-        const response = await fetch('/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData),
-        });
-
-        const data = await response.json();
-
-        let newHtml = '';
-        if (Array.isArray(data.message)) {
-          data.message.forEach((errorMessage) => {
-            const messagesHtml = Array.isArray(errorMessage.messages)
-              ? errorMessage.messages
-                  .map((message) => `<p class="error-text">${message}</p>`)
-                  .join('')
-              : errorMessage.messages;
-            newHtml += `<div class="error-message">${messagesHtml}</div>`;
-          });
-        } else if (typeof data.message === 'string') {
-          newHtml = `<div class="error-message">${data.message}</div>`;
-        }
-        errorDiv.innerHTML = newHtml;
-
-        if (response.ok) {
-          alert('로그인 되었습니다.');
-          window.location.href = '/';
-        } else {
-          console.error('로그인 실패:', data.message);
-        }
-      } catch (error) {
-        console.error('에러 발생:', error);
-        alert('로그인 과정에서 오류가 발생했습니다.');
-      }
-    };
-
-    //-- 구글 로그인 --//
-    const loginGoogle = async (button) => {
-      const authenticationCookie = document.cookie.includes('Authentication');
-      if (authenticationCookie) {
-        return alert('로그인 상태입니다.');
-      } else {
-        window.location.href = '/auth/google/login/callback';
-      }
-    };
-  </script>
 
   <body>
     <!-- include : preloder -->
@@ -119,5 +59,66 @@
 
     <!-- include : footer -->
     <%- include('includes/footer') %>
+
+    <script>
+      //-- 로그인 api --//
+      const login = async () => {
+        try {
+          const emailInput = document.querySelector('#emailInput');
+          const passwordInput = document.querySelector('#passwordInput');
+          const errorDiv = document.querySelector('.error-message-div');
+
+          const requestData = {
+            email: emailInput.value,
+            password: passwordInput.value,
+          };
+
+          const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+          });
+
+          const data = await response.json();
+
+          let newHtml = '';
+          if (Array.isArray(data.message)) {
+            data.message.forEach((errorMessage) => {
+              const messagesHtml = Array.isArray(errorMessage.messages)
+                ? errorMessage.messages
+                    .map((message) => `<p class="error-text">${message}</p>`)
+                    .join('')
+                : errorMessage.messages;
+              newHtml += `<div class="error-message">${messagesHtml}</div>`;
+            });
+          } else if (typeof data.message === 'string') {
+            newHtml = `<div class="error-message">${data.message}</div>`;
+          }
+          errorDiv.innerHTML = newHtml;
+
+          if (response.ok) {
+            alert('로그인 되었습니다.');
+            window.location.href = '/';
+          } else {
+            console.error('로그인 실패:', data.message);
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('로그인 과정에서 오류가 발생했습니다.');
+        }
+      };
+
+      //-- 구글 로그인 --//
+      const loginGoogle = async (button) => {
+        const authenticationCookie = document.cookie.includes('Authentication');
+        if (authenticationCookie) {
+          return alert('로그인 상태입니다.');
+        } else {
+          window.location.href = '/auth/google/login/callback';
+        }
+      };
+    </script>
   </body>
 </html>

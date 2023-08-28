@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
 } from '@nestjs/common';
 
 import { UploadsService } from 'src/uploads/uploads.service';
@@ -43,9 +44,12 @@ export class UserService {
 
     const createUser = await this.usersEntity.save(userDto);
 
-    if (files.length !== 0) {
-      const imageUrl = await this.uploadsService.createS3Images(files);
+    if (files.length > 0) {
+      const imageUrl = await this.uploadsService.createProfileImage(files);
       createUser.profile_image = imageUrl;
+      if (!imageUrl) throw new BadRequestException();
+    } else {
+      createUser.profile_image = null;
     }
 
     await this.usersEntity.save(createUser);
@@ -53,45 +57,35 @@ export class UserService {
   }
 
   //-- 유저 조회 --//
-  async find(user_id: number): Promise<userInfo> {
+  async find(userId: number): Promise<userInfo> {
+    // TODO :: 장바구니 개수, orders_details 불러오기
     const user = await this.usersEntity
       .createQueryBuilder('user')
-      .leftJoin('user.orders', 'orders')
-      .leftJoin('user.likes', 'likes')
-      .leftJoin('likes.product', 'product')
+      .leftJoinAndSelect('user.orders', 'orders')
+      .leftJoinAndSelect('user.qna', 'qna')
+      .leftJoinAndSelect('orders.order_details', 'order_details')
+      .leftJoinAndSelect('order_details.product', 'product')
+      .where('user.id = :id', { id: userId })
       .loadRelationCountAndMap('user.like_count', 'user.likes')
+      .loadRelationCountAndMap('orders.orders_count', 'user.orders')
       .select([
         'user.id',
         'user.email',
         'user.name',
-        'user.phone_number',
-        'user.address',
-        'user.point',
         'user.profile_image',
-        'likes.id',
-        'likes.created_at',
+        'user.address',
+        'user.phone_number',
+        'user.provider',
+        'user.point',
+        'orders.id',
+        'orders.order_payment_amount',
+        'orders.created_at',
+        'order_details.id',
+        'order_details.order_quantity',
+        'product.id',
         'product.product_name',
-        'product.product_price',
-        'product.product_thumbnail',
-        'orders.order_status',
+        'qna.id',
       ])
-      .where('user.id = :id', { id: user_id })
-      .getOne();
-
-    if (!user) {
-      throw new UserNotFoundException();
-    }
-
-    return { status: true, results: user };
-  }
-
-  //-- 유저 조회 : 좋아요 --//
-  async findLikes(user_id: number): Promise<userInfo> {
-    const user = await this.usersEntity
-      .createQueryBuilder('user')
-      .leftJoin('user.likes', 'likes')
-      .select(['likes.id', 'likes.created_at'])
-      .where('user.id = :id', { id: user_id })
       .getOne();
 
     if (!user) {
@@ -103,15 +97,26 @@ export class UserService {
 
   //-- 유저 수정 --//
   async edit(
-    user_id: number,
+    userId: number,
     editUserDto: EditUserDto,
+    files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
     const existingUser = await this.usersEntity.findOne({
-      where: { id: user_id },
+      where: { id: userId },
     });
 
     if (!existingUser) {
       throw new UserNotFoundException();
+    }
+
+    if (files.length !== 0) {
+      const imageUrl = await this.uploadsService.editProfileImage(
+        existingUser.profile_image,
+        files,
+      );
+      existingUser.profile_image = imageUrl;
+
+      if (!imageUrl) throw new BadRequestException();
     }
 
     Object.assign(existingUser, editUserDto);
@@ -121,13 +126,18 @@ export class UserService {
   }
 
   //-- 유저 탈퇴 --//
-  async delete(userId: number): Promise<ResultableInterface> {
-    const deletedUser = await this.usersEntity.delete(userId);
+  async delete(userId: number): Promise<string> {
+    const existingUser = await this.usersEntity.findOne({
+      where: { id: userId },
+    });
 
-    if (deletedUser.affected === 0)
-      throw new NotFoundException('사용자를 찾지 못했습니다.');
+    if (existingUser.profile_image) {
+      await this.uploadsService.deleteImage(existingUser.profile_image);
+    }
 
-    return { status: true, message: '회원탈퇴가 완료되었습니다.' };
+    await this.usersEntity.delete(existingUser.id);
+
+    return '회원탈퇴가 완료되었습니다.';
   }
 
   // TODO :: 삭제 예정

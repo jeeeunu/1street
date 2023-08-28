@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+
+  <body>
+    <!-- include : top-button -->
+    <%- include('includes/top-button') %>
+
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
+
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+    <!-- 내정보 (일반) -->
+    <main class="mypage container mypage-info create-product-container">
+      <h2 class="title">관리자 페이지</h2>
+      <div class="row">
+        <!-- include : aside -->
+        <%- include('includes/my-page-aside') %>
+
+        <section class="col-lg-9">
+          <section>
+            <h2 class="section-title">상품 수정</h2>
+            <p class="create-title">*상품의 카테고리를 선택해주세요.</p>
+            <div class="radios">
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="1" <%=
+                  product.category_id === 1 ? 'checked' : '' %> />
+                  <span>의류</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="2" <%=
+                  product.category_id === 2 ? 'checked' : '' %> />
+                  <span>뷰티</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="3" <%=
+                  product.category_id === 3 ? 'checked' : '' %> />
+                  <span>유아동</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="4" <%=
+                  product.category_id === 4 ? 'checked' : '' %> />
+                  <span>식품</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="5" <%=
+                  product.category_id === 5 ? 'checked' : '' %> />
+                  <span>주방용품</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="6" <%=
+                  product.category_id === 6 ? 'checked' : '' %> />
+                  <span>생활용품</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="7" <%=
+                  product.category_id === 7 ? 'checked' : '' %> />
+                  <span>인테리어</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="8" <%=
+                  product.category_id === 8 ? 'checked' : '' %> />
+                  <span>가전 디지털</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="9" <%=
+                  product.category_id === 9 ? 'checked' : '' %> />
+                  <span>스포츠 / 레저</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="10" <%=
+                  product.category_id === 10 ? 'checked' : '' %> />
+                  <span>자동차 용품</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="11" <%=
+                  product.category_id === 11 ? 'checked' : '' %> />
+                  <span>도서 / 음반 / DVD</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="12" <%=
+                  product.category_id === 12 ? 'checked' : '' %> />
+                  <span>완구 / 취미</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="13" <%=
+                  product.category_id === 13 ? 'checked' : '' %> />
+                  <span>문구 / 오피스 </span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="14" <%=
+                  product.category_id === 14 ? 'checked' : '' %> />
+                  <span>반려동물 용품</span>
+                </label>
+              </div>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="15" <%=
+                  product.category_id === 15 ? 'checked' : '' %> />
+                  <span>헬스 / 건강식품</span>
+                </label>
+              </div>
+            </div>
+            <div class="input-container">
+              <div class="content-box">
+                <h2 class="create-title">*상품정보를 등록해주세요</h2>
+                <div class="input-box">
+                  <label class="label required">상품명: </label>
+                  <input
+                    type="text"
+                    id="productName"
+                    name=""
+                    value="<%- product.product_name %>"
+                  />
+                </div>
+                <div class="input-box">
+                  <label class="label required">판매가: </label>
+                  <input
+                    type="number"
+                    id="productPrice"
+                    name=""
+                    value="<%- product.product_price %>"
+                  />
+                </div>
+                <div class="input-box">
+                  <label class="required label">원산지: </label>
+                  <input
+                    type="text"
+                    id="productDomestic"
+                    name=""
+                    value="<%- product.product_domestic %>"
+                  />
+                </div>
+                <div class="basic-input-box">
+                  <div class="d-flex">
+                    <label class="label required">썸네일: </label>
+                    <div class="edit-img-container">
+                      <div class="edit-img-wrap">
+                        <% if (product.product_image[0]) { %>
+                        <img
+                          src="<%- product.product_image[0].url %>"
+                          class="thumbnail"
+                          alt=""
+                        />
+                        <button type="button" class="btn-delete-img">
+                          삭제하기
+                        </button>
+                        <% } %>
+                      </div>
+                      <% if (!product.product_image[0]) { %>
+                      <input
+                        type="file"
+                        class="profile-input"
+                        name="files"
+                        style="display: block; margin-top: 5px"
+                        onchange="setThumbnail(event)"
+                      />
+                      <% } %>
+                    </div>
+                    <div class="edit-img-container">
+                      <div class="edit-img-wrap">
+                        <% if (product.product_image[1]) { %>
+                        <img
+                          src="<%- product.product_image[1].url %>"
+                          class="thumbnail"
+                          alt=""
+                        />
+                        <button type="button" class="btn-delete-img">
+                          삭제하기
+                        </button>
+                        <% } %>
+                      </div>
+                      <% if (!product.product_image[1]) { %>
+                      <input
+                        type="file"
+                        class="profile-input"
+                        name="files"
+                        style="display: block; margin-top: 5px"
+                        onchange="setThumbnail(event)"
+                      />
+                      <% } %>
+                    </div>
+                    <div class="edit-img-container">
+                      <div class="edit-img-wrap">
+                        <% if (product.product_image[2]) { %>
+                        <img
+                          src="<%- product.product_image[2].url %>"
+                          class="thumbnail"
+                          alt=""
+                        />
+                        <button type="button" class="btn-delete-img">
+                          삭제하기
+                        </button>
+                        <% } %>
+                      </div>
+                      <% if (!product.product_image[2]) { %>
+                      <input
+                        type="file"
+                        class="profile-input"
+                        name="files"
+                        style="display: block; margin-top: 5px"
+                        onchange="setThumbnail(event)"
+                      />
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <textarea id="myTextarea"><%- product.product_desc %></textarea>
+              <button
+                type="button"
+                class="btn-primary-m"
+                onclick="createProduct()"
+              >
+                상품등록 하기
+              </button>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <!-- include : footer -->
+    <%- include('includes/footer') %>
+
+    <script>
+      let productDescValue = '';
+      const escapeHtml = (text) => {
+        const element = document.createElement('div');
+        element.innerText = text;
+        return element.innerHTML;
+      };
+
+      tinymce.init({
+        selector: '#myTextarea',
+        plugins: 'image paste',
+        images_file_types: 'jpg,svg,webp',
+        height: 450,
+        setup: function (editor) {
+          editor.on('input', function () {
+            const productDesc = editor.getContent();
+            productDescValue = escapeHtml(productDesc);
+          });
+        },
+      });
+
+      const deletedImageIndexes = [];
+
+      document.querySelectorAll('.btn-delete-img').forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+          console.log('nono');
+          const imgWrap = btn.closest('.edit-img-container');
+          if (confirm('해당 이미지를 삭제하시겠습니까?')) {
+            deletedImageIndexes.push(index);
+            imgWrap.style.display = 'none';
+
+            const newImageContainer = document.createElement('div');
+            newImageContainer.classList.add('edit-img-container');
+            newImageContainer.innerHTML = `
+              <div class="edit-img-wrap">
+              </div>
+              <input type="file" class="profile-input" name="files" style="display: block; margin-top: 5px" onchange="setThumbnail(event)">
+            `;
+            document
+              .querySelector('.basic-input-box .d-flex')
+              .appendChild(newImageContainer);
+          }
+        });
+      });
+      //-- 상품수정 api --//
+      const createProduct = async () => {
+        try {
+          const formData = new FormData();
+          const radios = document.getElementsByName('category');
+          let category;
+          for (const radio of radios) {
+            if (radio.checked) {
+              category = radio.value;
+            }
+          }
+          const productName = document.querySelector('#productName');
+          const productPrice = document.querySelector('#productPrice');
+          const productDomestic = document.querySelector('#productDomestic');
+          formData.append('category_id', category);
+          formData.append('product_name', productName.value);
+          formData.append('product_domestic', productDomestic.value);
+          formData.append('product_desc', productDescValue);
+          formData.append('product_price', productPrice.value);
+          // formData.append('delete_imgs', deleteImgs);
+          formData.append('delete_imgs', deletedImageIndexes);
+          let productImgfiles = [];
+          document.querySelectorAll('.profile-input').forEach((file) => {
+            if (file.files[0] !== undefined) {
+              formData.append('files', file.files[0]);
+            }
+          });
+
+          const response = await fetch('/products/<%- product.id %>', {
+            method: 'PATCH',
+            headers: { Accept: 'application/json' },
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message);
+
+            // window.location.href = '/';
+          } else {
+            console.log(data.message);
+            if (Array.isArray(data.message)) {
+              data.message.forEach((message) => {
+                alert(message.messages);
+              });
+            } else {
+              alert(data.message);
+            }
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('오류가 발생했습니다.');
+        }
+      };
+    </script>
+  </body>
+</html>

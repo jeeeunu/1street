@@ -8,16 +8,17 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ProductsEntity } from './products.entity';
 
 @Entity({ name: 'qnas' })
 export class QnasEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column()
-  @IsNotEmpty()
-  @IsString()
-  public product_id: number;
+  // @Column()
+  // @IsNotEmpty()
+  // @IsString()
+  // public product_id: number;
 
   // qna 제목
   @Column('varchar', { length: 50 })
@@ -44,4 +45,7 @@ export class QnasEntity {
 
   @ManyToOne(() => UsersEntity, (user) => user.qna)
   public user: UsersEntity;
+
+  @ManyToOne(() => ProductsEntity, (product) => product.qna)
+  public product: ProductsEntity;
 }

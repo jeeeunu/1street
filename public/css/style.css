@@ -36,6 +36,7 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   -webkit-font-smoothing: antialiased;
   font-smoothing: antialiased;
+  font-size: 0.9rem;
 }
 
 h1,
@@ -2965,8 +2966,15 @@ ol {
     width: 460px;
   }
   .hero__categories__all {
+    display: flex;
+    align-items: center;
     padding: 10px 25px 10px 20px;
   }
+
+  .hero__categories__all span {
+    font-size: 14px;
+  }
+
   .hero__categories ul {
     padding-left: 20px;
   }
