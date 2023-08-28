@@ -54,6 +54,7 @@ export class ProductsService {
       .where('product.shop_id = :shopId', { shopId })
       .orderBy('product_image.id', 'ASC')
       .getMany();
+
     return products;
   }
 
@@ -61,6 +62,7 @@ export class ProductsService {
   async findById(id: number): Promise<ProductsEntity> {
     const product = await this.productRepository
       .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
       .leftJoinAndSelect('product.product_image', 'product_image')
       .leftJoinAndSelect('product.shop', 'shop')
       .leftJoinAndSelect('shop.user', 'user')
@@ -97,21 +99,18 @@ export class ProductsService {
     authUser: RequestUserInterface,
     files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
-    const isValidCategory = await this.categoryRepository.findOne({
+    const categoryEntity = await this.categoryRepository.findOne({
       where: {
         id: data.category_id,
       },
     });
-    if (!isValidCategory)
-      throw new NotFoundException('해당하는 카테고리가 없습니다.');
-
     const createProduct = await this.productRepository.save({
       shop_id: authUser.shop_id,
       product_name: data.product_name,
       product_desc: data.product_desc,
       product_price: data.product_price,
       product_domestic: data.product_domestic,
-      category_id: data.category_id,
+      category: categoryEntity,
     });
 
     if (files.length > 0) {
@@ -159,7 +158,7 @@ export class ProductsService {
         });
 
         await this.productImageRepository.save(productImage);
-        console.log('이미지 등록 완료', imageDetail);
+        console.log('이미지 등록 완료:', imageDetail);
       }
     }
 
@@ -184,7 +183,7 @@ export class ProductsService {
         await this.uploadsService.deleteImage(existingImage.url);
         await this.productImageRepository.remove(existingImage);
 
-        console.log('이미지 삭제 완료');
+        console.log('이미지 등록 완료:', existingImage.url);
       }
     }
 

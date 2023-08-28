@@ -830,11 +830,12 @@ ol {
 }
 
 .featured__controls ul li {
+  margin-bottom: 10px;
   list-style: none;
-  font-size: 18px;
+  font-size: 14px;
   color: #1c1c1c;
   display: inline-block;
-  margin-right: 25px;
+  margin-right: 20px;
   position: relative;
   cursor: pointer;
 }
@@ -968,12 +969,16 @@ ol {
 }
 
 .latest-product__slider.owl-carousel .owl-nav {
+  display: flex;
   position: absolute;
   right: 20px;
   top: -75px;
 }
 
 .latest-product__slider.owl-carousel .owl-nav button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 30px;
   width: 30px;
   background: #f3f6fa;
@@ -1732,8 +1737,13 @@ ol {
   margin-left: 2px;
 }
 
-.product__details__text p {
+.product__details__text .text-box {
   margin-bottom: 45px;
+}
+
+.product__details__text .text-box p {
+  margin-bottom: 0;
+  font-size: 14px;
 }
 
 .product__details__text .primary-btn {
@@ -3523,11 +3533,11 @@ ol {
   }
 }
 
-.owl-carousel.owl-drag .owl-item {
+.product-details .owl-carousel.owl-drag .owl-item {
   height: 120px;
 }
 
-.owl-carousel.owl-drag .owl-item img {
+.product-details .owl-carousel.owl-drag .owl-item img {
   width: 100%;
   object-fit: cover;
 }

@@ -42,11 +42,6 @@ export class ProductsEntity {
   @IsNumber()
   public product_price: number;
 
-  //-- 카테고리 아이디 --//
-  @Column({ nullable: false })
-  @IsNumber()
-  public category_id: number;
-
   //-- 스토어 아이디 --//
   @Column({ nullable: false })
   @IsNumber()
@@ -77,6 +72,5 @@ export class ProductsEntity {
   public product_image: ProductImageEntity[];
 
   @ManyToOne(() => CategoryEntity, (category) => category.products)
-  // @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
   public category: CategoryEntity;
 }

@@ -64,7 +64,10 @@
                   >원</span
                 >
               </div>
-              <p>원산지: <%- product.product_domestic %></p>
+              <div class="text-box">
+                <p>카테고리: <%- product.category.category_name %></p>
+                <p>원산지: <%- product.product_domestic %></p>
+              </div>
               <div class="product__details__quantity">
                 <div class="quantity">
                   <div class="pro-qty">
@@ -80,7 +83,10 @@
                 <li>
                   <b>스토어</b>
                   <span>
-                    <a href="./contact.html">
+                    <a
+                      href="/contact/<%=
+                    product.shop.id %>"
+                    >
                       <i class="fa fa-home mr-2" aria-hidden="true"></i><%=
                       product.shop.shop_name %>
                     </a>
