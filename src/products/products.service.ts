@@ -29,7 +29,7 @@ export class ProductsService {
   ) {}
 
   //-- 유저단 : 상품 전체보기 --//
-  async findAll(limit, cursor): Promise<ProductsEntity[]> {
+  async findAll(limit: number, cursor: number): Promise<ProductsEntity[]> {
     const query = this.productRepository
       .createQueryBuilder('product')
       .orderBy('product.id', 'ASC')
@@ -40,28 +40,27 @@ export class ProductsService {
       query.where('product.id > :cursor', { cursor });
     }
 
-    return query.getMany();
+    return await query.getMany();
   }
 
   //-- 상품 검색 (검색어)--//
-  async findByKeyword(keyword: string): Promise<ProductsEntity[]> {
-    console.log(`%${keyword}%`);
-    const result = await this.productRepository.find({
-      where: {
-        product_name: Like(`%${keyword}%`),
-      },
-      relations: ['product_image'],
-    });
+  async findByKeyword(
+    limit: number,
+    cursor: number,
+    keyword: string,
+  ): Promise<ProductsEntity[]> {
+    const query = this.productRepository
+      .createQueryBuilder('product')
+      .where('product.product_name LIKE :keyword', { keyword: `%${keyword}%` })
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .orderBy('product.id', 'ASC')
+      .take(limit || 10);
 
-    // const result = await this.productRepository
-    //   .createQueryBuilder('product')
-    //   .where('product.product_name like :keyword', {
-    //     keyword: '%' + keyword + '%',
-    //   })
-    //   .getMany();
+    if (cursor) {
+      query.andWhere('product.id > :cursor', { cursor });
+    }
 
-    console.log(result);
-    return result;
+    return await query.getMany();
   }
 
   //-- admin : 등록된 상품 보기 --//

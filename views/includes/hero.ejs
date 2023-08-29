@@ -21,8 +21,10 @@
           <div class="hero__search__form">
             <form action="#" class="site-btn-wrap">
               <!-- 검색 시에 -->
-              <% if(searchContent) { %>
-              <input type="text" id="siteSearchInput" placeholder="상품을 검색해주세요." value="<%= searchContent %>" />
+              <% if(isSearchPath) { %>
+                <% if (searchContent) { %>
+                  <input type="text" id="siteSearchInput" placeholder="상품을 검색해주세요." value="<%= searchContent %>" />
+                <% } %>
               <% } else { %>
                 <input type="text" id="siteSearchInput" placeholder="상품을 검색해주세요." />
               <% } %>

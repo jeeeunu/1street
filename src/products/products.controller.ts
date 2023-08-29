@@ -35,7 +35,7 @@ export class ProductsController {
     @Query('cursor') cursor: number,
   ): Promise<ProductsEntity[]> {
     if (keyword) {
-      return this.productsService.findByKeyword(keyword);
+      return this.productsService.findByKeyword(limit, cursor, keyword);
     } else {
       return this.productsService.findAll(limit, cursor);
     }
