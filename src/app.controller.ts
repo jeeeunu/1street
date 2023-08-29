@@ -35,7 +35,6 @@ export class AppController {
     const user = userInfo.results;
     const shop = await this.shopsService.findByUserId(authUser.user_id);
     const categories = await this.categorysService.findAll();
-
     return { user, shop, categories };
   }
 
@@ -52,6 +51,7 @@ export class AppController {
     if (authUser && authUser !== null && authUser.isAdmin === true) {
       return response.redirect('admin-my-page');
     }
+
     response.render('index', {
       isIndexPath,
       authUser,
@@ -116,9 +116,13 @@ export class AppController {
   ): Promise<void> {
     const isIndexPath = request.url === '/';
     const { categories } = await this.userPageData();
+    const userInfo = await this.userService.find(authUser.user_id);
+    const user = userInfo.results;
+
     response.render('my-page', {
       isIndexPath,
       authUser,
+      user,
       categories,
     });
   }
