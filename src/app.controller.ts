@@ -143,6 +143,22 @@ export class AppController {
     });
   }
 
+  //-- 상품 리스트 --//
+  @Get('product-list')
+  async productList(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const isIndexPath = request.url === '/';
+    const { categories } = await this.userPageData();
+    response.render('product-list', {
+      isIndexPath,
+      authUser,
+      categories,
+    });
+  }
+
   //-- 상품 상세보기 --//
   @Get('product-detail/:product_id')
   async productDetail(

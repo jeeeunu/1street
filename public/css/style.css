@@ -56,7 +56,7 @@ h1 {
 }
 
 h2 {
-  font-size: 32px;
+  font-size: 28px;
 }
 
 h3 {
@@ -820,7 +820,7 @@ ol {
 -----------------------*/
 
 .featured {
-  padding-top: 100px;
+  padding-top: 70px;
   padding-bottom: 40px;
 }
 
