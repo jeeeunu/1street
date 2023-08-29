@@ -400,7 +400,7 @@ ol {
 .header__top__right__auth {
   display: flex;
   justify-content: end;
-  gap: 10px;
+  gap: 30px;
 }
 
 .header__top__right__auth button {
