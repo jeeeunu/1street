@@ -60,7 +60,7 @@ export class AuthService {
   }
 
   //-- google --//
-  async googleLogin(req): Promise<string> {
+  async googleLogin(req): Promise<any> {
     // console.log(req.user); // google에서 제공하는 userinfo 값
 
     if (!req.user) throw new NotFoundException('구글 아이디 정보가 없습니다.');
@@ -80,17 +80,17 @@ export class AuthService {
       newUser.provider = 'google';
       await this.usersRepository.save(newUser);
       return;
+    } else {
+      // JWT 토큰에 포함될 payload
+      const payload = {
+        user_id: user.id,
+        user_name: req.user.lastName,
+        email: req.user.email,
+      };
+
+      const accessToken = await this.jwtService.signAsync(payload);
+
+      return accessToken;
     }
-
-    // JWT 토큰에 포함될 payload
-    const payload = {
-      user_id: user.id,
-      user_name: req.user.lastName,
-      email: req.user.email,
-    };
-
-    const access_token = await this.jwtService.signAsync(payload);
-
-    return access_token;
   }
 }

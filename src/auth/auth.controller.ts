@@ -58,8 +58,10 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    const access_token = await this.authService.googleLogin(req);
-    res.cookie('Authentication', access_token);
+    const accessToken = await this.authService.googleLogin(req);
+
+    res.cookie('Authentication', accessToken);
+
     res.redirect('/');
   }
 }
