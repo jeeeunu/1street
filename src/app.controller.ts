@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req, Res } from '@nestjs/common';
+import { Controller, Get, Param, Query, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './users/users.service';
 import { AuthUser } from './auth/auth.decorator';
@@ -143,19 +143,21 @@ export class AppController {
     });
   }
 
-  //-- 상품 리스트 --//
-  @Get('product-list')
+  //-- 상품 검색 --//
+  @Get('search')
   async productList(
+    @Query('content') searchContent: string,
     @AuthUser() authUser: RequestUserInterface,
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
     const isIndexPath = request.url === '/';
     const { categories } = await this.userPageData();
-    response.render('product-list', {
+    response.render('search', {
       isIndexPath,
       authUser,
       categories,
+      searchContent,
     });
   }
 

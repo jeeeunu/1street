@@ -19,7 +19,9 @@
     <main class="product-list-page">
       <!-- 검색 정보 -->
       <section class="container search-info-container">
-        <h2 class="search-info-title"><span>'바나나'</span>에 대한 검색결과</h2>
+        <h2 class="search-info-title">
+          <span id="searchKeyword">'<%= searchContent %>'</span>에 대한 검색결과
+        </h2>
         <div class="search-list-wrap">
           <span>연관 검색어:</span>
           <ul class="search-keyword-list">
@@ -50,6 +52,7 @@
       let data = [];
       let cursor = null;
       let hasMoreData = true;
+      const searchKeyword = document.querySelector('#searchKeyword');
 
       const limit = 8;
       let isLoadingData = false; // 데이터 로딩 중인지 여부
@@ -63,9 +66,14 @@
 
         isLoadingData = true; // 데이터 로딩 중임을 표시
 
+        const searchKeyword =
+          document.querySelector('#searchKeyword').textContent;
+        const keyword = searchKeyword.replace(/'/g, '');
+        console.log(keyword);
+
         const url = cursor
-          ? `/products?limit=${limit}&cursor=${cursor}`
-          : `/products?limit=${limit}`;
+          ? `/products?keyword=${keyword}&limit=${limit}&cursor=${cursor}`
+          : `/products?keyword=${keyword}&limit=${limit}`;
 
         try {
           const response = await fetch(url, {
@@ -110,7 +118,7 @@
                   </div>
                 </div>
               </div>
-            `;
+             `;
             });
 
             cursor = newData[newData.length - 1]?.id;

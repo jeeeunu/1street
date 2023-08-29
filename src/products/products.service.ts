@@ -29,9 +29,7 @@ export class ProductsService {
   ) {}
 
   //-- 유저단 : 상품 전체보기 --//
-  async findAll(paginationDto: PaginationDto): Promise<ProductsEntity[]> {
-    const { limit, cursor } = paginationDto;
-
+  async findAll(limit, cursor): Promise<ProductsEntity[]> {
     const query = this.productRepository
       .createQueryBuilder('product')
       .orderBy('product.id', 'ASC')
@@ -43,6 +41,27 @@ export class ProductsService {
     }
 
     return query.getMany();
+  }
+
+  //-- 상품 검색 (검색어)--//
+  async findByKeyword(keyword: string): Promise<ProductsEntity[]> {
+    console.log(`%${keyword}%`);
+    const result = await this.productRepository.find({
+      where: {
+        product_name: Like(`%${keyword}%`),
+      },
+      relations: ['product_image'],
+    });
+
+    // const result = await this.productRepository
+    //   .createQueryBuilder('product')
+    //   .where('product.product_name like :keyword', {
+    //     keyword: '%' + keyword + '%',
+    //   })
+    //   .getMany();
+
+    console.log(result);
+    return result;
   }
 
   //-- admin : 등록된 상품 보기 --//
@@ -72,26 +91,16 @@ export class ProductsService {
     return product;
   }
 
-  //-- 상품 검색 (검색어)--//
-  async findByKeyword(keyword: string): Promise<ProductsEntity[]> {
+  //-- 상품 검색 (카테고리)--//
+  async findByCategory(category: number): Promise<ProductsEntity[]> {
     const products = await this.productRepository.find({
-      where: { product_name: Like(`%${keyword}`) },
+      where: { category: { category_number: category } },
+      relations: ['category'],
     });
     if (products.length === 0)
       throw new NotFoundException('해당 상품이 존재하지 않습니다.');
     return products;
   }
-
-  //-- 상품 검색 (카테고리)--//
-  // async findByCategory(category: number): Promise<ProductsEntity[]> {
-  //   const products = await this.productRepository.find({
-  //     where: { category: { category_number: category } },
-  //     relations: ['category'],
-  //   });
-  //   if (products.length === 0)
-  //     throw new NotFoundException('해당 상품이 존재하지 않습니다.');
-  //   return products;
-  // }
 
   //-- 상품 등록 --//
   async create(
