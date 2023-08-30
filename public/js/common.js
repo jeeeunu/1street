@@ -85,3 +85,51 @@ if (siteSearchButton) {
     window.location.href = `/search?content=${siteSearchInput}`;
   });
 }
+
+//-- 좋아요 api --//
+const createLike = async (productId) => {
+  try {
+    const response = await fetch(`likes/${productId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json();
+
+    if (response.ok) {
+      alert(data.message);
+    } else {
+      console.log(data.message);
+      if (Array.isArray(data.message)) {
+        data.message.forEach((message) => {
+          alert(message.messages);
+        });
+      } else {
+        alert(data.message);
+      }
+      // window.location.href = '/';
+    }
+  } catch (error) {
+    console.error('에러 발생:', error);
+    alert('오류가 발생했습니다.');
+  }
+};
+
+const likeContainers = document.querySelector('.product-list-container');
+
+if (likeContainers) {
+  likeContainers.addEventListener('click', (event) => {
+    const target = event.target;
+    if (target.classList.contains('btn-like')) {
+      console.log('좋아요');
+      const productWrap = target.closest('.product-item');
+
+      if (productWrap) {
+        const productIdValue = productWrap.getAttribute('data-item-id');
+        const productId = parseInt(productIdValue, 10);
+        createLike(productId);
+      }
+    }
+  });
+}

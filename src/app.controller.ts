@@ -19,7 +19,7 @@ export class AppController {
   //-- 공통 : 유저 --//
   async userPageData(request: Request) {
     const isIndexPath = request.url === '/';
-    const isSearchPath = request.url === '/search';
+    const isSearchPath = request.url.startsWith('/search');
     const categories = await this.categorysService.findAll();
     return { isIndexPath, isSearchPath, categories };
   }
@@ -139,6 +139,24 @@ export class AppController {
     });
   }
 
+  //-- 좋아요 --//
+  @Get('like')
+  async like(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
+      request,
+    );
+    response.render('like', {
+      isIndexPath,
+      isSearchPath,
+      authUser,
+      categories,
+    });
+  }
+
   //-- 장바구니 --//
   @Get('cart')
   async cart(
@@ -168,6 +186,7 @@ export class AppController {
     const { isIndexPath, isSearchPath, categories } = await this.userPageData(
       request,
     );
+    console.log(isSearchPath);
     response.render('search', {
       isIndexPath,
       isSearchPath,

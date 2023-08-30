@@ -271,7 +271,7 @@
     <!-- Latest Product Section End -->
 
     <!-- Featured Section Begin -->
-    <section class="featured spad">
+    <section class="featured spad product-list-container">
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
@@ -325,7 +325,9 @@
             );
             newData.forEach((item) => {
               allProductsContainer.innerHTML += `
-              <div class="col-lg-3 col-md-4 col-sm-6 mix category">
+              <div class="col-lg-3 col-md-4 col-sm-6 mix category product-item" data-item-id="${
+                item.id
+              }">
                 <div class="featured__item">
                   <div
                     class="featured__item__pic set-bg"
@@ -335,7 +337,7 @@
                   >
                     <ul class="featured__item__pic__hover">
                       <li>
-                        <a href="#"><i class="fa fa-heart"></i></a>
+                        <button type="button" class="btn-like"><i class="fa fa-heart"></i></button>
                       </li>
                       <li>
                         <a href="#"><i class="fa fa-shopping-cart"></i></a>
