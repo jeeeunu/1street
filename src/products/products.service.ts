@@ -4,13 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ProductsEntity, ShopsEntity } from '../common/entities';
 import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
 import { ProductCreateDto, ProductUpdateDto } from './dtos';
 import { CategoryEntity } from './entities/category.entity';
-import { PaginationDto } from 'src/common/dtos';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { ProductImageEntity } from './entities/product-image.entity';
 
@@ -63,19 +62,6 @@ export class ProductsService {
     return await query.getMany();
   }
 
-  //-- admin : 등록된 상품 보기 --//
-  async findRegisteredAll(shopId: number): Promise<ProductsEntity[]> {
-    const products = await this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .leftJoinAndSelect('product.category', 'category')
-      .where('product.shop_id = :shopId', { shopId })
-      .orderBy('product_image.id', 'ASC')
-      .getMany();
-
-    return products;
-  }
-
   //-- 상품 상세보기 --//
   async findById(id: number): Promise<ProductsEntity> {
     const product = await this.productRepository
@@ -91,13 +77,36 @@ export class ProductsService {
   }
 
   //-- 상품 검색 (카테고리)--//
-  async findByCategory(category: number): Promise<ProductsEntity[]> {
-    const products = await this.productRepository.find({
-      where: { category: { category_number: category } },
-      relations: ['category'],
-    });
-    if (products.length === 0)
-      throw new NotFoundException('해당 상품이 존재하지 않습니다.');
+  async findByCategory(
+    limit: number,
+    cursor: number,
+    categoryId: number,
+  ): Promise<ProductsEntity[]> {
+    const query = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .where('category.id = :categoryId', { categoryId });
+
+    if (cursor) {
+      query.andWhere('product.id > :cursor', { cursor });
+    }
+
+    query.take(limit || 10);
+
+    return await query.getMany();
+  }
+
+  //-- admin : 등록된 상품 보기 --//
+  async findRegisteredAll(shopId: number): Promise<ProductsEntity[]> {
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .leftJoinAndSelect('product.category', 'category')
+      .where('product.shop_id = :shopId', { shopId })
+      .orderBy('product_image.id', 'ASC')
+      .getMany();
+
     return products;
   }
 

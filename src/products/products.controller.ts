@@ -31,11 +31,19 @@ export class ProductsController {
   @Get()
   async getProducts(
     @Query('keyword') keyword: string,
+    @Query('categoryId') categoryId: number,
     @Query('limit') limit: number,
     @Query('cursor') cursor: number,
   ): Promise<ProductsEntity[]> {
     if (keyword) {
       return this.productsService.findByKeyword(limit, cursor, keyword);
+    }
+    if (categoryId) {
+      return await this.productsService.findByCategory(
+        limit,
+        cursor,
+        categoryId,
+      );
     } else {
       return this.productsService.findAll(limit, cursor);
     }
@@ -48,11 +56,13 @@ export class ProductsController {
   }
 
   //-- 상품 검색 (카테고리 번호)--//
-  // @Get('search/:category')
+  // @Get('categories/:categoryId')
   // async searchCategory(
-  //   @Param('category') category: number,
+  //   @Param('category') categoryId: number,
+  //   @Query('limit') limit: number,
+  //   @Query('cursor') cursor: number,
   // ): Promise<ProductsEntity[]> {
-  //   return await this.productsService.findByCategory(category);
+  //   return await this.productsService.findByCategory(limit, cursor, categoryId);
   // }
 
   //-- 상품 등록 --//

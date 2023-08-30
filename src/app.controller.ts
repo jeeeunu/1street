@@ -23,9 +23,13 @@ export class AppController {
     const isIndexPath = request.url === '/';
     const isSearchPath = request.url.startsWith('/search');
     const categories = await this.categorysService.findAll();
-    const userInfo = await this.userService.find(authUser.user_id);
-    const user = userInfo.results;
-    return { isIndexPath, isSearchPath, user, categories };
+    if (authUser) {
+      const userInfo = await this.userService.find(authUser.user_id);
+      const user = userInfo.results;
+      return { isIndexPath, isSearchPath, user, categories };
+    } else {
+      return { isIndexPath, isSearchPath, categories };
+    }
   }
 
   //-- 공통 : admin --//
@@ -196,6 +200,28 @@ export class AppController {
       authUser,
       categories,
       searchContent,
+    });
+  }
+
+  //-- 카테고리 리스트 --//
+  @Get('category-list')
+  async categoryList(
+    @Query('categoryId') categoryId: number,
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
+    const pageCategory = await this.categorysService.findOne(categoryId);
+    console.log(pageCategory);
+    response.render('category-list', {
+      isIndexPath,
+      isSearchPath,
+      user,
+      authUser,
+      categories,
+      pageCategory,
     });
   }
 

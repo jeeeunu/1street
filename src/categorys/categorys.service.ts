@@ -15,4 +15,15 @@ export class CategorysService {
     const categorys = await this.categoryEntity.find({});
     return categorys;
   }
+
+  //-- 카테고리 이름 반환 --//
+  async findOne(categoryId: number): Promise<CategoryEntity> {
+    const category = await this.categoryEntity.findOne({
+      where: {
+        id: categoryId,
+      },
+    });
+
+    return category;
+  }
 }

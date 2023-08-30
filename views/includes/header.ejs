@@ -5,18 +5,16 @@
   </div>
   <div class="humberger__menu__cart">
     <ul>
+      <% if (user) { %>
       <li>
         <a href="/like"
-          ><i class="fa fa-heart"></i>
-          <span
-            ><% if (user.like_count) { %> <%= user.like_count %> <% } else { %>
-            0 <% } %></span
-          ></a
+          ><i class="fa fa-heart"></i> <span><%= user.like_count %></span></a
         >
       </li>
       <li>
         <a href="/cart"><i class="fa fa-shopping-bag"></i> <span>3</span></a>
       </li>
+      <% } %>
       <li>
         <a href="#"><i class="fa fa-eye"></i></a>
       </li>
@@ -127,13 +125,11 @@
       <div class="col-lg-3">
         <div class="header__cart">
           <ul>
+            <% if (user) { %>
             <li>
               <a href="/like"
                 ><i class="fa fa-heart"></i>
-                <span
-                  ><% if (user.like_count) { %> <%= user.like_count %> <% } else
-                  { %> 0 <% } %></span
-                ></a
+                <span><%= user.like_count %></span></a
               >
             </li>
             <li>
@@ -141,6 +137,7 @@
                 ><i class="fa fa-shopping-bag"></i> <span>3</span></a
               >
             </li>
+            <% } %>
             <li>
               <a href="#"><i class="fa fa-eye"></i></a>
             </li>

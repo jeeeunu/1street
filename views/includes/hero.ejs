@@ -11,7 +11,7 @@
           <!-- PUB :: index에 포함되는 내용 -->
           <ul <% if (typeof isIndexPath !== 'undefined' && isIndexPath) { %>style="display: block;"<% } else { %>style="display: none;"<% } %>>
             <% categories.forEach(category => { %>
-              <li><a href="#"><%= category.category_name %></a></li>
+              <li><a href="/category-list?categoryId=<%= category.id %>"><%= category.category_name %></a></li>
               <% }); %>
           </ul>
         </div>
