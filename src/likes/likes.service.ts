@@ -34,35 +34,34 @@ export class LikesService {
     }
   }
 
-  //-- 좋아요 등록 --//
+  //-- 좋아요 --//
   async create(id: number, authUser: RequestUserInterface) {
-    try {
-      await this.productsService.findById(id);
+    // await this.productsService.findById(id);
+    const existingLike = await this.likeRepository.findOne({
+      where: {
+        user: { id: authUser.user_id },
+        product: { id },
+      },
+    });
+    if (existingLike) {
+      await this.likeRepository.remove(existingLike);
+      return { status: true, message: '좋아요를 취소했습니다.' };
+    } else {
       await this.likeRepository.save({
         user: { id: authUser.user_id },
         product: { id },
       });
-      return { status: true, message: '상품에 좋아요를 눌렀습니다.' };
-    } catch (err) {
-      throw new InternalServerErrorException(
-        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-      );
+      return { status: true, message: '좋아요를 눌렀습니다.' };
     }
   }
 
   //-- 좋아요 삭제 --//
   async delete(id: number, authUser: RequestUserInterface) {
-    try {
-      await this.productsService.findById(id);
-      await this.likeRepository.delete({
-        user: { id: authUser.user_id },
-        product: { id },
-      });
-      return { status: true, message: '좋아요를 취소하였습니다.' };
-    } catch (err) {
-      throw new InternalServerErrorException(
-        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-      );
-    }
+    await this.productsService.findById(id);
+    await this.likeRepository.delete({
+      user: { id: authUser.user_id },
+      product: { id },
+    });
+    return { status: true, message: '좋아요를 취소하였습니다.' };
   }
 }
