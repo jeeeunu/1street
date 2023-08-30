@@ -75,3 +75,13 @@ const setThumbnail = (event) => {
     reader.readAsDataURL(file);
   }
 };
+
+//-- 검색 --//
+const siteSearchButton = document.querySelector('#siteSearchButton');
+if (siteSearchButton) {
+  siteSearchButton.addEventListener('click', () => {
+    const siteSearchInput = document.querySelector('#siteSearchInput').value;
+    console.log(siteSearchInput);
+    window.location.href = `/search?content=${siteSearchInput}`;
+  });
+}

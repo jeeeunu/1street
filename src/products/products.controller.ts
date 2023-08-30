@@ -29,25 +29,22 @@ export class ProductsController {
 
   //-- 유저단 : 상품 전체보기 --//
   @Get()
-  @UsePipes(ValidationPipe)
   async getProducts(
-    @Query() paginationDto: PaginationDto,
+    @Query('keyword') keyword: string,
+    @Query('limit') limit: number,
+    @Query('cursor') cursor: number,
   ): Promise<ProductsEntity[]> {
-    return this.productsService.findAll(paginationDto);
+    if (keyword) {
+      return this.productsService.findByKeyword(limit, cursor, keyword);
+    } else {
+      return this.productsService.findAll(limit, cursor);
+    }
   }
 
   //-- 상품 상세보기 --//
   @Get(':id')
   async getDetail(@Param('id') id: number): Promise<ProductsEntity> {
     return await this.productsService.findById(id);
-  }
-
-  //-- 상품 검색 (검색어)--//
-  @Get()
-  async searchKeyword(
-    @Query('search') keyword: string,
-  ): Promise<ProductsEntity[]> {
-    return await this.productsService.findByKeyword(keyword);
   }
 
   //-- 상품 검색 (카테고리 번호)--//

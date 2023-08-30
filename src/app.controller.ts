@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req, Res } from '@nestjs/common';
+import { Controller, Get, Param, Query, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './users/users.service';
 import { AuthUser } from './auth/auth.decorator';
@@ -17,9 +17,11 @@ export class AppController {
   ) {}
 
   //-- 공통 : 유저 --//
-  async userPageData() {
+  async userPageData(request: Request) {
+    const isIndexPath = request.url === '/';
+    const isSearchPath = request.url === '/search';
     const categories = await this.categorysService.findAll();
-    return { categories };
+    return { isIndexPath, isSearchPath, categories };
   }
 
   //-- 공통 : admin --//
@@ -35,7 +37,6 @@ export class AppController {
     const user = userInfo.results;
     const shop = await this.shopsService.findByUserId(authUser.user_id);
     const categories = await this.categorysService.findAll();
-
     return { user, shop, categories };
   }
 
@@ -46,14 +47,17 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const isIndexPath = request.url === '/';
-    const { categories } = await this.userPageData();
+    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
+      request,
+    );
 
     if (authUser && authUser !== null && authUser.isAdmin === true) {
       return response.redirect('admin-my-page');
     }
+
     response.render('index', {
       isIndexPath,
+      isSearchPath,
       authUser,
       categories,
     });
@@ -66,10 +70,12 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const isIndexPath = request.url === '/';
-    const { categories } = await this.userPageData();
+    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
+      request,
+    );
     response.render('sign-up', {
       isIndexPath,
+      isSearchPath,
       authUser,
       categories,
     });
@@ -82,10 +88,12 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const isIndexPath = request.url === '/';
-    const { categories } = await this.userPageData();
+    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
+      request,
+    );
     response.render('sign-in', {
       isIndexPath,
+      isSearchPath,
       authUser,
       categories,
     });
@@ -98,10 +106,12 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const isIndexPath = request.url === '/';
-    const { categories } = await this.userPageData();
+    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
+      request,
+    );
     response.render('my-page-user-edit', {
       isIndexPath,
+      isSearchPath,
       authUser,
       categories,
     });
@@ -114,11 +124,17 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const isIndexPath = request.url === '/';
-    const { categories } = await this.userPageData();
+    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
+      request,
+    );
+    const userInfo = await this.userService.find(authUser.user_id);
+    const user = userInfo.results;
+
     response.render('my-page', {
       isIndexPath,
+      isSearchPath,
       authUser,
+      user,
       categories,
     });
   }
@@ -130,12 +146,34 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const isIndexPath = request.url === '/';
-    const { categories } = await this.userPageData();
+    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
+      request,
+    );
     response.render('cart', {
       isIndexPath,
+      isSearchPath,
       authUser,
       categories,
+    });
+  }
+
+  //-- 상품 검색 --//
+  @Get('search')
+  async productList(
+    @Query('content') searchContent: string,
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
+      request,
+    );
+    response.render('search', {
+      isIndexPath,
+      isSearchPath,
+      authUser,
+      categories,
+      searchContent,
     });
   }
 
@@ -147,11 +185,13 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const isIndexPath = request.url === '/';
+    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
+      request,
+    );
     const product = await this.productsService.findById(productId);
-    const { categories } = await this.userPageData();
     response.render('product-detail', {
       isIndexPath,
+      isSearchPath,
       authUser,
       product,
       categories,
@@ -166,13 +206,15 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const isIndexPath = request.url === '/';
-    const { categories } = await this.userPageData();
+    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
+      request,
+    );
     const shop = await this.shopsService.find(shopId);
     const products = await this.productsService.findRegisteredAll(shopId);
 
     response.render('contact', {
       isIndexPath,
+      isSearchPath,
       authUser,
       categories,
       shop,
