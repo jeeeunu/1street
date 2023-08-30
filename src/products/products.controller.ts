@@ -95,11 +95,8 @@ export class ProductsController {
   //-- 상품 삭제 --//
   @Delete(':id')
   @UseGuards(AuthGuard)
-  async deleteProduct(
-    @Param('id') id: number,
-    @AuthUser() authUser: RequestUserInterface,
-  ): Promise<ResultableInterface> {
-    return await this.productsService.delete(id, authUser);
+  async deleteProduct(@Param('id') id: number): Promise<ResultableInterface> {
+    return await this.productsService.delete(id);
   }
 
   //-- 카테고리 만들기 (개발용) --//

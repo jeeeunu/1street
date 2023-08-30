@@ -27,11 +27,19 @@ export class ProductsService {
     private uploadsService: UploadsService,
   ) {}
 
-  //-- 유저단 : 상품 전체보기 --//
+  //-- 상품 전체보기 --//
+  async findAllBasic(): Promise<ProductsEntity[]> {
+    const products = this.productRepository.find({
+      relations: ['product_image'],
+    });
+    return products;
+  }
+
+  //-- 상품 전체보기(무한 스크롤) --//
   async findAll(limit: number, cursor: number): Promise<ProductsEntity[]> {
     const query = this.productRepository
       .createQueryBuilder('product')
-      .orderBy('product.id', 'ASC')
+      .orderBy('product.id', 'DESC')
       .leftJoinAndSelect('product.product_image', 'product_image')
       .take(limit || 10);
 
@@ -62,20 +70,6 @@ export class ProductsService {
     return await query.getMany();
   }
 
-  //-- 상품 상세보기 --//
-  async findById(id: number): Promise<ProductsEntity> {
-    const product = await this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.category', 'category')
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .leftJoinAndSelect('product.shop', 'shop')
-      .leftJoinAndSelect('shop.user', 'user')
-      .where('product.id = :id', { id })
-      .getOne();
-    if (!product) throw new NotFoundException('해당 상품이 존재하지 않습니다.');
-    return product;
-  }
-
   //-- 상품 검색 (카테고리)--//
   async findByCategory(
     limit: number,
@@ -95,6 +89,20 @@ export class ProductsService {
     query.take(limit || 10);
 
     return await query.getMany();
+  }
+
+  //-- 상품 상세보기 --//
+  async findById(id: number): Promise<ProductsEntity> {
+    const product = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .leftJoinAndSelect('product.shop', 'shop')
+      .leftJoinAndSelect('shop.user', 'user')
+      .where('product.id = :id', { id })
+      .getOne();
+    if (!product) throw new NotFoundException('해당 상품이 존재하지 않습니다.');
+    return product;
   }
 
   //-- admin : 등록된 상품 보기 --//
@@ -209,33 +217,20 @@ export class ProductsService {
   }
 
   //-- 상품 삭제 --//
-  async delete(
-    id: number,
-    authUser: RequestUserInterface,
-  ): Promise<ResultableInterface> {
-    // const shop = await this.shopRepository.findOne({
-    //   where: { products: { id } },
-    //   relations: ['user', 'products'],
-    // });
-    // if (!shop) throw new NotFoundException('해당 스토어가 존재하지 않습니다.');
-    // if (shop.user.id !== authUser.user_id)
-    //   throw new ForbiddenException(
-    //     '해당 스토어를 개설한 판매자만 상품을 삭제할 수 있습니다.',
-    //   );
-
+  async delete(id: number): Promise<ResultableInterface> {
     await this.productRepository.delete({ id });
     return { status: true, message: '상품을 성공적으로 삭제했습니다' };
   }
 
   //-- 카테고리 넘버로 아이디 찾기 --//
-  async findCategory(categoryNumber: number) {
-    const category = await this.categoryRepository.findOne({
-      where: { category_number: categoryNumber },
-    });
-    if (!category)
-      throw new NotFoundException('카테코리 번호가 잘못되었습니다.');
-    return category.id;
-  }
+  // async findCategory(categoryNumber: number) {
+  //   const category = await this.categoryRepository.findOne({
+  //     where: { category_number: categoryNumber },
+  //   });
+  //   if (!category)
+  //     throw new NotFoundException('카테코리 번호가 잘못되었습니다.');
+  //   return category.id;
+  // }
 
   //-- 카테고리 만들기 (개발용) --//
   //   async category(data) {

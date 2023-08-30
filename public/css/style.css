@@ -1023,6 +1023,8 @@ ol {
 .latest-product__item__pic {
   float: left;
   margin-right: 26px;
+  width: 100px;
+  height: 100px;
 }
 
 .latest-product__item__pic img {
