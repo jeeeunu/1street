@@ -1946,10 +1946,10 @@ ol {
 }
 
 .shoping__cart__table table thead th {
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
   color: #1c1c1c;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }
 
 .shoping__cart__table table thead th.shoping__product {
@@ -1978,11 +1978,17 @@ ol {
 .shoping__cart__table table tbody tr td.shoping__cart__item h5 {
   color: #1c1c1c;
   display: inline-block;
-  padding-top: 20px;
+  padding-top: 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.shoping__cart__table table tbody tr td.shoping__cart__item h5 a {
+  color: #1c1c1c;
 }
 
 .shoping__cart__table table tbody tr td.shoping__cart__price {
-  font-size: 18px;
+  font-size: 16px;
   color: #1c1c1c;
   font-weight: 700;
   width: 100px;

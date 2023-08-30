@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LikeEntity } from '../common/entities';
@@ -19,19 +15,16 @@ export class LikesService {
 
   //-- 좋아요 보기 --//
   async findAllLikes(authUser: RequestUserInterface) {
-    try {
-      const likes = await this.likeRepository.find({
-        where: { user: { id: authUser.user_id } },
-        relations: ['product'],
-      });
-      if (!likes)
-        throw new NotFoundException('좋아요한 상품이 존재하지 않습니다.');
-      return likes;
-    } catch (err) {
-      throw new InternalServerErrorException(
-        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-      );
-    }
+    const likes = await this.likeRepository.find({
+      where: { user: { id: authUser.user_id } },
+      relations: [
+        'product',
+        'product.shop',
+        'product.category',
+        'product.product_image',
+      ],
+    });
+    return likes;
   }
 
   //-- 좋아요 --//

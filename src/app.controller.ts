@@ -6,6 +6,7 @@ import { RequestUserInterface } from './users/interfaces';
 import { ShopsService } from './shops/shops.service';
 import { ProductsService } from './products/products.service';
 import { CategorysService } from './categorys/categorys.service';
+import { LikesService } from './likes/likes.service';
 
 @Controller()
 export class AppController {
@@ -14,6 +15,7 @@ export class AppController {
     private readonly categorysService: CategorysService,
     private readonly shopsService: ShopsService,
     private readonly productsService: ProductsService,
+    private readonly likesService: LikesService,
   ) {}
 
   //-- 공통 : 유저 --//
@@ -149,11 +151,13 @@ export class AppController {
     const { isIndexPath, isSearchPath, categories } = await this.userPageData(
       request,
     );
+    const myLikes = await this.likesService.findAllLikes(authUser);
     response.render('like', {
       isIndexPath,
       isSearchPath,
       authUser,
       categories,
+      myLikes,
     });
   }
 
