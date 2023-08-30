@@ -109,14 +109,19 @@ export class UserService {
       throw new UserNotFoundException();
     }
 
-    if (files.length !== 0) {
-      const imageUrl = await this.uploadsService.editProfileImage(
-        existingUser.profile_image,
-        files,
-      );
-      existingUser.profile_image = imageUrl;
+    if (files.length > 0) {
+      if (existingUser.profile_image) {
+        const imageUrl = await this.uploadsService.editProfileImage(
+          existingUser.profile_image,
+          files,
+        );
+        existingUser.profile_image = imageUrl;
 
-      if (!imageUrl) throw new BadRequestException();
+        if (!imageUrl) throw new BadRequestException();
+      } else {
+        const imageUrl = await this.uploadsService.createProfileImage(files);
+        existingUser.profile_image = imageUrl;
+      }
     }
 
     Object.assign(existingUser, editUserDto);

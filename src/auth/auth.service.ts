@@ -52,7 +52,7 @@ export class AuthService {
       profile_image: user.profile_image,
       user_name: user.name,
       isAdmin: user.seller_flag,
-      // shop_id: shop.id,
+      shop_id: shop ? shop.id : null,
     };
 
     const access_token = await this.jwtService.signAsync(payload);

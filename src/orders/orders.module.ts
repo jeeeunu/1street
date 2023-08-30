@@ -7,8 +7,9 @@ import { UsersEntity } from 'src/common/entities/users.entity';
 import { UserService } from 'src/users/users.service';
 import { OrderDetailsEntity } from './entities/order-detail.entity';
 import { UploadsService } from 'src/uploads/uploads.service';
-import { ShopsEntity } from 'src/common/entities';
+import { ProductsEntity, ShopsEntity } from 'src/common/entities';
 import { CartsService } from 'src/carts/carts.service';
+import { ProductImageEntity } from 'src/products/entities/product-image.entity';
 
 @Module({
   imports: [
@@ -17,6 +18,8 @@ import { CartsService } from 'src/carts/carts.service';
       UsersEntity,
       OrderDetailsEntity,
       ShopsEntity,
+      ProductsEntity,
+      ProductImageEntity,
     ]),
   ],
   controllers: [OrdersController],

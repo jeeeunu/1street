@@ -19,7 +19,9 @@ import { UploadsModule } from './uploads/uploads.module';
 import { CartsModule } from './carts/carts.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
-import { ShopsEntity, UsersEntity } from './common/entities';
+import { UsersEntity } from './common/entities';
+import { ShopsEntity } from './common/entities';
+import { CategorysModule } from './categorys/categorys.module';
 
 @Module({
   imports: [
@@ -67,6 +69,7 @@ import { ShopsEntity, UsersEntity } from './common/entities';
         };
       },
     }),
+    CategorysModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy],

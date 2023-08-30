@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
+  Put,
   Query,
   UploadedFiles,
   UseGuards,
@@ -73,7 +73,7 @@ export class ProductsController {
   }
 
   //-- 상품 수정 --//
-  @Patch(':id')
+  @Put(':id')
   @UseGuards(AuthGuard)
   @UseInterceptors(FilesInterceptor('files'))
   async updateProduct(
@@ -82,8 +82,6 @@ export class ProductsController {
     @UploadedFiles() files: Express.Multer.File[],
     // @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    console.log(files);
-    console.log(data);
     return await this.productsService.update(productId, data, files);
   }
 

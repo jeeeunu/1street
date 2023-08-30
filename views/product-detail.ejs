@@ -25,37 +25,31 @@
               <div class="product__details__pic__item">
                 <img
                   class="product__details__pic__item--large"
-                  src="/img/product/details/product-details-1.jpg"
+                  src="<%- product.product_image[0].url %>"
                   alt=""
                 />
               </div>
               <div class="product__details__pic__slider owl-carousel">
+                <% if (product.product_image && product.product_image.length >
+                0) { %> <% let index = 1; %> <% for (const image of
+                product.product_image) { %>
                 <img
-                  data-imgbigurl="img/product/details/product-details-2.jpg"
-                  src="/img/product/details/thumb-1.jpg"
+                  data-imgbigurl="<%= image.url %>"
+                  src="<%= image.url %>"
                   alt=""
                 />
-                <img
-                  data-imgbigurl="img/product/details/product-details-3.jpg"
-                  src="/img/product/details/thumb-2.jpg"
-                  alt=""
-                />
-                <img
-                  data-imgbigurl="img/product/details/product-details-5.jpg"
-                  src="/img/product/details/thumb-3.jpg"
-                  alt=""
-                />
-                <img
-                  data-imgbigurl="img/product/details/product-details-4.jpg"
+                <% index++; %> <% } %> <% } %>
+                <!-- <img
+                  data-imgbigurl="/img/product/details/product-details-4.jpg"
                   src="/img/product/details/thumb-4.jpg"
                   alt=""
-                />
+                /> -->
               </div>
             </div>
           </div>
           <div class="col-lg-6 col-md-6">
             <div class="product__details__text">
-              <h3>Vetgetable’s Package</h3>
+              <h3><%= product.product_name %></h3>
               <div class="product__details__rating">
                 <i class="fa fa-star"></i>
                 <i class="fa fa-star"></i>
@@ -65,14 +59,15 @@
                 <span>(18 reviews)</span>
               </div>
               <div class="product__details__price">
-                50,000<span class="price-text">원</span>
+                <%- product.product_price.toLocaleString() %><span
+                  class="price-text"
+                  >원</span
+                >
               </div>
-              <p>
-                Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.
-                Vestibulum ac diam sit amet quam vehicula elementum sed sit amet
-                dui. Sed porttitor lectus nibh. Vestibulum ac diam sit amet quam
-                vehicula elementum sed sit amet dui. Proin eget tortor risus.
-              </p>
+              <div class="text-box">
+                <p>카테고리: <%- product.category.category_name %></p>
+                <p>원산지: <%- product.product_domestic %></p>
+              </div>
               <div class="product__details__quantity">
                 <div class="quantity">
                   <div class="pro-qty">
@@ -86,19 +81,28 @@
               ></a>
               <ul>
                 <li>
-                  <b>판매자</b>
+                  <b>스토어</b>
                   <span>
-                    <a href="./contact.html">
-                      <i class="fa fa-home mr-2" aria-hidden="true"></i>판매자뀨
+                    <a
+                      href="/contact/<%=
+                    product.shop.id %>"
+                    >
+                      <i class="fa fa-home mr-2" aria-hidden="true"></i><%=
+                      product.shop.shop_name %>
                     </a>
                   </span>
                 </li>
-                <li><b>Availability</b> <span>In Stock</span></li>
                 <li>
-                  <b>Shipping</b>
-                  <span>01 day shipping. <samp>Free pickup today</samp></span>
+                  <b>스토어 정보</b> <span><%= product.shop.shop_desc %></span>
                 </li>
-                <li><b>Weight</b> <span>0.5 kg</span></li>
+                <li>
+                  <b>판매자 이름</b>
+                  <span><%= product.shop.user.name %></span>
+                </li>
+                <li>
+                  <b>판매자 전화번호</b>
+                  <span><%= product.shop.user.phone_number %></span>
+                </li>
                 <li>
                   <b>Share on</b>
                   <div class="share">
@@ -152,12 +156,8 @@
                 <!-- description -->
                 <div class="tab-pane active" id="tabs-1" role="tabpanel">
                   <div class="product__details__tab__desc">
-                    <h6>Products Infomation</h6>
-                    <p>이건 텍스트입니다.</p>
-                    <img
-                      src="https://www.imagetalk.co.kr/wp-content/uploads/detail-page/general-design/general-design-087_01.jpg"
-                      alt=""
-                    />
+                    <%- product.product_desc .replace(/&amp;/g, '&')
+                    .replace(/&lt;/g, '<') .replace(/&gt;/g, '>') %>
                   </div>
                 </div>
                 <!-- 리뷰 -->
@@ -269,7 +269,7 @@
             <div class="product__item">
               <div
                 class="product__item__pic set-bg"
-                data-setbg="img/product/product-1.jpg"
+                data-setbg="/img/product/product-1.jpg"
               >
                 <ul class="product__item__pic__hover">
                   <li>
@@ -293,7 +293,7 @@
             <div class="product__item">
               <div
                 class="product__item__pic set-bg"
-                data-setbg="img/product/product-2.jpg"
+                data-setbg="/img/product/product-2.jpg"
               >
                 <ul class="product__item__pic__hover">
                   <li>
@@ -317,7 +317,7 @@
             <div class="product__item">
               <div
                 class="product__item__pic set-bg"
-                data-setbg="img/product/product-3.jpg"
+                data-setbg="/img/product/product-3.jpg"
               >
                 <ul class="product__item__pic__hover">
                   <li>
@@ -341,7 +341,7 @@
             <div class="product__item">
               <div
                 class="product__item__pic set-bg"
-                data-setbg="img/product/product-7.jpg"
+                data-setbg="/img/product/product-7.jpg"
               >
                 <ul class="product__item__pic__hover">
                   <li>
@@ -368,5 +368,7 @@
 
     <!-- include : footer -->
     <%- include('includes/footer') %>
+
+    <script></script>
   </body>
 </html>
