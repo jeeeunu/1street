@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Req, Res } from '@nestjs/common';
+import { Controller, Get, Param, Query, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UserService } from './users/users.service';
 import { AuthUser } from './auth/auth.decorator';
@@ -220,5 +220,15 @@ export class AppController {
       shop,
       product,
     });
+  }
+
+  //-- 채팅구현 중 --//
+  @Get('chat')
+  async chat(@Res() response: Response) {
+    response.render('chat');
+  }
+  @Get('live')
+  async live(@Res() response: Response, @Query('title') title: string) {
+    response.render('live', { title });
   }
 }

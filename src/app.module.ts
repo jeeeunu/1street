@@ -19,6 +19,8 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UploadsModule } from './uploads/uploads.module';
 import { ShopsEntity } from './common/entities';
+import { ChatGateway } from './chat/chat.gateway';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -33,7 +35,7 @@ import { ShopsEntity } from './common/entities';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
       namingStrategy: new SnakeNamingStrategy(),
     }),
     TypeOrmModule.forFeature([UsersEntity, ShopsEntity]),
@@ -52,6 +54,7 @@ import { ShopsEntity } from './common/entities';
     ProductsModule,
     LikesModule,
     UploadsModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy],

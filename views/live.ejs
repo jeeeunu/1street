@@ -1,0 +1,65 @@
+<html>
+  <head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <h1 data-title="<%=title%>" id="title"><%=title%> 라이브중!</h1>
+    <ul class="chatList"></ul>
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control"
+        id="chatInput"
+        placeholder="채팅을 쳐주세요"
+      />
+      <button type="button" class="btn btn-primary chatInputBtn">채팅</button>
+    </div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+      integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const socket = io('');
+      const chatList = document.querySelector('.chatList');
+      const title = document.querySelector('#title').getAttribute('data-title');
+      const chatInput = document.querySelector('#chatInput');
+      const chatInputBtn = document.querySelector('.chatInputBtn');
+
+      //- 라이브 룸에 입장 -//
+      window.onload = () => {
+        socket.emit('joinRoom', { title });
+      };
+
+      //- 채팅 하기 -//
+      chatInputBtn.addEventListener('click', async () => {
+        if (chatInput.value.replace(/ /g, '').length === 0) return;
+        await socket.emit('chatInput', {
+          chat: chatInput.value,
+          roomName: title,
+        });
+        chatInput.value = '';
+      });
+
+      //- 채팅 내용 보여주기 -//
+      socket.on('newMsg', (data) => {
+        console.log('프론트로 넘어온 채팅', data);
+        const li = document.createElement('li');
+        li.innerText = `${data}`;
+        console.log(li);
+        chatList.append(li);
+      });
+    </script>
+  </body>
+</html>
