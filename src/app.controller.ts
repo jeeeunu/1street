@@ -19,11 +19,13 @@ export class AppController {
   ) {}
 
   //-- 공통 : 유저 --//
-  async userPageData(request: Request) {
+  async userPageData(request: Request, authUser: RequestUserInterface) {
     const isIndexPath = request.url === '/';
     const isSearchPath = request.url.startsWith('/search');
     const categories = await this.categorysService.findAll();
-    return { isIndexPath, isSearchPath, categories };
+    const userInfo = await this.userService.find(authUser.user_id);
+    const user = userInfo.results;
+    return { isIndexPath, isSearchPath, user, categories };
   }
 
   //-- 공통 : admin --//
@@ -49,9 +51,8 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
-      request,
-    );
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
 
     if (authUser && authUser !== null && authUser.isAdmin === true) {
       return response.redirect('admin-my-page');
@@ -60,6 +61,7 @@ export class AppController {
     response.render('index', {
       isIndexPath,
       isSearchPath,
+      user,
       authUser,
       categories,
     });
@@ -72,12 +74,12 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
-      request,
-    );
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
     response.render('sign-up', {
       isIndexPath,
       isSearchPath,
+      user,
       authUser,
       categories,
     });
@@ -90,12 +92,12 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
-      request,
-    );
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
     response.render('sign-in', {
       isIndexPath,
       isSearchPath,
+      user,
       authUser,
       categories,
     });
@@ -108,12 +110,12 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
-      request,
-    );
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
     response.render('my-page-user-edit', {
       isIndexPath,
       isSearchPath,
+      user,
       authUser,
       categories,
     });
@@ -126,17 +128,14 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
-      request,
-    );
-    const userInfo = await this.userService.find(authUser.user_id);
-    const user = userInfo.results;
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
 
     response.render('my-page', {
       isIndexPath,
       isSearchPath,
-      authUser,
       user,
+      authUser,
       categories,
     });
   }
@@ -148,13 +147,13 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
-      request,
-    );
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
     const myLikes = await this.likesService.findAllLikes(authUser);
     response.render('like', {
       isIndexPath,
       isSearchPath,
+      user,
       authUser,
       categories,
       myLikes,
@@ -168,12 +167,12 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
-      request,
-    );
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
     response.render('cart', {
       isIndexPath,
       isSearchPath,
+      user,
       authUser,
       categories,
     });
@@ -187,13 +186,13 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
-      request,
-    );
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
     console.log(isSearchPath);
     response.render('search', {
       isIndexPath,
       isSearchPath,
+      user,
       authUser,
       categories,
       searchContent,
@@ -208,13 +207,13 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
-      request,
-    );
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
     const product = await this.productsService.findById(productId);
     response.render('product-detail', {
       isIndexPath,
       isSearchPath,
+      user,
       authUser,
       product,
       categories,
@@ -229,15 +228,15 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
-      request,
-    );
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
     const shop = await this.shopsService.find(shopId);
     const products = await this.productsService.findRegisteredAll(shopId);
 
     response.render('contact', {
       isIndexPath,
       isSearchPath,
+      user,
       authUser,
       categories,
       shop,
