@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+  <body>
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
+
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+    <!-- Admin Qna Detail Section Begin -->
+    <section class="admin-qna-detail spad">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="admin-qna-detail__title">
+              <h2>문의 사항</h2>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="admin-qna-detail__content">
+              <div class="admin-qna-detail__user">
+                <h4>문의를 남긴 유저: 유저 닉네임</h4>
+              </div>
+              <div class="admin-qna-detail__question">
+                <h4>문의 내용</h4>
+                <p>사용자가 남긴 문의 내용입니다.</p>
+              </div>
+              <div class="admin-qna-detail__answer">
+                <h4>답변 남기기</h4>
+                <form action="/admin/submit-answer" method="post">
+                  <textarea
+                    name="answer"
+                    id="answer"
+                    rows="5"
+                    placeholder="답변 내용을 작성해주세요"
+                  ></textarea>
+                  <div class="admin-qna-detail__buttons">
+                    <button type="button" class="site-btn">취소</button>
+                    <button type="submit" class="site-btn">확인</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Admin Qna Detail Section End -->
+
+    <!-- include : footer -->
+    <%- include('includes/footer') %>
+    <!-- JavaScript 처리 -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const qnaRows = document.querySelectorAll('.admin-qna__table tbody tr');
+
+        // 문의사항 행 클릭 시 이벤트 처리
+        qnaRows.forEach((row) => {
+          row.addEventListener('click', () => {
+            const userNickname =
+              row.querySelector('td:nth-child(2)').textContent;
+            const questionContent =
+              row.querySelector('td:nth-child(3)').textContent;
+
+            // 선택한 문의사항의 유저 닉네임과 질문 내용을 admin-qna-detail 페이지로 전달
+            window.location.href = `/admin/answer?userNickname=${encodeURIComponent(
+              userNickname,
+            )}&questionContent=${encodeURIComponent(questionContent)}`;
+          });
+        });
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const cancelButton = document.querySelector(
+          '.admin-qna-detail__buttons button[type="button"]',
+        );
+        const confirmButton = document.querySelector(
+          '.admin-qna-detail__buttons button[type="submit"]',
+        );
+        const answerTextarea = document.getElementById('answer');
+
+        // 취소 버튼 클릭 시 이벤트 처리
+        cancelButton.addEventListener('click', () => {
+          const confirmCancel = confirm('답변 작성을 취소하시겠습니까?');
+          if (confirmCancel) {
+            // 취소 버튼을 누른 경우
+            window.location.reload(); // 페이지 새로고침
+          }
+        });
+
+        // 확인 버튼 클릭 시 이벤트 처리
+        confirmButton.addEventListener('click', async (event) => {
+          event.preventDefault(); // 폼 제출 동작 방지
+
+          // 서버로 답변 내용을 전송하고 처리하는 로직을 구현해야 한다.
+          const answerContent = answerTextarea.value;
+
+          try {
+            // 서버로 데이터 전송을 위한 fetch 요청을 보냅니다. /api/submit-answer -> 서버와의 실제 통신 코드로 대체
+            const response = await fetch('/api/submit-answer', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ answer: answerContent }),
+            });
+
+            if (response.ok) {
+              // 서버로부터 응답이 정상적으로 오면 완료 메시지를 출력하고 페이지를 갱신합니다.
+              alert('답변 작성이 완료되었습니다.');
+              window.location.href = '/admin-qna'; // admin-qna.ejs 페이지 주소로 이동
+            } else {
+              alert('서버 오류가 발생했습니다. 다시 시도해주세요.');
+            }
+          } catch (error) {
+            console.error('에러 발생:', error);
+            alert('오류가 발생했습니다. 다시 시도해주세요.');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
