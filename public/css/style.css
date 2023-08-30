@@ -974,7 +974,7 @@ ol {
 -----------------------*/
 
 .latest-product {
-  padding-top: 80px;
+  padding-top: 120px;
   padding-bottom: 0;
 }
 
@@ -1980,7 +1980,7 @@ ol {
 .shoping__cart__table table tbody tr td.shoping__cart__item h5 {
   color: #1c1c1c;
   display: inline-block;
-  padding-top: 8px;
+  padding-top: 25px;
   font-size: 16px;
   font-weight: 700;
 }
@@ -3578,4 +3578,8 @@ ol {
 .product-details .owl-carousel.owl-drag .owl-item img {
   width: 100%;
   object-fit: cover;
+}
+
+.banner__pic {
+  height: 250px;
 }
