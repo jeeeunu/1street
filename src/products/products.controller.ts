@@ -10,8 +10,6 @@ import {
   UploadedFiles,
   UseGuards,
   UseInterceptors,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { AuthUser } from '../auth/auth.decorator';
@@ -21,7 +19,6 @@ import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
 import { ProductCreateDto, ProductUpdateDto } from './dtos';
 import { ProductsService } from './products.service';
-import { PaginationDto } from 'src/common/dtos';
 
 @Controller('products')
 export class ProductsController {
@@ -30,13 +27,33 @@ export class ProductsController {
   //-- 유저단 : 상품 전체보기 --//
   @Get()
   async getProducts(
+    @Query('limit') limit: number,
+    @Query('cursor') cursor: number,
+  ): Promise<ProductsEntity[]> {
+    console.log('상품 전체보기 검색중');
+    return this.productsService.findAll(limit, cursor);
+  }
+
+  //-- 검색 --//
+  @Get('search')
+  async getSearchProducts(
     @Query('keyword') keyword: string,
     @Query('categoryId') categoryId: number,
     @Query('limit') limit: number,
     @Query('cursor') cursor: number,
+    @Query('orderBy') orderBy: 'asc' | 'desc', // 기본 값 :  'asc'
+    @Query('sort')
+    sort: 'rank' | 'lowPrice' | 'highPrice' | 'sales' | 'latest', // 기본 값은 'rank'
   ): Promise<ProductsEntity[]> {
+    console.log('키워드 검색중');
     if (keyword) {
-      return this.productsService.findByKeyword(limit, cursor, keyword);
+      return this.productsService.findByKeyword(
+        limit,
+        cursor,
+        keyword,
+        orderBy,
+        sort,
+      );
     }
     if (categoryId) {
       return await this.productsService.findByCategory(

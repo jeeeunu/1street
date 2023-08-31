@@ -71,8 +71,8 @@
         isLoadingData = true; // 데이터 로딩 중임을 표시
 
         const url = cursor
-          ? `/products?categoryId=${categoryId}&limit=${limit}&cursor=${cursor}`
-          : `/products?categoryId=${categoryId}&limit=${limit}`;
+          ? `/products/search?categoryId=${categoryId}&limit=${limit}&cursor=${cursor}`
+          : `/products/search?categoryId=${categoryId}&limit=${limit}`;
 
         try {
           const response = await fetch(url, {

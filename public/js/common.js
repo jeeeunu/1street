@@ -81,8 +81,7 @@ const siteSearchButton = document.querySelector('#siteSearchButton');
 if (siteSearchButton) {
   siteSearchButton.addEventListener('click', () => {
     const siteSearchInput = document.querySelector('#siteSearchInput').value;
-    console.log(siteSearchInput);
-    window.location.href = `/search?content=${siteSearchInput}`;
+    window.location.href = `/products-list?keyword=${siteSearchInput}`;
   });
 }
 

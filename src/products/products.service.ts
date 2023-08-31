@@ -55,13 +55,36 @@ export class ProductsService {
     limit: number,
     cursor: number,
     keyword: string,
+    orderBy: 'asc' | 'desc',
+    sort: 'rank' | 'lowPrice' | 'highPrice' | 'sales' | 'latest' = 'rank',
   ): Promise<ProductsEntity[]> {
-    const query = this.productRepository
+    const query = await this.productRepository
       .createQueryBuilder('product')
       .where('product.product_name LIKE :keyword', { keyword: `%${keyword}%` })
       .leftJoinAndSelect('product.product_image', 'product_image')
-      .orderBy('product.id', 'ASC')
-      .take(limit || 10);
+      .leftJoinAndSelect('product.order_detail', 'order_detail');
+
+    query.take(limit || 10);
+
+    if (sort === 'lowPrice') {
+      console.log('낮은 가격순으로 정렬');
+      query.orderBy('product.product_price', 'ASC');
+    }
+
+    if (sort === 'highPrice') {
+      console.log('높은 가격순으로 정렬');
+      query.orderBy('product.product_price', 'DESC');
+    }
+
+    if (sort === 'sales') {
+      console.log('판매량순으로 정렬');
+      query.orderBy('product.order_detail', 'DESC');
+    }
+
+    if (orderBy === 'desc') {
+      console.log('최신순으로 정렬');
+      query.orderBy('product.created_at', 'ASC');
+    }
 
     if (cursor) {
       query.andWhere('product.id > :cursor', { cursor });

@@ -58,7 +58,6 @@ export class AppController {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
     const latestProducts = await this.productsService.findAllBasic();
-    console.log(latestProducts);
 
     if (authUser && authUser !== null && authUser.isAdmin === true) {
       return response.redirect('admin-my-page');
@@ -186,19 +185,20 @@ export class AppController {
   }
 
   //-- 상품 검색 --//
-  @Get('search')
+  @Get('products-list')
   async productList(
-    @Query('content') searchContent: string,
+    @Query('keyword') searchContent: string,
     @AuthUser() authUser: RequestUserInterface,
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
-    console.log(isSearchPath);
-    response.render('search', {
+    const thisPath = request.url;
+    response.render('product-list', {
       isIndexPath,
       isSearchPath,
+      thisPath,
       user,
       authUser,
       categories,

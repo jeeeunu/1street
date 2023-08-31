@@ -2,13 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsNumber, IsString, MaxLength } from 'class-validator';
 import { CategoryEntity } from '../../products/entities/category.entity';
 import { ShopsEntity } from './shops.entity';
 import { LikeEntity } from './likes.entity';
