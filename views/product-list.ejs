@@ -36,7 +36,7 @@
       </section>
 
       <!-- Featured Section Begin -->
-      <section class="featured spad">
+      <section class="product-list-container featured spad">
         <div class="container">
           <div class="btn-search-list">
             <!-- TODO :: 랭킹순 -->
@@ -131,7 +131,7 @@
             newData.forEach((item) => {
               allProductsContainer.innerHTML += `
               <div class="col-lg-3 col-md-4 col-sm-6 mix category">
-                <div class="featured__item">
+                <div class="featured__item product-item">
                   <div
                     class="featured__item__pic set-bg"
                     style="background-image: url('${
@@ -140,7 +140,7 @@
                   >
                     <ul class="featured__item__pic__hover">
                       <li>
-                        <a href="#"><i class="fa fa-heart"></i></a>
+                        <button type="button" class="btn-like">❤️</button>
                       </li>
                       <li>
                         <a href="#"><i class="fa fa-shopping-cart"></i></a>
