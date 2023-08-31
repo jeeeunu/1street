@@ -10,8 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { QnasService } from './qnas.service';
-import { CreateQnasDto } from './dto/create-qna.dto';
-import { UpdateQnasDto } from './dto/update-qna.dto';
+import { CreateQnasDto } from './dtos/create-qna.dto';
+import { UpdateQnasDto } from './dtos/update-qna.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AuthUser } from 'src/auth/auth.decorator';
 import { RequestUserInterface } from 'src/users/interfaces';
@@ -22,7 +22,22 @@ import { QnasEntity } from 'src/common/entities/qnas.entity';
 export class QnasController {
   constructor(private readonly qnasService: QnasService) {}
 
-  // QNA 조회
+  // QNA 등록
+  @Post()
+  @UseGuards(AuthGuard)
+  async createQna(
+    @Param('id') id: number, //
+    @Body() data: CreateQnasDto,
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
+    // const productId = data.product_id;
+    // const qnaName = data.qna_name;
+    // const qnaContent = data.qna_content;
+    return await this.qnasService.create(id, data, authUser);
+    //, productId);
+  }
+
+  // QNA 조회 (product_id)
   @Get()
   @UseGuards(AuthGuard)
   async getQnas(@Query('product_id') productId: number): Promise<QnasEntity[]> {
@@ -31,18 +46,6 @@ export class QnasController {
       return await this.qnasService.getForProduct(productId);
     }
     return [];
-  }
-
-  // QNA 등록
-  @Post()
-  @UseGuards(AuthGuard)
-  async createQna(
-    @Body() data: CreateQnasDto,
-    @AuthUser() authUser: RequestUserInterface,
-  ): Promise<ResultableInterface> {
-    // const productId = data.product_id;
-    return await this.qnasService.create(data, authUser);
-    //, productId);
   }
 
   // QNA 수정
@@ -59,7 +62,7 @@ export class QnasController {
   @Delete('/qnas/:qna_id')
   @UseGuards(AuthGuard)
   async deleteQna(
-    @Param('id') qnaId: number,
+    @Param('qna_id') qnaId: number,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
     return await this.qnasService.delete(qnaId, authUser);
