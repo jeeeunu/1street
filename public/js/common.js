@@ -135,8 +135,34 @@ if (likeContainers) {
 }
 
 //-- 최근 본 상품 --//
+// 버튼, 내용 토글
 const viewedProductsMore = async () => {
   const viewedProductList = document.querySelector('#viewedProductList');
   viewedProductList.style.display =
     viewedProductList.style.display === 'none' ? 'block' : 'none';
 };
+
+// localstorage
+const getViewedProduct = function () {
+  const viewedProductList = document.getElementById('viewedProductList');
+
+  const viewedProductsData = localStorage.getItem('viewedProducts');
+  const viewedProducts = viewedProductsData
+    ? JSON.parse(viewedProductsData)
+    : [];
+
+  let productListHTML = '';
+  viewedProducts.forEach((product) => {
+    productListHTML += `
+      <li>
+        <a href="${product.currentUrl}">
+          <img src="${product.imgUrl}" alt="Product Image" />
+        </a>
+      </li>
+    `;
+  });
+
+  viewedProductList.innerHTML = productListHTML;
+};
+
+getViewedProduct();

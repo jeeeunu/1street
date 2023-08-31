@@ -36,7 +36,7 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   -webkit-font-smoothing: antialiased;
   font-smoothing: antialiased;
-  font-size: 0.9rem;
+  font-size: 9px;
 }
 
 h1,
@@ -401,6 +401,7 @@ ol {
   display: flex;
   justify-content: end;
   gap: 30px;
+  font-size: 14px;
 }
 
 .header__top__right__auth button {
@@ -525,7 +526,7 @@ ol {
 .header__cart ul li {
   list-style: none;
   display: inline-block;
-  margin-right: 22px;
+  margin-right: 25px;
 }
 
 .header__cart ul li:last-child {
