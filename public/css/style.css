@@ -608,6 +608,8 @@ ol {
 }
 
 .hero__categories__all {
+  display: flex;
+  align-items: center;
   background: #7fad39;
   position: relative;
   padding: 10px 25px 10px 40px;

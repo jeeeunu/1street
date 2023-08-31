@@ -41,29 +41,23 @@ export class ProductsController {
     @Query('categoryId') categoryId: number,
     @Query('limit') limit: number,
     @Query('cursor') cursor: number,
-    @Query('orderBy') orderBy: 'asc' | 'desc', // 기본 값 :  'asc'
     @Query('sort')
-    sort: 'rank' | 'lowPrice' | 'highPrice' | 'sales' | 'latest', // 기본 값은 'rank'
+    sort:
+      | 'asc'
+      | 'desc'
+      | 'rank'
+      | 'lowPrice'
+      | 'highPrice'
+      | 'sales'
+      | 'latest',
   ): Promise<ProductsEntity[]> {
-    console.log('키워드 검색중');
-    if (keyword) {
-      return this.productsService.findByKeyword(
-        limit,
-        cursor,
-        keyword,
-        orderBy,
-        sort,
-      );
-    }
-    if (categoryId) {
-      return await this.productsService.findByCategory(
-        limit,
-        cursor,
-        categoryId,
-      );
-    } else {
-      return this.productsService.findAll(limit, cursor);
-    }
+    return this.productsService.findByKeyword(
+      limit,
+      cursor,
+      keyword,
+      categoryId,
+      sort,
+    );
   }
 
   //-- 상품 상세보기 --//

@@ -55,16 +55,44 @@ export class ProductsService {
     limit: number,
     cursor: number,
     keyword: string,
-    orderBy: 'asc' | 'desc',
-    sort: 'rank' | 'lowPrice' | 'highPrice' | 'sales' | 'latest' = 'rank',
+    categoryId: number,
+    sort:
+      | 'asc'
+      | 'desc'
+      | 'rank'
+      | 'lowPrice'
+      | 'highPrice'
+      | 'sales'
+      | 'latest',
   ): Promise<ProductsEntity[]> {
-    const query = await this.productRepository
-      .createQueryBuilder('product')
-      .where('product.product_name LIKE :keyword', { keyword: `%${keyword}%` })
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .leftJoinAndSelect('product.order_detail', 'order_detail');
+    let query;
+    if (categoryId) {
+      console.log('카테고리 검색');
+      query = await this.productRepository
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.category', 'category')
+        .leftJoinAndSelect('product.product_image', 'product_image')
+        .where('category.id = :categoryId', { categoryId });
+    }
+
+    if (keyword) {
+      console.log('키워드 검색');
+      query = await this.productRepository
+        .createQueryBuilder('product')
+        .where('product.product_name LIKE :keyword', {
+          keyword: `%${keyword}%`,
+        })
+        .leftJoinAndSelect('product.product_image', 'product_image')
+        .leftJoinAndSelect('product.order_detail', 'order_detail');
+    }
 
     query.take(limit || 10);
+
+    // TODO :: 랭킹
+    if (sort === 'rank') {
+      console.log('랭킹 순으로 정렬');
+      query.orderBy('product.product_price', 'ASC');
+    }
 
     if (sort === 'lowPrice') {
       console.log('낮은 가격순으로 정렬');
@@ -81,7 +109,7 @@ export class ProductsService {
       query.orderBy('product.order_detail', 'DESC');
     }
 
-    if (orderBy === 'desc') {
+    if (sort === 'desc') {
       console.log('최신순으로 정렬');
       query.orderBy('product.created_at', 'ASC');
     }
@@ -94,25 +122,25 @@ export class ProductsService {
   }
 
   //-- 상품 검색 (카테고리)--//
-  async findByCategory(
-    limit: number,
-    cursor: number,
-    categoryId: number,
-  ): Promise<ProductsEntity[]> {
-    const query = await this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.category', 'category')
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .where('category.id = :categoryId', { categoryId });
+  // async findByCategory(
+  //   limit: number,
+  //   cursor: number,
+  //   categoryId: number,
+  // ): Promise<ProductsEntity[]> {
+  //   const query = await this.productRepository
+  //     .createQueryBuilder('product')
+  //     .leftJoinAndSelect('product.category', 'category')
+  //     .leftJoinAndSelect('product.product_image', 'product_image')
+  //     .where('category.id = :categoryId', { categoryId });
 
-    if (cursor) {
-      query.andWhere('product.id > :cursor', { cursor });
-    }
+  //   if (cursor) {
+  //     query.andWhere('product.id > :cursor', { cursor });
+  //   }
 
-    query.take(limit || 10);
+  //   query.take(limit || 10);
 
-    return await query.getMany();
-  }
+  //   return await query.getMany();
+  // }
 
   //-- 상품 상세보기 --//
   async findById(id: number): Promise<ProductsEntity> {

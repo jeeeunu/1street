@@ -217,10 +217,11 @@ export class AppController {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
     const pageCategory = await this.categorysService.findOne(categoryId);
-    console.log(pageCategory);
+    const thisPath = request.url;
     response.render('category-list', {
       isIndexPath,
       isSearchPath,
+      thisPath,
       user,
       authUser,
       categories,

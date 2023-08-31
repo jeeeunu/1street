@@ -39,11 +39,38 @@
       <section class="featured spad">
         <div class="container">
           <div class="btn-search-list">
-            <button type="button" class="btn-serach-item active">랭킹순</button>
-            <button type="button" class="btn-serach-item">낮은 가격순</button>
-            <button type="button" class="btn-serach-item">높은 가격순</button>
-            <button type="button" class="btn-serach-item">판매량순</button>
-            <button type="button" class="btn-serach-item">최신순</button>
+            <!-- TODO :: 랭킹순 -->
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=rank` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=rank') ? 'active' : '' %>"
+            >
+              랭킹순
+            </a>
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=lowPrice` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=lowPrice') ? 'active' : '' %>"
+            >
+              낮은 가격순
+            </a>
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=highPrice` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=highPrice') ? 'active' : '' %>"
+            >
+              높은 가격순
+            </a>
+            <!-- TODO :: 판매량순 -->
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=sales` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=sales') ? 'active' : '' %>"
+            >
+              판매량순
+            </a>
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=desc` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=desc') ? 'active' : '' %>"
+            >
+              최신순
+            </a>
           </div>
           <div id="allProductsContainer" class="row featured__filter"></div>
         </div>
@@ -70,9 +97,14 @@
 
         isLoadingData = true; // 데이터 로딩 중임을 표시
 
-        const url = cursor
-          ? `/products/search?categoryId=${categoryId}&limit=${limit}&cursor=${cursor}`
-          : `/products/search?categoryId=${categoryId}&limit=${limit}`;
+        const currentUrl = window.location.href;
+        const apiUrl = currentUrl.replace('category-list', 'products/search');
+
+        const queryParameters = cursor
+          ? `&limit=${limit}&cursor=${cursor}`
+          : `&limit=${limit}`;
+
+        const url = apiUrl + queryParameters;
 
         try {
           const response = await fetch(url, {
