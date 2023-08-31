@@ -40,7 +40,12 @@
         <div class="container">
           <div class="btn-search-list">
             <!-- TODO :: 랭킹순 -->
-            <a href="" class="btn-serach-item active">랭킹순</a>
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=rank` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=rank') ? 'active' : '' %>"
+            >
+              랭킹순
+            </a>
             <a
               href="<%= `${thisPath.split('&sort=')[0]}&sort=lowPrice` %>"
               class="btn-serach-item <%= thisPath.includes('sort=lowPrice') ? 'active' : '' %>"
@@ -53,6 +58,7 @@
             >
               높은 가격순
             </a>
+            <!-- TODO :: 판매량순 -->
             <a
               href="<%= `${thisPath.split('&sort=')[0]}&sort=sales` %>"
               class="btn-serach-item <%= thisPath.includes('sort=sales') ? 'active' : '' %>"
