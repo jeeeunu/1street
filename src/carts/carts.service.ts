@@ -70,6 +70,10 @@ export class CartsService {
   async getCart(user_id: number): Promise<any[]> {
     const cartKey = `${user_id}_cart`;
     const cart = (await this.cacheManager.get(cartKey)) as any[];
+    if (cart === null) {
+      throw new NotFoundException('장바구니의 물품이 존재하지 않습니다.');
+    }
+    console.log(cart);
     const content: any[] = [];
     for (const item of cart) {
       const product_id = item.product_id;

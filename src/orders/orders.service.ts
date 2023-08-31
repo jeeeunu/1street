@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { OrdersEntity } from '../common/entities/orders.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
-import { OrderCreateDto, OrderStatusDto } from './dtos';
+import { Order2CreateDto, OrderCreateDto, OrderStatusDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from 'src/users/interfaces';
 import { UserService } from 'src/users/users.service';
@@ -21,16 +21,17 @@ export class OrdersService {
   ) {}
   //-- 장바구니 주문 작성 --//
   async createOrder(
-    data: OrderCreateDto,
+    data: Order2CreateDto,
     user_id: number,
   ): Promise<ResultableInterface> {
     const carts = await this.cartsService.getCart(user_id);
+    console.log(carts);
     if (!carts || carts.length === 0) {
-      return { status: false, message: '장바구니가 비어있습니다.' };
+      throw new NotFoundException('장바구니가 비어있습니다.');
     }
     // 여기서 주문 생성 로직을 구현
     // carts 기반으로 주문 생성, 주문 정보를 저장 등을 수행
-    const orderContent = await this.orderRepository.save({
+    const order = await this.orderRepository.save({
       user: { id: user_id },
       order_receiver: data.order_receiver,
       order_phone: data.order_phone,
@@ -44,7 +45,7 @@ export class OrdersService {
       (carts) => ({
         product: { id: carts.product_id },
         order_quantity: carts.quantity,
-        order: { id: orderContent.id },
+        order: { id: order.id },
       }),
     );
     await this.orderDetailRepository.save(orderDetails);
@@ -78,8 +79,10 @@ export class OrdersService {
     return { status: true, message: '주문이 완료되었습니다.' };
   }
   //-- 주문 확인 --//
-  async getOrders(): Promise<OrdersEntity[]> {
-    return await this.orderRepository.find();
+  async getOrders(user_id: number): Promise<OrdersEntity[]> {
+    return await this.orderRepository.find({
+      where: { user: { id: user_id } },
+    });
   }
 
   //-- 주문 상세 확인 --//

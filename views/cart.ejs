@@ -183,7 +183,7 @@
                     <li id="subtotal">Subtotal <span id="subtotalValue"></span></li>
                     <li id="total">Total <span id="totalValue"></span></li>
                   </ul>
-                  <a href="#" class="primary-btn">PROCEED TO CHECKOUT</a>
+                  <a href="#" class="primary-btn" id="checkoutButton">PROCEED TO CHECKOUT</a>
                 </div>
               </div>
             </div>
@@ -222,7 +222,7 @@
         <img src="/img/cart/${item.product_img}" alt="" />
         <h5>${item.product_name}</h5>
       </td>
-      <td class="shoping__cart__price">$${item.product_price}</td>
+      <td class="shoping__cart__price">₩${item.product_price}</td>
       <td class="shoping__cart__quantity">
         <div class="quantity">
           <div class="pro-qty">
@@ -230,7 +230,7 @@
           </div>
         </div>
       </td>
-      <td class="shoping__cart__total">$${(item.total).toFixed(2)}</td>
+      <td class="shoping__cart__total">₩${(item.total)}</td>
       <td class="shoping__cart__item__close">
         <button class="remove-cart-item-btn" data-productId="${item.product_id}" onclick=removeCartItem(${item.product_id})>
           <span class="icon_close"></span>
@@ -250,14 +250,15 @@
                 const subtotalElement = document.getElementById('subtotalValue');
                 const totalElement = document.getElementById('totalValue');
 
-                subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
-                totalElement.textContent = `$${subtotal.toFixed(2)}`;
+                subtotalElement.textContent = `₩${subtotal}`;
+                totalElement.textContent = `₩${subtotal}`;
 
               } catch (error) {
                 console.error('ERROR:', error);
               }
             }
 
+            // 장바구니 수량 변경
             async function updateCartItemQuantity(product_id) {
               const quantityNum = document.getElementById(`${product_id}_quantity_num`);
               const updatedQuantity = parseInt(quantityNum.value);
@@ -308,7 +309,11 @@
             document.addEventListener('DOMContentLoaded', () => {
               // 페이지 로딩 시 장바구니 데이터 불러오기
               fetchCartData();
-
+              const checkoutButton = document.getElementById('checkoutButton');
+              checkoutButton.addEventListener('click', () => {
+                const url = 'checkout'; // 이동할 페이지 URL을 여기에 입력하세요
+                window.location.href = url.replace('.ejs', ''); // .ejs 확장자 제거
+              });
             });
           </script>
   </body>
