@@ -16,6 +16,9 @@
     <!-- include : hero -->
     <%- include('includes/hero') %>
 
+    <!-- include : viewed-products -->
+    <%- include('includes/viewed-products') %>
+
     <main class="product-list-page">
       <!-- 검색 정보 -->
       <section class="container search-info-container">
@@ -33,14 +36,41 @@
       </section>
 
       <!-- Featured Section Begin -->
-      <section class="featured spad">
+      <section class="product-list-container featured spad">
         <div class="container">
           <div class="btn-search-list">
-            <button type="button" class="btn-serach-item active">랭킹순</button>
-            <button type="button" class="btn-serach-item">낮은 가격순</button>
-            <button type="button" class="btn-serach-item">높은 가격순</button>
-            <button type="button" class="btn-serach-item">판매량순</button>
-            <button type="button" class="btn-serach-item">최신순</button>
+            <!-- TODO :: 랭킹순 -->
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=rank` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=rank') ? 'active' : '' %>"
+            >
+              랭킹순
+            </a>
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=lowPrice` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=lowPrice') ? 'active' : '' %>"
+            >
+              낮은 가격순
+            </a>
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=highPrice` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=highPrice') ? 'active' : '' %>"
+            >
+              높은 가격순
+            </a>
+            <!-- TODO :: 판매량순 -->
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=sales` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=sales') ? 'active' : '' %>"
+            >
+              판매량순
+            </a>
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=desc` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=desc') ? 'active' : '' %>"
+            >
+              최신순
+            </a>
           </div>
           <div id="allProductsContainer" class="row featured__filter"></div>
         </div>
@@ -69,13 +99,20 @@
         const searchKeyword =
           document.querySelector('#searchKeyword').textContent;
         const keyword = searchKeyword.replace(/'/g, '');
-        console.log(keyword);
 
-        const url = cursor
-          ? `/products?keyword=${keyword}&limit=${limit}&cursor=${cursor}`
-          : `/products?keyword=${keyword}&limit=${limit}`;
+        const currentUrl = window.location.href;
+        const apiUrl = currentUrl.replace('products-list', 'products/search');
 
+        const queryParameters = cursor
+          ? `&limit=${limit}&cursor=${cursor}`
+          : `&limit=${limit}`;
+
+        const url = apiUrl + queryParameters;
+
+        if (url !== currentUrl) {
+        }
         try {
+          console.log(url);
           const response = await fetch(url, {
             method: 'GET',
             headers: {
@@ -94,7 +131,7 @@
             newData.forEach((item) => {
               allProductsContainer.innerHTML += `
               <div class="col-lg-3 col-md-4 col-sm-6 mix category">
-                <div class="featured__item">
+                <div class="featured__item product-item">
                   <div
                     class="featured__item__pic set-bg"
                     style="background-image: url('${
@@ -103,7 +140,7 @@
                   >
                     <ul class="featured__item__pic__hover">
                       <li>
-                        <a href="#"><i class="fa fa-heart"></i></a>
+                        <button type="button" class="btn-like">❤️</button>
                       </li>
                       <li>
                         <a href="#"><i class="fa fa-shopping-cart"></i></a>

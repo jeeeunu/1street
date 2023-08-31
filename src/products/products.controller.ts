@@ -10,8 +10,6 @@ import {
   UploadedFiles,
   UseGuards,
   UseInterceptors,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { AuthUser } from '../auth/auth.decorator';
@@ -21,7 +19,6 @@ import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
 import { ProductCreateDto, ProductUpdateDto } from './dtos';
 import { ProductsService } from './products.service';
-import { PaginationDto } from 'src/common/dtos';
 
 @Controller('products')
 export class ProductsController {
@@ -30,15 +27,37 @@ export class ProductsController {
   //-- 유저단 : 상품 전체보기 --//
   @Get()
   async getProducts(
-    @Query('keyword') keyword: string,
     @Query('limit') limit: number,
     @Query('cursor') cursor: number,
   ): Promise<ProductsEntity[]> {
-    if (keyword) {
-      return this.productsService.findByKeyword(limit, cursor, keyword);
-    } else {
-      return this.productsService.findAll(limit, cursor);
-    }
+    console.log('상품 전체보기 검색중');
+    return this.productsService.findAll(limit, cursor);
+  }
+
+  //-- 검색 --//
+  @Get('search')
+  async getSearchProducts(
+    @Query('keyword') keyword: string,
+    @Query('categoryId') categoryId: number,
+    @Query('limit') limit: number,
+    @Query('cursor') cursor: number,
+    @Query('sort')
+    sort:
+      | 'asc'
+      | 'desc'
+      | 'rank'
+      | 'lowPrice'
+      | 'highPrice'
+      | 'sales'
+      | 'latest',
+  ): Promise<ProductsEntity[]> {
+    return this.productsService.findByKeyword(
+      limit,
+      cursor,
+      keyword,
+      categoryId,
+      sort,
+    );
   }
 
   //-- 상품 상세보기 --//
@@ -48,11 +67,13 @@ export class ProductsController {
   }
 
   //-- 상품 검색 (카테고리 번호)--//
-  // @Get('search/:category')
+  // @Get('categories/:categoryId')
   // async searchCategory(
-  //   @Param('category') category: number,
+  //   @Param('category') categoryId: number,
+  //   @Query('limit') limit: number,
+  //   @Query('cursor') cursor: number,
   // ): Promise<ProductsEntity[]> {
-  //   return await this.productsService.findByCategory(category);
+  //   return await this.productsService.findByCategory(limit, cursor, categoryId);
   // }
 
   //-- 상품 등록 --//
@@ -85,11 +106,8 @@ export class ProductsController {
   //-- 상품 삭제 --//
   @Delete(':id')
   @UseGuards(AuthGuard)
-  async deleteProduct(
-    @Param('id') id: number,
-    @AuthUser() authUser: RequestUserInterface,
-  ): Promise<ResultableInterface> {
-    return await this.productsService.delete(id, authUser);
+  async deleteProduct(@Param('id') id: number): Promise<ResultableInterface> {
+    return await this.productsService.delete(id);
   }
 
   //-- 카테고리 만들기 (개발용) --//

@@ -16,6 +16,9 @@
     <!-- include : hero -->
     <%- include('includes/hero') %>
 
+    <!-- include : viewed-products -->
+    <%- include('includes/viewed-products') %>
+
     <!-- Categories Section Begin -->
     <section class="categories">
       <div class="container">
@@ -50,15 +53,22 @@
     <!-- Banner Begin -->
     <div class="banner">
       <div class="container">
+        <h4 style="margin-bottom: 20px; font-weight: 700">Event</h4>
         <div class="row">
           <div class="col-lg-6 col-md-6 col-sm-6">
             <div class="banner__pic">
-              <img src="/img/banner/banner-1.jpg" alt="" />
+              <img
+                src="https://img.freepik.com/premium-psd/food-banner-template-set_3870-591.jpg?w=740"
+                alt=""
+              />
             </div>
           </div>
           <div class="col-lg-6 col-md-6 col-sm-6">
             <div class="banner__pic">
-              <img src="/img/banner/banner-2.jpg" alt="" />
+              <img
+                src="https://image.wconcept.co.kr/images/img/event/20200219_theordinary/pc/main_top.jpg"
+                alt=""
+              />
             </div>
           </div>
         </div>
@@ -75,62 +85,37 @@
               <h4>Latest Products</h4>
               <div class="latest-product__slider owl-carousel">
                 <div class="latest-prdouct__slider__item">
-                  <a href="#" class="latest-product__item">
+                  <% latestProducts.slice(0, 3).forEach(product => { %>
+                  <a
+                    href="/product-detail/<%= product.id %>"
+                    class="latest-product__item"
+                  >
                     <div class="latest-product__item__pic">
-                      <img src="/img/latest-product/lp-1.jpg" alt="" />
+                      <img src="<%= product.product_image[0].url %>" alt="" />
                     </div>
                     <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
+                      <h6><%= product.product_name %></h6>
+                      <span
+                        ><%= product.product_price.toLocaleString() %>원</span
+                      >
                     </div>
                   </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="/img/latest-product/lp-2.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="/img/latest-product/lp-3.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
+                  <% }); %>
                 </div>
                 <div class="latest-prdouct__slider__item">
+                  <% latestProducts.slice(4, 7).forEach(product => { %>
                   <a href="#" class="latest-product__item">
                     <div class="latest-product__item__pic">
-                      <img src="/img/latest-product/lp-1.jpg" alt="" />
+                      <img src="<%= product.product_image[0].url %>" alt="" />
                     </div>
                     <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
+                      <h6><%= product.product_name %></h6>
+                      <span
+                        ><%= product.product_price.toLocaleString() %>원</span
+                      >
                     </div>
                   </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="/img/latest-product/lp-2.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="/img/latest-product/lp-3.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
+                  <% }); %>
                 </div>
               </div>
             </div>
@@ -271,7 +256,7 @@
     <!-- Latest Product Section End -->
 
     <!-- Featured Section Begin -->
-    <section class="featured spad">
+    <section class="featured spad product-list-container">
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
@@ -325,7 +310,9 @@
             );
             newData.forEach((item) => {
               allProductsContainer.innerHTML += `
-              <div class="col-lg-3 col-md-4 col-sm-6 mix category">
+              <div class="col-lg-3 col-md-4 col-sm-6 mix category product-item" data-item-id="${
+                item.id
+              }">
                 <div class="featured__item">
                   <div
                     class="featured__item__pic set-bg"
@@ -335,7 +322,7 @@
                   >
                     <ul class="featured__item__pic__hover">
                       <li>
-                        <a href="#"><i class="fa fa-heart"></i></a>
+                        <button type="button" class="btn-like">❤️</button>
                       </li>
                       <li>
                         <a href="#"><i class="fa fa-shopping-cart"></i></a>
