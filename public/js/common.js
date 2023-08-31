@@ -133,3 +133,10 @@ if (likeContainers) {
     }
   });
 }
+
+//-- 최근 본 상품 --//
+const viewedProductsMore = async () => {
+  const viewedProductList = document.querySelector('#viewedProductList');
+  viewedProductList.style.display =
+    viewedProductList.style.display === 'none' ? 'block' : 'none';
+};

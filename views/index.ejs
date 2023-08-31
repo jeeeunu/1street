@@ -16,6 +16,22 @@
     <!-- include : hero -->
     <%- include('includes/hero') %>
 
+    <section class="viewed-products">
+      <button
+        type="button"
+        class="btn-viewed-products"
+        onclick="viewedProductsMore()"
+      >
+        최근 본 상품 보기
+      </button>
+      <ul id="viewedProductList">
+        <li>
+          <img src="" alt="" />
+          냠냠
+        </li>
+      </ul>
+    </section>
+
     <!-- Categories Section Begin -->
     <section class="categories">
       <div class="container">
@@ -83,7 +99,10 @@
               <div class="latest-product__slider owl-carousel">
                 <div class="latest-prdouct__slider__item">
                   <% latestProducts.slice(0, 3).forEach(product => { %>
-                  <a href="#" class="latest-product__item">
+                  <a
+                    href="/product-detail/<%= product.id %>"
+                    class="latest-product__item"
+                  >
                     <div class="latest-product__item__pic">
                       <img src="<%= product.product_image[0].url %>" alt="" />
                     </div>
