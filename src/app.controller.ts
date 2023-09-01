@@ -7,6 +7,7 @@ import { ShopsService } from './shops/shops.service';
 import { ProductsService } from './products/products.service';
 import { CategorysService } from './categorys/categorys.service';
 import { LikesService } from './likes/likes.service';
+import { CartsService } from './carts/carts.service';
 
 @Controller()
 export class AppController {
@@ -16,6 +17,7 @@ export class AppController {
     private readonly shopsService: ShopsService,
     private readonly productsService: ProductsService,
     private readonly likesService: LikesService,
+    private readonly cartsService: CartsService,
   ) {}
 
   //-- 공통 : 유저 --//
@@ -141,12 +143,15 @@ export class AppController {
       return response.redirect('admin-my-page');
     }
 
+    const carts = await this.cartsService.getCart(authUser.user_id);
+
     response.render('my-page', {
       isIndexPath,
       isSearchPath,
       user,
       authUser,
       categories,
+      carts,
     });
   }
 
