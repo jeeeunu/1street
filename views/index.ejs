@@ -276,7 +276,7 @@
       let cursor = null;
       let hasMoreData = true;
 
-      const limit = 8;
+      const limit = 4;
       let isLoadingData = false; // 데이터 로딩 중인지 여부
 
       let lastScrollY = 0;
@@ -307,6 +307,7 @@
 
             const fragment = document.createDocumentFragment(); // Fragment 생성
 
+            console.log(newData);
             newData.forEach((item) => {
               const productItem = document.createElement('div');
               productItem.className =
@@ -315,9 +316,8 @@
 
               productItem.innerHTML = `
                 <div class="featured__item">
-                  <div class="featured__item__pic set-bg" style="background-image: url('${
-                    item.product_image[0].url
-                  }');">
+                  <div class="featured__item__pic set-bg">
+                    <img src="${item.product_image[0].url}">
                     <ul class="featured__item__pic__hover">
                       <li>
                         <button type="button" class="btn-like">❤️</button>
@@ -345,6 +345,7 @@
             allProductsContainer.appendChild(fragment); // Fragment를 실제 DOM에 추가
 
             cursor = newData[newData.length - 1]?.id;
+            console.log(cursor);
 
             if (newData.length < limit) {
               hasMoreData = false;
