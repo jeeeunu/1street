@@ -193,6 +193,7 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories } = await this.userPageData(
       request,
+      authUser,
     );
     response.render('checkout', {
       isIndexPath,
