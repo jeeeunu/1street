@@ -184,6 +184,24 @@ export class AppController {
     });
   }
 
+  //-- 주문 --//
+  @Get('checkout')
+  async checkout(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
+      request,
+    );
+    response.render('checkout', {
+      isIndexPath,
+      isSearchPath,
+      authUser,
+      categories,
+    });
+  }
+
   //-- 상품 검색 --//
   @Get('products-list')
   async productList(
