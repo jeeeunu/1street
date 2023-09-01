@@ -215,4 +215,16 @@ export class OrdersService {
   //   // orderProducts = data.order_details;
   //   return { status: true, message: '주문이 수정되었습니다.' };
   // }
+
+  //-- 주문 상세 아이디로 검색하기 --//
+  async getDetailOrderById(orderDetailId: number): Promise<any> {
+    const orderDetail = await this.orderDetailRepository.findOne({
+      where: { id: orderDetailId },
+      relations: ['order', 'product', 'product.product_image'],
+    });
+    if (!orderDetail) {
+      throw new NotFoundException('주문을 찾을 수 없습니다.');
+    }
+    return orderDetail;
+  }
 }

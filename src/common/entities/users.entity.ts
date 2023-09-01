@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { IsOptional, IsString } from 'class-validator';
-import { LikeEntity, OrdersEntity, ShopsEntity } from '.';
+import { LikeEntity, OrdersEntity, ReviewsEntity, ShopsEntity } from '.';
 import { QnasEntity } from './qnas.entity';
 
 export enum Provider {
@@ -69,4 +69,7 @@ export class UsersEntity {
 
   @OneToMany(() => QnasEntity, (qna) => qna.user)
   public qna: QnasEntity[];
+
+  @OneToMany(() => ReviewsEntity, (review) => review.user)
+  public review: ReviewsEntity[];
 }

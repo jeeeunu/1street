@@ -116,20 +116,25 @@
                 </div>
               </section>
 
-              <h3 style="margin-bottom: 30px">*리뷰 작성</h3>
+              <h3 style="margin-bottom: 30px">*리뷰 수정</h3>
               <!-- 별점 -->
               <div class="rating-container">
                 <div class="feedback">
                   <div class="rating">
-                    <input type="radio" name="rating" id="rating-5" value="5" />
+                    <input type="radio" name="rating" id="rating-5" value="5" <%
+                    if (review.review_rating === 5) { %>checked<% } %> />
                     <label for="rating-5"></label>
-                    <input type="radio" name="rating" id="rating-4" value="4" />
+                    <input type="radio" name="rating" id="rating-4" value="4" <%
+                    if (review.review_rating === 4) { %>checked<% } %> />
                     <label for="rating-4"></label>
-                    <input type="radio" name="rating" id="rating-3" value="3" />
+                    <input type="radio" name="rating" id="rating-3" value="3" <%
+                    if (review.review_rating === 3) { %>checked<% } %> />
                     <label for="rating-3"></label>
-                    <input type="radio" name="rating" id="rating-2" value="2" />
+                    <input type="radio" name="rating" id="rating-2" value="2" <%
+                    if (review.review_rating === 2) { %>checked<% } %> />
                     <label for="rating-2"></label>
-                    <input type="radio" name="rating" id="rating-1" value="1" />
+                    <input type="radio" name="rating" id="rating-1" value="1" <%
+                    if (review.review_rating === 1) { %>checked<% } %> />
                     <label for="rating-1"></label>
                     <div class="emoji-wrapper">
                       <div class="emoji">
@@ -445,39 +450,9 @@
                   class="basic-textarea"
                   cols="30"
                   rows="10"
-                ></textarea>
-              </div>
-              <div class="basic-input-box">
-                <div class="edit-img-container d-flex">
-                  <label class="label required">리뷰 이미지: </label>
-                  <div class="edit-img-container">
-                    <div class="edit-img-wrap"></div>
-                    <input
-                      type="file"
-                      class="profile-input"
-                      style="display: block; margin-top: 5px"
-                      onchange="setThumbnail(event)"
-                    />
-                  </div>
-                  <div class="edit-img-container">
-                    <div class="edit-img-wrap"></div>
-                    <input
-                      type="file"
-                      class="profile-input"
-                      style="display: block; margin-top: 5px"
-                      onchange="setThumbnail(event)"
-                    />
-                  </div>
-                  <div class="edit-img-container">
-                    <div class="edit-img-wrap"></div>
-                    <input
-                      type="file"
-                      class="profile-input"
-                      style="display: block; margin-top: 5px"
-                      onchange="setThumbnail(event)"
-                    />
-                  </div>
-                </div>
+                >
+<%= review.review_content %></textarea
+                >
               </div>
             </div>
             <button
@@ -485,7 +460,7 @@
               class="btn-primary-m"
               onclick="createReview()"
             >
-              리뷰 등록하기
+              리뷰 수정하기
             </button>
           </div>
         </section>
@@ -509,24 +484,19 @@
           const orderDetailValue = document
             .getElementById('orderItem')
             .getAttribute('data-id');
-          const reviewContent = document.querySelector('#reviewContent');
-          const productPrice = document.querySelector('#productPrice');
-          const formData = new FormData();
-          formData.append('review_rating', rating);
-          formData.append('review_content', reviewContent.value);
-          let productImgfiles = [];
-          document.querySelectorAll('.profile-input').forEach((file) => {
-            if (file.files[0] !== undefined) {
-              formData.append('files', file.files[0]);
-            }
-          });
 
-          console.log(formData);
+          const reviewContent = document.querySelector('#reviewContent');
+          const requestData = {
+            review_rating: rating,
+            review_content: reviewContent.value,
+          };
 
           const response = await fetch(`/reviews/${orderDetailValue}`, {
-            method: 'POST',
-            headers: { Accept: 'application/json' },
-            body: formData,
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
           });
 
           const data = await response.json();
@@ -534,7 +504,7 @@
           if (response.ok) {
             alert(data.message);
 
-            window.location.href = '/review-list';
+            window.location.href = '/my-page/review-list';
           } else {
             console.log(data.message);
             if (Array.isArray(data.message)) {
