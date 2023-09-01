@@ -28,6 +28,10 @@
   border-right: 1px solid #f1f1f1;
 }
 
+.status-item a {
+  font-size: 1.8rem;
+}
+
 .status-item:last-child {
   border-right: 0;
 }
@@ -77,9 +81,11 @@
 }
 
 .provider-text {
+  font-size: 14px;
   color: #444;
 }
 
 .provider-text + .btn-user-delete {
   margin-top: 40px;
+  font-size: 14px;
 }

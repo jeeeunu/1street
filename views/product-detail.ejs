@@ -16,6 +16,9 @@
     <!-- include : hero-normal -->
     <%- include('includes/hero') %>
 
+    <!-- include : viewed-products -->
+    <%- include('includes/viewed-products') %>
+
     <!-- Product Details Section Begin -->
     <section class="product-details spad">
       <div class="container">
@@ -31,19 +34,14 @@
               </div>
               <div class="product__details__pic__slider owl-carousel">
                 <% if (product.product_image && product.product_image.length >
-                0) { %> <% let index = 1; %> <% for (const image of
-                product.product_image) { %>
+                0) { %> <% product.product_image.forEach((image, index) => { %>
                 <img
+                  id="productImg"
                   data-imgbigurl="<%= image.url %>"
                   src="<%= image.url %>"
                   alt=""
                 />
-                <% index++; %> <% } %> <% } %>
-                <!-- <img
-                  data-imgbigurl="/img/product/details/product-details-4.jpg"
-                  src="/img/product/details/thumb-4.jpg"
-                  alt=""
-                /> -->
+                <% }); %> <% } %>
               </div>
             </div>
           </div>
@@ -76,9 +74,14 @@
                 </div>
               </div>
               <a href="#" class="primary-btn">ADD TO CARD</a>
-              <a href="#" class="heart-icon"
-                ><span class="icon_heart_alt"></span
-              ></a>
+              <button
+                type="button"
+                id="btnLike"
+                class="heart-icon"
+                data-item-id="<%- product.id %>"
+              >
+                ❤️
+              </button>
               <ul>
                 <li>
                   <b>스토어</b>
@@ -369,6 +372,52 @@
     <!-- include : footer -->
     <%- include('includes/footer') %>
 
-    <script></script>
+    <script>
+      //-- 해당 페이지 접근 시 localstorage에 관련내용 저장 --//
+      const createViewedProduct = function () {
+        const productImg = document.getElementById('productImg');
+        const imgUrl = productImg.getAttribute('data-imgbigurl');
+        const currentUrl = window.location.href;
+
+        // 로컬 스토리지에서 최근 상품 목록 가져오기
+        const viewedProductsData = localStorage.getItem('viewedProducts');
+        let viewedProducts = viewedProductsData
+          ? JSON.parse(viewedProductsData)
+          : [];
+
+        // 중복 체크 후에 상품 추가 또는 최신으로 올리기
+        const existingProductIndex = viewedProducts.findIndex(
+          (item) => item.currentUrl === currentUrl,
+        );
+
+        // 중복된 경우
+        if (existingProductIndex !== -1) {
+          const duplicatedProduct = viewedProducts.splice(
+            existingProductIndex,
+            1,
+          )[0];
+          viewedProducts.unshift(duplicatedProduct);
+        } else {
+          viewedProducts.unshift({ imgUrl, currentUrl });
+
+          // 최대 갯수를 초과하는 경우 가장 오래된 상품 제거
+          if (viewedProducts.length > 10) {
+            viewedProducts.pop();
+          }
+        }
+
+        // 변경된 최근 상품 목록 로컬 스토리지에 저장
+        localStorage.setItem('viewedProducts', JSON.stringify(viewedProducts));
+      };
+
+      createViewedProduct();
+
+      //-- 좋아요 기능 --//
+      document.querySelector('#btnLike').addEventListener('click', () => {
+        console.log('좋아요');
+        const productId = event.target.getAttribute('data-item-id');
+        createLike(productId);
+      });
+    </script>
   </body>
 </html>

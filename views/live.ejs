@@ -1,0 +1,253 @@
+<html>
+  <head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <h1 data-title="<%=title%>" id="title"><%=title%> 라이브중!</h1>
+    <div>
+      <video
+        class="liveVideo"
+        playsinline
+        width="1000"
+        height="800"
+        autoplay
+      ></video>
+      <button type="button" class="btn btn-primary sound">음소거</button>
+      <button type="button" class="btn btn-primary camera">카메라 끄기</button>
+      <select
+        id="cameraList"
+        class="form-select"
+        aria-label="Default select example"
+      >
+        <option value="device" selected disabled hidden>카메라 옵션</option>
+      </select>
+    </div>
+    <div>
+      <ul class="chatList"></ul>
+      <div class="mb-3">
+        <input
+          type="text"
+          class="form-control"
+          id="chatInput"
+          placeholder="채팅을 쳐주세요"
+        />
+        <button type="button" class="btn btn-primary chatInputBtn">채팅</button>
+      </div>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+      integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const socket = io('');
+      const chatList = document.querySelector('.chatList');
+      const title = document.querySelector('#title').getAttribute('data-title');
+      const chatInput = document.querySelector('#chatInput');
+      const chatInputBtn = document.querySelector('.chatInputBtn');
+      const liveVideo = document.querySelector('.liveVideo ');
+      const soundBtn = document.querySelector('.sound');
+      const cameraBtn = document.querySelector('.camera');
+      const cameraList = document.querySelector('#cameraList');
+
+      /** @type {RTCPeerConnection} */
+      let peerConnection;
+      let roomManager = null;
+      let stream;
+      let isMuted = false;
+      let isCameraOff = false;
+
+      window.onload = async () => {
+        await joinRoom();
+      };
+
+      const joinRoom = async () => {
+        await getMedia();
+        makeConnection();
+        socket.emit('join_room', title);
+      };
+
+      socket.on('room_manager', (id) => {
+        roomManager = id;
+      });
+
+      //- 채팅 하기 -//
+      chatInputBtn.addEventListener('click', async () => {
+        if (chatInput.value.replace(/ /g, '').length === 0) return;
+        await socket.emit('chatInput', {
+          chat: chatInput.value,
+          roomName: title,
+        });
+        chatInput.value = '';
+      });
+
+      //- 채팅 내용 보여주기 -//
+      socket.on('newMsg', (msg) => {
+        const li = document.createElement('li');
+        li.innerText = `${msg}`;
+        chatList.append(li);
+      });
+
+      //- 비디오 띄우기 -//
+      const getMedia = async (deviceId) => {
+        const defaultOption = {
+          audio: true,
+          video: { facingMode: 'user' },
+        };
+        const cameraOption = {
+          audio: true,
+          video: { deviceId: { exact: deviceId } },
+        };
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(
+            deviceId ? cameraOption : defaultOption,
+          );
+          if (roomManager === null || socket.id === roomManager) {
+            liveVideo.srcObject = stream;
+          }
+          if (!deviceId) {
+            getCamera();
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      //- 음소거 -//
+      soundBtn.addEventListener('click', () => {
+        stream.getAudioTracks().forEach((track) => {
+          track.enabled = !track.enabled;
+        });
+        if (!isMuted) {
+          soundBtn.innerText = '음소거 해제';
+          isMuted = true;
+        } else {
+          soundBtn.innerText = '음소거';
+          isMuted = false;
+        }
+      });
+
+      //- 카메라 끄고 켜기 -//
+      cameraBtn.addEventListener('click', () => {
+        stream.getVideoTracks().forEach((track) => {
+          track.enabled = !track.enabled;
+        });
+        if (!isCameraOff) {
+          cameraBtn.innerText = '카메라 켜기';
+          isCameraOff = true;
+        } else {
+          cameraBtn.innerText = '카메라 끄기';
+          isCameraOff = false;
+        }
+      });
+
+      //- 카메라 정보 가져오기 -//
+      const getCamera = async () => {
+        try {
+          const devices = await navigator.mediaDevices.enumerateDevices();
+          const cameras = devices.filter(
+            (device) => device.kind === 'videoinput',
+          );
+          cameras.forEach((camera) => {
+            const option = document.createElement('option');
+            option.value = camera.deviceId;
+            option.innerText = camera.label;
+            cameraList.appendChild(option);
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+      //- 카메라 장치 변경 -//
+      cameraList.addEventListener('input', async () => {
+        await getMedia(cameraList.value);
+        if (peerConnection) {
+          const videoTrack = stream.getVideoTracks()[0];
+          const videoSender = peerConnection
+            .getSenders()
+            .find((sender) => sender.track.kind === 'video');
+          videoSender.replaceTrack(videoTrack);
+        }
+      });
+
+      //- 방장: offer전송 -//
+      socket.on('welcome', async () => {
+        const offer = await peerConnection.createOffer();
+        peerConnection.setLocalDescription(offer);
+        socket.emit('offer', { offer, title });
+      });
+
+      //- offer -> answer -//
+      socket.on('offer', async (offer) => {
+        await peerConnection.setRemoteDescription(offer);
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+        socket.emit('answer', { answer, title });
+      });
+
+      //- answer 받기 -//
+      socket.on('answer', async (answer) => {
+        if (peerConnection.signalingState === 'have-local-offer') {
+          try {
+            await peerConnection.setRemoteDescription(answer);
+          } catch (error) {
+            console.error('SDP 파싱 오류', error);
+          }
+        } else {
+          console.log('have-local-offer 상태가 아님');
+        }
+      });
+
+      //- peer 연결 -//
+      const makeConnection = () => {
+        peerConnection = new RTCPeerConnection({
+          iceServers: [
+            {
+              urls: [
+                'stun:stun.l.google.com:19302',
+                'stun:stun1.l.google.com:19302',
+                'stun:stun2.l.google.com:19302',
+                'stun:stun3.l.google.com:19302',
+                'stun:stun4.l.google.com:19302',
+              ],
+            },
+          ],
+        });
+        peerConnection.addEventListener('icecandidate', handleIce);
+        peerConnection.addEventListener('track', handleTrack);
+        stream
+          .getTracks()
+          .forEach((track) => peerConnection.addTrack(track, stream));
+      };
+
+      const handleIce = (ice) => {
+        socket.emit('ice', { candidate: ice.candidate, title });
+      };
+
+      //- stream 연결 -//
+      const handleTrack = (data) => {
+        console.log(peerConnection);
+        if (socket.id !== roomManager) {
+          liveVideo.srcObject = data.streams[0];
+        }
+      };
+
+      socket.on('ice', (ice) => {
+        peerConnection.addIceCandidate(ice);
+      });
+    </script>
+  </body>
+</html>

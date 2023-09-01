@@ -11,7 +11,7 @@
           <!-- PUB :: index에 포함되는 내용 -->
           <ul <% if (typeof isIndexPath !== 'undefined' && isIndexPath) { %>style="display: block;"<% } else { %>style="display: none;"<% } %>>
             <% categories.forEach(category => { %>
-              <li><a href="#"><%= category.category_name %></a></li>
+              <li><a href="/category-list?categoryId=<%= category.id %>&sort=rank"><%= category.category_name %></a></li>
               <% }); %>
           </ul>
         </div>
@@ -22,7 +22,8 @@
             <form action="#" class="site-btn-wrap">
               <!-- 검색 시에 -->
               <% if(isSearchPath) { %>
-                <% if (searchContent) { %>
+                <h2>난나</h2>
+                <% if(searchContent) { %>
                   <input type="text" id="siteSearchInput" placeholder="상품을 검색해주세요." value="<%= searchContent %>" />
                 <% } %>
               <% } else { %>

@@ -7,32 +7,108 @@
     <!-- include : top-button -->
     <%- include('includes/top-button') %>
 
-      <!-- include : preloder -->
-      <%- include('includes/preloder') %>
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
 
-        <!-- include : header -->
-        <%- include('includes/header') %>
+    <!-- include : header -->
+    <%- include('includes/header') %>
 
-          <!-- include : hero-normal -->
-          <%- include('includes/hero') %>
+    <!-- include : hero-normal -->
+    <%- include('includes/hero') %>
 
-            <!-- 내정보 (일반) -->
-            <main class="mypage container mypage-info">
-              <h2 class="title">마이페이지</h2>
-              <div class="row">
-                <aside class="col-lg-3">
-                  <div class="proflie-info-container">
-                    <div class="primary-img-wrap">
-                      <img src="<%- user.profile_image %> " alt="">
-                    </div>
-                    <div class="text-wrap">
-                      <div class="name-wrap">
-                        <span><%- authUser.user_name %> 님</span>
-                        <a href="/my-page-user-edit"> >내 정보 수정</a>
-                      </div>
-                      <div>
-                        <span>충전금액: </span>
-                        <span><%- user.point %>원</span>
+    <!-- 내정보 (일반) -->
+    <main class="mypage container mypage-info">
+      <h2 class="title">마이페이지</h2>
+      <div class="row">
+        <aside class="col-lg-3">
+          <div class="proflie-info-container">
+            <div class="primary-img-wrap">
+              <img src="<%- user.profile_image %> " alt="">
+            </div>
+            <div class="text-wrap">
+              <div class="name-wrap">
+                <span><%- authUser.user_name %> 님</span>
+                <a href="/my-page-user-edit"> >내 정보 수정</a>
+              </div>
+              <div>
+                <span>충전금액: </span>
+                <span><%- user.point %>원</span>
+              </div>
+              <div>
+                <span>포인트: </span>
+                <span><%- user.point %>원</span>
+              </div>
+              <div>
+                <span>잔여 쿠폰: </span>
+                <span>2개</span>
+              </div>
+            </div>
+            <hr />
+            <div class="provider-text">
+              <% if (user.provider === "google") { %>
+                <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" style="width: 15px; height: 15px; margin-right: 7px;" alt="">구글 로그인
+              <% } %>
+            </div>
+            <button type="button" class="gray-text btn-user-delete" onclick="deleteUser()">회원 탈퇴</button>
+          </div>
+        </aside>
+
+        <section class="col-lg-9">
+          <section class="status-container">
+            <ul class="status-list">
+              <li class="status-item">
+                <p>좋아요한 상품</p>
+                <p><a href="/like">
+                  <% if (user.like_count) { %>
+                    <%= user.like_count %>
+                  <% } else { %>
+                    0 
+                  <% } %>
+                  건</a></p>
+              </li>
+              <li class="status-item">
+                <p>주문내역</p>
+                <p>
+                  <a href="">
+                    <% if (authUser.user_count) { %>
+                      <%= user.like_count %>
+                    <% } else { %>
+                      0 
+                    <% } %>
+                    건
+                  </a>
+               </p>
+              </li>
+              <li class="status-item">
+                <p>장바구니</p>
+                <p><a href=""><%= carts.length %> 건</a></p>
+              </li>
+            </ul>
+          </section>
+          <section class="list-container">
+            <div class="title-wrap">
+              <h3>최근 주문 내역</h3>
+              <a href="">더보기</a>
+            </div>
+            <div class="order-list-table">
+              <ul class="t-head">
+                <li class="td">날짜</li>
+                <li class="td">주문정보</li>
+                <li class="td">상태</li>
+                <li class="td">확인/신청</li>
+              </ul>
+              <ul class="t-body">
+                <li class="tr">
+                  <div class="td">
+                    <p class="date-text">2023.01.01</p>
+                  </div>
+                  <div class="td">
+                    <div class="order-info-wrap">
+                      <div class="img-wrap">
+                        <img
+                          src="https://i.namu.wiki/i/slmFMXb1Fchs2zN0ZGOzqfuPDvhRS-H9eBp7Gp613-DNKi6i6Ct7eFkTUpauqv5HAYR97mrNqrvvcCDEyBdL_g.webp"
+                          alt=""
+                        />
                       </div>
                       <div>
                         <span>포인트: </span>

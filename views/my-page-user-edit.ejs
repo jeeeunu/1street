@@ -183,7 +183,7 @@
           if (profileImageInput.files[0] !== undefined) {
             formData.append('files', profileImageInput.files[0]);
           }
-          if (passwordInput !== '') {
+          if (passwordInput.value !== '') {
             formData.append('password', passwordInput.value);
           }
           formData.append('name', nameInput.value);

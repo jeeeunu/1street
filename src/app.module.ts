@@ -21,6 +21,8 @@ import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
 import { UsersEntity } from './common/entities';
 import { ShopsEntity } from './common/entities';
+import { ChatGateway } from './chat/chat.gateway';
+import { ChatModule } from './chat/chat.module';
 import { CategorysModule } from './categorys/categorys.module';
 
 @Module({
@@ -56,6 +58,7 @@ import { CategorysModule } from './categorys/categorys.module';
     ProductsModule,
     LikesModule,
     UploadsModule,
+    ChatModule,
     CartsModule,
     //-- Redis --//
     CacheModule.registerAsync({

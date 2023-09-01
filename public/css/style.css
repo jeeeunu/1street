@@ -36,7 +36,7 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   -webkit-font-smoothing: antialiased;
   font-smoothing: antialiased;
-  font-size: 0.9rem;
+  font-size: 9px;
 }
 
 h1,
@@ -401,6 +401,7 @@ ol {
   display: flex;
   justify-content: end;
   gap: 30px;
+  font-size: 14px;
 }
 
 .header__top__right__auth button {
@@ -525,7 +526,7 @@ ol {
 .header__cart ul li {
   list-style: none;
   display: inline-block;
-  margin-right: 22px;
+  margin-right: 25px;
 }
 
 .header__cart ul li:last-child {
@@ -588,6 +589,10 @@ ol {
   padding-bottom: 30px;
 }
 
+/* .hero.hero-normal .col-lg-3 {
+  padding-left: 0;
+} */
+
 .hero.hero-normal .hero__categories {
   position: relative;
 }
@@ -607,6 +612,8 @@ ol {
 }
 
 .hero__categories__all {
+  display: flex;
+  align-items: center;
   background: #7fad39;
   position: relative;
   padding: 10px 25px 10px 40px;
@@ -909,17 +916,20 @@ ol {
   margin-right: 0;
 }
 
-.featured__item__pic__hover li:hover a {
+.featured__item__pic__hover li:hover a,
+.featured__item__pic__hover li:hover button {
   background: #7fad39;
   border-color: #7fad39;
 }
 
-.featured__item__pic__hover li:hover a i {
+.featured__item__pic__hover li:hover a i,
+.featured__item__pic__hover li:hover button i {
   color: #ffffff;
   transform: rotate(360deg);
 }
 
-.featured__item__pic__hover li a {
+.featured__item__pic__hover li a,
+.featured__item__pic__hover li button {
   font-size: 16px;
   color: #1c1c1c;
   height: 40px;
@@ -937,7 +947,8 @@ ol {
   transition: all, 0.5s;
 }
 
-.featured__item__pic__hover li a i {
+.featured__item__pic__hover li a i,
+.featured__item__pic__hover li button i {
   position: relative;
   transform: rotate(0);
   -webkit-transition: all, 0.3s;
@@ -970,7 +981,7 @@ ol {
 -----------------------*/
 
 .latest-product {
-  padding-top: 80px;
+  padding-top: 120px;
   padding-bottom: 0;
 }
 
@@ -1019,6 +1030,8 @@ ol {
 .latest-product__item__pic {
   float: left;
   margin-right: 26px;
+  width: 100px;
+  height: 100px;
 }
 
 .latest-product__item__pic img {
@@ -1068,12 +1081,12 @@ ol {
 .breadcrumb-section {
   display: flex;
   align-items: center;
-  padding: 45px 0 40px;
+  padding: 55px 0 40px;
 }
 
 .breadcrumb__text h2 {
   margin-bottom: 10px;
-  font-size: 40px;
+  font-size: 26px;
   color: #ffffff;
   font-weight: 700;
 }
@@ -1942,10 +1955,10 @@ ol {
 }
 
 .shoping__cart__table table thead th {
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
   color: #1c1c1c;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }
 
 .shoping__cart__table table thead th.shoping__product {
@@ -1975,10 +1988,16 @@ ol {
   color: #1c1c1c;
   display: inline-block;
   padding-top: 20px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.shoping__cart__table table tbody tr td.shoping__cart__item h5 a {
+  color: #1c1c1c;
 }
 
 .shoping__cart__table table tbody tr td.shoping__cart__price {
-  font-size: 18px;
+  font-size: 16px;
   color: #1c1c1c;
   font-weight: 700;
   width: 100px;
@@ -2833,6 +2852,10 @@ ol {
   margin-bottom: 30px;
 }
 
+.contact__widget a {
+  font-size: 14px;
+}
+
 .contact__widget span {
   font-size: 36px;
   color: #7fad39;
@@ -3566,4 +3589,8 @@ ol {
 .product-details .owl-carousel.owl-drag .owl-item img {
   width: 100%;
   object-fit: cover;
+}
+
+.banner__pic {
+  height: 250px;
 }
