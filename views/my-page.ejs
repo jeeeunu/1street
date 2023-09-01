@@ -57,8 +57,14 @@
           <section class="status-container">
             <ul class="status-list">
               <li class="status-item">
-                <p>장바구니</p>
-                <p><a href=""><%= carts.length %> 건</a></p>
+                <p>좋아요한 상품</p>
+                <p><a href="">
+                  <% if (user.like_count) { %>
+                    <%= user.like_count %>
+                  <% } else { %>
+                    0 
+                  <% } %>
+                  건</a></p>
               </li>
               <li class="status-item">
                 <p>주문내역</p>
@@ -74,18 +80,8 @@
                </p>
               </li>
               <li class="status-item">
-                <p>좋아요한 상품</p>
-                <p><a href="">
-                  <% if (user.like_count) { %>
-                    <%= user.like_count %>
-                  <% } else { %>
-                    0 
-                  <% } %>
-                  건</a></p>
-              </li>
-              <li class="status-item">
-                <p>최근 본 상품</p>
-                <p><a href="">100건</a></p>
+                <p>장바구니</p>
+                <p><a href=""><%= carts.length %> 건</a></p>
               </li>
             </ul>
           </section>
