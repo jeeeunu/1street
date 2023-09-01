@@ -258,8 +258,6 @@ export class ProductsService {
       .addOrderBy('product_image.id', 'ASC')
       .getMany();
 
-    console.log(products);
-
     return products;
   }
 
