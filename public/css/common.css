@@ -125,7 +125,7 @@ img {
 
 .date-text {
   margin-bottom: 0;
-  font-size: 1.2rem;
+  font-size: 13px;
   font-weight: 400;
   color: #777;
 }
@@ -748,7 +748,7 @@ fieldset {
 
 .product-title {
   padding-top: 0.5rem;
-  font-size: 1.4rem !important;
+  font-size: 1.6rem !important;
 }
 
 .edit-img-wrap {

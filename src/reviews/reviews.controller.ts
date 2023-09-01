@@ -19,6 +19,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { RequestUserInterface } from '../users/interfaces';
 import { ReviewInterface } from './interfaces';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { ReviewsEntity } from 'src/common/entities';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -43,19 +44,19 @@ export class ReviewsController {
     );
   }
 
-  //-- 리뷰 조회  --//
+  //-- 리뷰 조회 : 유저 --//
   @Get()
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
   async getReviews(
-    @Query('order_detail_id') orderDetailId?: number,
-    @Query('product_id') productId?: number,
-  ): Promise<ReviewInterface> {
-    if (orderDetailId) {
-      return await this.reviewsService.getForOrderDetail(orderDetailId);
-    }
-    if (productId) {
-      return await this.reviewsService.getForProduct(productId);
-    }
+    @AuthUser() authUser: RequestUserInterface,
+    @Query('limit') limit: number,
+    @Query('cursor') cursor: number,
+  ): Promise<ReviewsEntity[]> {
+    return await this.reviewsService.getAllByUserId(
+      limit,
+      cursor,
+      authUser.user_id,
+    );
   }
 }

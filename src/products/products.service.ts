@@ -66,6 +66,8 @@ export class ProductsService {
       | 'latest',
   ): Promise<ProductsEntity[]> {
     let query;
+
+    // 카테고리 검색
     if (categoryId) {
       console.log('카테고리 검색');
       query = await this.productRepository
@@ -75,6 +77,7 @@ export class ProductsService {
         .where('category.id = :categoryId', { categoryId });
     }
 
+    // 키워드 검색
     if (keyword) {
       console.log('키워드 검색');
       query = await this.productRepository

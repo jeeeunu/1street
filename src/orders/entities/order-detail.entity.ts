@@ -1,5 +1,15 @@
-import { OrdersEntity, ProductsEntity } from 'src/common/entities';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  OrdersEntity,
+  ProductsEntity,
+  ReviewsEntity,
+} from 'src/common/entities';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToOne,
+} from 'typeorm';
 
 export enum OrderReviewStatus {
   notWritten = '0',
@@ -19,4 +29,7 @@ export class OrderDetailsEntity {
 
   @ManyToOne(() => ProductsEntity, (product) => product.order_detail)
   public product: ProductsEntity;
+
+  @OneToOne(() => ReviewsEntity, (review) => review.order_detail)
+  public review: ReviewsEntity;
 }

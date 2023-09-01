@@ -142,7 +142,7 @@ const viewedProductsMore = async () => {
 };
 
 // localstorage
-const getViewedProduct = function () {
+const getViewedProduct = () => {
   const viewedProductList = document.getElementById('viewedProductList');
 
   const viewedProductsData = localStorage.getItem('viewedProducts');

@@ -70,43 +70,46 @@
                   *리뷰할 상품을 확인해주세요.
                 </h3>
                 <!-- 해당하는 주문 -->
-                <div class="order-list-table">
+                <div
+                  id="orderItem"
+                  class="order-list-table"
+                  data-id="<%= orderDetail.id %>"
+                >
                   <ul class="t-head">
                     <li class="td">날짜</li>
                     <li class="td">주문정보</li>
                     <li class="td">상태</li>
-                    <li class="td">확인/신청</li>
                   </ul>
                   <ul class="t-body">
                     <li class="tr">
                       <div class="td">
-                        <p class="date-text">2023.01.01</p>
+                        <p class="date-text">
+                          <%= new
+                          Date(orderDetail.order.created_at).toLocaleString('ko-KR',
+                          { year: 'numeric', month: 'long', day: 'numeric', })
+                          %>
+                        </p>
                       </div>
                       <div class="td">
                         <div class="order-info-wrap">
                           <div class="img-wrap">
                             <img
-                              src="https://i.namu.wiki/i/slmFMXb1Fchs2zN0ZGOzqfuPDvhRS-H9eBp7Gp613-DNKi6i6Ct7eFkTUpauqv5HAYR97mrNqrvvcCDEyBdL_g.webp"
+                              src="<%= orderDetail.product.product_image[0].url %>"
                               alt=""
                             />
                           </div>
                           <div class="text-wrap">
                             <a href="">
-                              <span>20228284895894</span>
-                              <span class="product-title">텔레비전</span>
-                              <span>옵션1/2/3</span>
+                              <span><%= orderDetail.order.id%></span>
+                              <span class="product-title"
+                                ><%= orderDetail.product.product_name %></span
+                              >
                             </a>
                           </div>
                         </div>
                       </div>
                       <div class="td status-wrap">
-                        <span>배송완료 </span>
-                      </div>
-                      <div class="td">
-                        <!-- TODO :: 버튼 각 상황에 맞게 -->
-                        <button type="button" class="btn-primary-s">
-                          배송완료 확인
-                        </button>
+                        <span>배송완료</span>
                       </div>
                     </li>
                   </ul>
@@ -118,15 +121,15 @@
               <div class="rating-container">
                 <div class="feedback">
                   <div class="rating">
-                    <input type="radio" name="rating" id="rating-5" />
+                    <input type="radio" name="rating" id="rating-5" value="5" />
                     <label for="rating-5"></label>
-                    <input type="radio" name="rating" id="rating-4" />
+                    <input type="radio" name="rating" id="rating-4" value="4" />
                     <label for="rating-4"></label>
-                    <input type="radio" name="rating" id="rating-3" />
+                    <input type="radio" name="rating" id="rating-3" value="3" />
                     <label for="rating-3"></label>
-                    <input type="radio" name="rating" id="rating-2" />
+                    <input type="radio" name="rating" id="rating-2" value="2" />
                     <label for="rating-2"></label>
-                    <input type="radio" name="rating" id="rating-1" />
+                    <input type="radio" name="rating" id="rating-1" value="1" />
                     <label for="rating-1"></label>
                     <div class="emoji-wrapper">
                       <div class="emoji">
@@ -438,7 +441,7 @@
                 <label class="label required">리뷰 내용: </label>
                 <textarea
                   name=""
-                  id=""
+                  id="reviewContent"
                   class="basic-textarea"
                   cols="30"
                   rows="10"
@@ -480,7 +483,7 @@
             <button
               type="button"
               class="btn-primary-m"
-              onclick="createProduct()"
+              onclick="createReview()"
             >
               리뷰 등록하기
             </button>
@@ -491,5 +494,62 @@
 
     <!-- include : footer -->
     <%- include('includes/footer') %>
+
+    <script>
+      //-- 리뷰등록 api --//
+      const createReview = async () => {
+        try {
+          const radios = document.getElementsByName('rating');
+          let rating;
+          for (const radio of radios) {
+            if (radio.checked) {
+              rating = radio.value;
+            }
+          }
+          const orderDetailValue = document
+            .getElementById('orderItem')
+            .getAttribute('data-id');
+          const reviewContent = document.querySelector('#reviewContent');
+          const productPrice = document.querySelector('#productPrice');
+          const formData = new FormData();
+          formData.append('review_rating', rating);
+          formData.append('review_content', reviewContent.value);
+          let productImgfiles = [];
+          document.querySelectorAll('.profile-input').forEach((file) => {
+            if (file.files[0] !== undefined) {
+              formData.append('files', file.files[0]);
+            }
+          });
+
+          console.log(formData);
+
+          const response = await fetch(`/reviews/${orderDetailValue}`, {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message);
+
+            window.location.href = '/review-list';
+          } else {
+            console.log(data.message);
+            if (Array.isArray(data.message)) {
+              data.message.forEach((message) => {
+                alert(message.messages);
+              });
+            } else {
+              alert(data.message);
+            }
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('오류가 발생했습니다.');
+        }
+      };
+    </script>
   </body>
 </html>

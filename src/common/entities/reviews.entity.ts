@@ -4,18 +4,25 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { UsersEntity } from '.';
+import { ReviewImageEntity } from 'src/uploads/entities/review-image.entity';
+import { OrderDetailsEntity } from 'src/orders/entities/order-detail.entity';
 
 @Entity({ name: 'reviews' })
 export class ReviewsEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column()
-  @IsNotEmpty()
-  @IsString()
-  public user_id: number;
+  // @Column()
+  // @IsNotEmpty()
+  // @IsString()
+  // public user_id: number;
 
   @Column()
   @IsNotEmpty()
@@ -37,4 +44,16 @@ export class ReviewsEntity {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: string;
+
+  @ManyToOne(() => UsersEntity, (user) => user.review)
+  public user: UsersEntity;
+
+  @OneToMany(() => ReviewImageEntity, (review_image) => review_image.review)
+  public review_image: ReviewImageEntity[];
+
+  @OneToOne(() => OrderDetailsEntity, (order_detail) => order_detail.review, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'order_detail_id', referencedColumnName: 'id' })
+  public order_detail: OrderDetailsEntity;
 }
