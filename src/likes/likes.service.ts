@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LikeEntity } from '../common/entities';
@@ -37,8 +37,7 @@ export class LikesService {
       },
     });
     if (existingLike) {
-      await this.likeRepository.remove(existingLike);
-      return { status: true, message: '해당 상품에 좋아요를 취소했습니다.' };
+      throw new BadRequestException('이미 좋아요를 누른 상품입니다.');
     } else {
       await this.likeRepository.save({
         user: { id: authUser.user_id },
