@@ -14,16 +14,9 @@
       <video
         class="liveVideo"
         playsinline
-        width="500"
-        height="500"
-        controls
-      ></video>
-      <video
-        class="feerVideo"
-        playsinline
-        width="500"
-        height="500"
-        controls
+        width="1000"
+        height="800"
+        autoplay
       ></video>
       <button type="button" class="btn btn-primary sound">음소거</button>
       <button type="button" class="btn btn-primary camera">카메라 끄기</button>
@@ -58,192 +51,6 @@
       integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
       crossorigin="anonymous"
     ></script>
-    <!-- <script>
-      const socket = io('');
-      const chatList = document.querySelector('.chatList');
-      const title = document.querySelector('#title').getAttribute('data-title');
-      const chatInput = document.querySelector('#chatInput');
-      const chatInputBtn = document.querySelector('.chatInputBtn');
-      const liveVideo = document.querySelector('.liveVideo ');
-      const soundBtn = document.querySelector('.sound');
-      const cameraBtn = document.querySelector('.camera');
-      const cameraList = document.querySelector('#cameraList');
-
-      /** @type {RTCPeerConnection} */
-      let peerConnection;
-      let roomManager = null;
-      let stream;
-      let isMuted = false;
-      let isCameraOff = false;
-
-      //- 라이브 룸에 입장 -//
-      window.onload = async () => {
-        console.log('입장');
-        await getMedia();
-        await makeConnection();
-        await socket.emit('joinRoom', { title });
-      };
-
-      socket.on('welcome', async () => {
-        // makeOffer();
-        console.log('누가 옴');
-        const offer = await peerConnection.createOffer();
-        console.log('오퍼', offer);
-        peerConnection.setLocalDescription(offer);
-      });
-
-      // socket.on('roomManager', (data) => {
-      //   console.log('방장인가봐');
-      //   roomManager = data;
-      //   // await getMedia();
-      //   // makeConnection();
-      // });
-
-      //- 채팅 하기 -//
-      chatInputBtn.addEventListener('click', async () => {
-        if (chatInput.value.replace(/ /g, '').length === 0) return;
-        await socket.emit('chatInput', {
-          chat: chatInput.value,
-          roomName: title,
-        });
-        chatInput.value = '';
-      });
-
-      //- 채팅 내용 보여주기 -//
-      socket.on('newMsg', (data) => {
-        const li = document.createElement('li');
-        li.innerText = `${data}`;
-        chatList.append(li);
-      });
-
-      //- 비디오 띄우기 -//
-      const getMedia = async (deviceId) => {
-        const defaultOption = {
-          audio: true,
-          video: { facingMode: 'user' },
-        };
-        const cameraOption = {
-          audio: true,
-          video: { deviceId: { exact: deviceId } },
-        };
-        try {
-          stream = await navigator.mediaDevices.getUserMedia(
-            deviceId ? cameraOption : defaultOption,
-          );
-          liveVideo.srcObject = stream;
-          if (!deviceId) {
-            getCamera();
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-      //- 카메라 정보 가져오기 -//
-      const getCamera = async () => {
-        try {
-          const devices = await navigator.mediaDevices.enumerateDevices();
-          const cameras = devices.filter(
-            (device) => device.kind === 'videoinput',
-          );
-          cameras.forEach((camera) => {
-            const option = document.createElement('option');
-            option.value = camera.deviceId;
-            option.innerText = camera.label;
-            cameraList.appendChild(option);
-          });
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-      //- 카메라 장치 변경 -//
-      cameraList.addEventListener('input', async () => {
-        await getMedia(cameraList.value);
-      });
-
-      //- 음소거 -//
-      soundBtn.addEventListener('click', () => {
-        stream.getAudioTracks().forEach((track) => {
-          track.enabled = !track.enabled;
-        });
-        if (!isMuted) {
-          soundBtn.innerText = '음소거 해제';
-          isMuted = true;
-        } else {
-          soundBtn.innerText = '음소거';
-          isMuted = false;
-        }
-      });
-
-      //- 카메라 끄고 켜기 -//
-      cameraBtn.addEventListener('click', () => {
-        stream.getVideoTracks().forEach((track) => {
-          track.enabled = !track.enabled;
-        });
-        if (!isCameraOff) {
-          cameraBtn.innerText = '카메라 켜기';
-          isCameraOff = true;
-        } else {
-          cameraBtn.innerText = '카메라 끄기';
-          isCameraOff = false;
-        }
-      });
-
-      //--- RTC 코드 ---//
-
-      //- 방장: offer 보내기 -//
-      // const makeOffer = async () => {
-      //   const offer = await peerConnection.createOffer();
-      //   await peerConnection.setLocalDescription(offer);
-      //   console.log('offer보내기', offer);
-      //   socket.emit('makeOffer', { offer, title });
-      // };
-
-      //- offer 받기 -//
-      socket.on('sendOffer', async (data) => {
-        console.log('offer받기', data);
-        console.log('peerConnection', peerConnection);
-        peerConnection.setRemoteDescription(data);
-        const answer = await peerConnection.createAnswer();
-        peerConnection.setLocalDescription(answer);
-        console.log('answer보내기');
-        socket.emit('answer', { answer, title });
-      });
-
-      //- 방장: answer 받기 -//
-      socket.on('sendAnswer', (data) => {
-        console.log('answer 받기', data);
-        peerConnection.setRemoteDescription(data);
-      });
-
-      //- peer연결 -//
-      const makeConnection = () => {
-        console.log('커넥션 만들기');
-        peerConnection = new RTCPeerConnection();
-        peerConnection.addEventListener('icecandidate', handleIce);
-        peerConnection.addEventListener('addtrack', handleAddStream);
-        stream
-          .getTracks()
-          .forEach((track) => peerConnection.addTrack(track, stream));
-      };
-
-      const handleIce = (data) => {
-        socket.emit('ice', { candidate: data.candidate, title });
-        console.log('handleIce발동', data);
-      };
-
-      const handleAddStream = (data) => {
-        console.log('들어온 사람', data);
-        console.log('나', stream);
-      };
-
-      //- ice 받기 -//
-      socket.on('sendIce', (ice) => {
-        console.log('ice받음', peerConnection, ice);
-        peerConnection.addIceCandidate(ice);
-      });
-    </script> -->
     <script>
       const socket = io('');
       const chatList = document.querySelector('.chatList');
@@ -361,6 +168,13 @@
       //- 카메라 장치 변경 -//
       cameraList.addEventListener('input', async () => {
         await getMedia(cameraList.value);
+        if (peerConnection) {
+          const videoTrack = stream.getVideoTracks()[0];
+          const videoSender = peerConnection
+            .getSenders()
+            .find((sender) => sender.track.kind === 'video');
+          videoSender.replaceTrack(videoTrack);
+        }
       });
 
       //- 방장: offer전송 -//
@@ -393,7 +207,19 @@
 
       //- peer 연결 -//
       const makeConnection = () => {
-        peerConnection = new RTCPeerConnection();
+        peerConnection = new RTCPeerConnection({
+          iceServers: [
+            {
+              urls: [
+                'stun:stun.l.google.com:19302',
+                'stun:stun1.l.google.com:19302',
+                'stun:stun2.l.google.com:19302',
+                'stun:stun3.l.google.com:19302',
+                'stun:stun4.l.google.com:19302',
+              ],
+            },
+          ],
+        });
         peerConnection.addEventListener('icecandidate', handleIce);
         peerConnection.addEventListener('track', handleTrack);
         stream
@@ -405,6 +231,7 @@
         socket.emit('ice', { candidate: data.candidate, title });
       };
 
+      //- stream 연결 -//
       const handleTrack = (data) => {
         console.log('peerConnection', peerConnection);
         const feerVideo = document.querySelector('.feerVideo');
