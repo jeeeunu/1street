@@ -33,27 +33,25 @@ export class ReviewsService {
       throw new ConflictException('이미 리뷰를 작성하셨습니다.');
     }
 
-    // if (files.length !== 0) {
-    //   const imageDetails = await this.uploadsService.createProfileImageDetails(
-    //     files,
-    //   );
-
-    //   for (const imageDetail of imageDetails) {
-    //     const uploadFile = new ReviewImageEntity();
-    //     uploadFile.review_id = reviewFind.id;
-    //     uploadFile.url = imageDetail.imageUrl;
-    //     uploadFile.original_name = imageDetail.originalName;
-    //     uploadFile.e_tag = imageDetail.eTag;
-
-    //     await this.reviewImageEntity.save(uploadFile);
-    //   }
-    // }
-
-    await this.reviewsEntity.save({
+    const createReview = await this.reviewsEntity.save({
       user_id,
       order_detail_id: orderDetailId,
       ...createReviewsDto,
     });
+
+    if (files.length > 0) {
+      const imageDetails = await this.uploadsService.createReviewImages(files);
+
+      for (const imageDetail of imageDetails) {
+        const uploadFile = new ReviewImageEntity();
+        uploadFile.url = imageDetail;
+        uploadFile.review_id = createReview.id;
+
+        await this.reviewImageEntity.save(uploadFile);
+      }
+      console.log('리뷰 이미지 파일 저장 완료');
+    }
+
     return { status: true, message: '리뷰작성이 완료되었습니다.' };
   }
 

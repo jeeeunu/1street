@@ -84,8 +84,6 @@ export class ProductsController {
     @Body() data: ProductCreateDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    console.log(files);
-    console.log(data);
     return await this.productsService.create(data, authUser, files);
   }
 

@@ -81,9 +81,11 @@
 }
 
 .provider-text {
+  font-size: 14px;
   color: #444;
 }
 
 .provider-text + .btn-user-delete {
   margin-top: 40px;
+  font-size: 14px;
 }
