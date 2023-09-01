@@ -1,198 +1,321 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <!-- include : head -->
-  <%- include('includes/head') %>
+<!-- include : head -->
+<%- include('includes/head') %>
 
   <body>
     <!-- include : preloder -->
     <%- include('includes/preloder') %>
 
-    <!-- include : header -->
-    <%- include('includes/header') %>
+      <!-- include : header -->
+      <%- include('includes/header') %>
 
-    <!-- Hero Section Begin -->
-    <section class="hero hero-normal">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-3">
-            <div class="hero__categories">
-              <div class="hero__categories__all">
-                <i class="fa fa-bars"></i>
-                <span>All departments</span>
-              </div>
-              <ul>
-                <li><a href="#">Fresh Meat</a></li>
-                <li><a href="#">Vegetables</a></li>
-                <li><a href="#">Fruit & Nut Gifts</a></li>
-                <li><a href="#">Fresh Berries</a></li>
-                <li><a href="#">Ocean Foods</a></li>
-                <li><a href="#">Butter & Eggs</a></li>
-                <li><a href="#">Fastfood</a></li>
-                <li><a href="#">Fresh Onion</a></li>
-                <li><a href="#">Papayaya & Crisps</a></li>
-                <li><a href="#">Oatmeal</a></li>
-                <li><a href="#">Fresh Bananas</a></li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-lg-9">
-            <div class="hero__search">
-              <div class="hero__search__form">
-                <form action="#">
-                  <div class="hero__search__categories">
-                    All Categories
-                    <span class="arrow_carrot-down"></span>
+        <!-- Hero Section Begin -->
+        <section class="hero hero-normal">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-3">
+                <div class="hero__categories">
+                  <div class="hero__categories__all">
+                    <i class="fa fa-bars"></i>
+                    <span>All departments</span>
                   </div>
-                  <input type="text" placeholder="What do yo u need?" />
-                  <button type="submit" class="site-btn">SEARCH</button>
-                </form>
-              </div>
-              <div class="hero__search__phone">
-                <div class="hero__search__phone__icon">
-                  <i class="fa fa-phone"></i>
+                  <ul>
+                    <li><a href="#">Fresh Meat</a></li>
+                    <li><a href="#">Vegetables</a></li>
+                    <li><a href="#">Fruit & Nut Gifts</a></li>
+                    <li><a href="#">Fresh Berries</a></li>
+                    <li><a href="#">Ocean Foods</a></li>
+                    <li><a href="#">Butter & Eggs</a></li>
+                    <li><a href="#">Fastfood</a></li>
+                    <li><a href="#">Fresh Onion</a></li>
+                    <li><a href="#">Papayaya & Crisps</a></li>
+                    <li><a href="#">Oatmeal</a></li>
+                    <li><a href="#">Fresh Bananas</a></li>
+                  </ul>
                 </div>
-                <div class="hero__search__phone__text">
-                  <h5>+65 11.188.888</h5>
-                  <span>support 24/7 time</span>
+              </div>
+              <div class="col-lg-9">
+                <div class="hero__search">
+                  <div class="hero__search__form">
+                    <form action="#">
+                      <div class="hero__search__categories">
+                        All Categories
+                        <span class="arrow_carrot-down"></span>
+                      </div>
+                      <input type="text" placeholder="What do yo u need?" />
+                      <button type="submit" class="site-btn">SEARCH</button>
+                    </form>
+                  </div>
+                  <div class="hero__search__phone">
+                    <div class="hero__search__phone__icon">
+                      <i class="fa fa-phone"></i>
+                    </div>
+                    <div class="hero__search__phone__text">
+                      <h5>+65 11.188.888</h5>
+                      <span>support 24/7 time</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-    <!-- Hero Section End -->
+        </section>
+        <!-- Hero Section End -->
 
-    <!-- Breadcrumb Section Begin -->
-    <section class="breadcrumb-section set-bg" data-setbg="img/breadcrumb.jpg">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 text-center">
-            <div class="breadcrumb__text">
-              <h2>Shopping Cart</h2>
-              <div class="breadcrumb__option">
-                <a href="./index.html">Home</a>
-                <span>Shopping Cart</span>
+        <!-- Breadcrumb Section Begin -->
+        <section class="breadcrumb-section set-bg" data-setbg="img/breadcrumb.jpg">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                  <h2>Shopping Cart</h2>
+                  <div class="breadcrumb__option">
+                    <a href="./index.html">Home</a>
+                    <span>Shopping Cart</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-    <!-- Breadcrumb Section End -->
+        </section>
+        <!-- Breadcrumb Section End -->
 
-    <!-- Shoping Cart Section Begin -->
-    <section class="shoping-cart spad">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="shoping__cart__table">
-              <table>
-                <thead>
-                  <tr>
-                    <th class="shoping__product">Products</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="shoping__cart__item">
-                      <img src="/img/cart/cart-1.jpg" alt="" />
-                      <h5>Vegetable’s Package</h5>
-                    </td>
-                    <td class="shoping__cart__price">$55.00</td>
-                    <td class="shoping__cart__quantity">
-                      <div class="quantity">
-                        <div class="pro-qty">
-                          <input type="text" value="1" />
-                        </div>
-                      </div>
-                    </td>
-                    <td class="shoping__cart__total">$110.00</td>
-                    <td class="shoping__cart__item__close">
-                      <span class="icon_close"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="shoping__cart__item">
-                      <img src="/img/cart/cart-2.jpg" alt="" />
-                      <h5>Fresh Garden Vegetable</h5>
-                    </td>
-                    <td class="shoping__cart__price">$39.00</td>
-                    <td class="shoping__cart__quantity">
-                      <div class="quantity">
-                        <div class="pro-qty">
-                          <input type="text" value="1" />
-                        </div>
-                      </div>
-                    </td>
-                    <td class="shoping__cart__total">$39.99</td>
-                    <td class="shoping__cart__item__close">
-                      <span class="icon_close"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="shoping__cart__item">
-                      <img src="/img/cart/cart-3.jpg" alt="" />
-                      <h5>Organic Bananas</h5>
-                    </td>
-                    <td class="shoping__cart__price">$69.00</td>
-                    <td class="shoping__cart__quantity">
-                      <div class="quantity">
-                        <div class="pro-qty">
-                          <input type="text" value="1" />
-                        </div>
-                      </div>
-                    </td>
-                    <td class="shoping__cart__total">$69.99</td>
-                    <td class="shoping__cart__item__close">
-                      <span class="icon_close"></span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+        <!-- Shoping Cart Section Begin -->
+        <section class="shoping-cart spad">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="shoping__cart__table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th class="shoping__product">Products</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="shoping__cart__item">
+                          <img src="/img/cart/cart-1.jpg" alt="" />
+                          <h5>Vegetable’s Package</h5>
+                        </td>
+                        <td class="shoping__cart__price">$55.00</td>
+                        <td class="shoping__cart__quantity">
+                          <div class="quantity">
+                            <div class="pro-qty">
+                              <input type="text" value="1" />
+                            </div>
+                          </div>
+                        </td>
+                        <td class="shoping__cart__total">$110.00</td>
+                        <td class="shoping__cart__item__close">
+                          <span class="icon_close"></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="shoping__cart__item">
+                          <img src="/img/cart/cart-2.jpg" alt="" />
+                          <h5>Fresh Garden Vegetable</h5>
+                        </td>
+                        <td class="shoping__cart__price">$39.00</td>
+                        <td class="shoping__cart__quantity">
+                          <div class="quantity">
+                            <div class="pro-qty">
+                              <input type="text" value="1" />
+                            </div>
+                          </div>
+                        </td>
+                        <td class="shoping__cart__total">$39.99</td>
+                        <td class="shoping__cart__item__close">
+                          <span class="icon_close"></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="shoping__cart__item">
+                          <img src="/img/cart/cart-3.jpg" alt="" />
+                          <h5>Organic Bananas</h5>
+                        </td>
+                        <td class="shoping__cart__price">$69.00</td>
+                        <td class="shoping__cart__quantity">
+                          <div class="quantity">
+                            <div class="pro-qty">
+                              <input type="text" value="1" />
+                            </div>
+                          </div>
+                        </td>
+                        <td class="shoping__cart__total">$69.99</td>
+                        <td class="shoping__cart__item__close">
+                          <span class="icon_close"></span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="shoping__cart__btns">
-              <a href="#" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
-              <a href="#" class="primary-btn cart-btn cart-btn-right"
-                ><span class="icon_loading"></span> Upadate Cart</a
-              >
-            </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="shoping__continue">
-              <div class="shoping__discount">
-                <h5>Discount Codes</h5>
-                <form action="#">
-                  <input type="text" placeholder="Enter your coupon code" />
-                  <button type="submit" class="site-btn">APPLY COUPON</button>
-                </form>
+            <div class="row">
+              <!-- <div class="col-lg-12">
+                <div class="shoping__cart__btns">
+                  <a href="#" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
+                  <a href="#" class="primary-btn cart-btn cart-btn-right"><span class="icon_loading"></span> Upadate
+                    Cart</a>
+                </div>
+              </div> -->
+              <div class="col-lg-6">
+                <div class="shoping__continue">
+                  <div class="shoping__discount">
+                    <h5>Discount Codes</h5>
+                    <form action="#">
+                      <input type="text" placeholder="Enter your coupon code" />
+                      <button type="submit" class="site-btn">APPLY COUPON</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="shoping__checkout">
+                  <h5>Cart Total</h5>
+                  <ul>
+                    <li id="subtotal">Subtotal <span id="subtotalValue"></span></li>
+                    <li id="total">Total <span id="totalValue"></span></li>
+                  </ul>
+                  <a href="#" class="primary-btn" id="checkoutButton">PROCEED TO CHECKOUT</a>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-6">
-            <div class="shoping__checkout">
-              <h5>Cart Total</h5>
-              <ul>
-                <li>Subtotal <span>$454.98</span></li>
-                <li>Total <span>$454.98</span></li>
-              </ul>
-              <a href="#" class="primary-btn">PROCEED TO CHECKOUT</a>
-            </div>
+        </section>
+        <!-- Shoping Cart Section End -->
+
+        <!-- include : footer -->
+        <%- include('includes/footer') %>
+          <script>
+            // 장바구니 가져오기
+            async function fetchCartData() {
+              try {
+                const response = await fetch('/carts', {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                });
+
+                if (!response.ok) {
+                  throw new Error('장바구니를 가져오지 못했습니다.');
+                }
+
+                const data = await response.json();
+
+                const cartTableBody = document.querySelector('.shoping__cart__table tbody');
+                cartTableBody.innerHTML = '';
+
+                let subtotal = 0; // subtotal 변수 초기화
+
+                data.forEach(item => {
+                  const row = `
+    <tr>
+      <td class="shoping__cart__item">
+        <img src="/img/cart/${item.product_img}" alt="" />
+        <h5>${item.product_name}</h5>
+      </td>
+      <td class="shoping__cart__price">₩${item.product_price}</td>
+      <td class="shoping__cart__quantity">
+        <div class="quantity">
+          <div class="pro-qty">
+            <input type="number" id= "${item.product_id}_quantity_num"value="${item.quantity}"onchange="updateCartItemQuantity(${item.product_id})" />
           </div>
         </div>
-      </div>
-    </section>
-    <!-- Shoping Cart Section End -->
+      </td>
+      <td class="shoping__cart__total">₩${(item.total)}</td>
+      <td class="shoping__cart__item__close">
+        <button class="remove-cart-item-btn" data-productId="${item.product_id}" onclick=removeCartItem(${item.product_id})>
+          <span class="icon_close"></span>
+        </button>
+      </td>
+    </tr>`;
+                  cartTableBody.insertAdjacentHTML('beforeend', row);
 
-    <!-- include : footer -->
-    <%- include('includes/footer') %>
+                  const priceValue = parseFloat(item.product_price); // 가격 값을 파싱하여 숫자로 변환
+                  const quantityValue = parseInt(item.quantity);
+
+                  if (!isNaN(priceValue) && !isNaN(quantityValue)) {
+                    subtotal += priceValue * quantityValue; // 가격과 수량을 곱한 값 누적
+                  }
+                });
+
+                const subtotalElement = document.getElementById('subtotalValue');
+                const totalElement = document.getElementById('totalValue');
+
+                subtotalElement.textContent = `₩${subtotal}`;
+                totalElement.textContent = `₩${subtotal}`;
+
+              } catch (error) {
+                console.error('ERROR:', error);
+              }
+            }
+
+            // 장바구니 수량 변경
+            async function updateCartItemQuantity(product_id) {
+              const quantityNum = document.getElementById(`${product_id}_quantity_num`);
+              const updatedQuantity = parseInt(quantityNum.value);
+              try {
+                const response = await fetch(`/carts`, {
+                  method: 'PATCH',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ product_id: String(product_id), quantity: updatedQuantity }),
+                });
+                if (response.ok) {
+                  // 성공적으로 업데이트된 경우 fetchCartData() 함수 호출하여 장바구니 데이터 다시 로드
+                  fetchCartData();
+                } else {
+                  throw new Error('장바구니 물품 수량을 업데이트할 수 없습니다.');
+                }
+              } catch (error) {
+                console.error('ERROR:', error);
+              }
+            }
+
+            // 장바구니 아이템 삭제
+            async function removeCartItem(product_id) {
+              try {
+                const response = await fetch(`/carts`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    product_id: String(product_id)
+                  }),
+                });
+
+                if (response.ok) {
+                  // 성공적으로 삭제된 경우 fetchCartData() 함수 호출하여 장바구니 데이터 다시 로드
+                  alert('물품이 삭제되었습니다.')
+                  fetchCartData();
+                } else {
+                  throw new Error('장바구니 물품을 삭제할 수 없습니다.');
+                }
+              } catch (error) {
+                console.error('ERROR:', error);
+              }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+              // 페이지 로딩 시 장바구니 데이터 불러오기
+              fetchCartData();
+              const checkoutButton = document.getElementById('checkoutButton');
+              checkoutButton.addEventListener('click', () => {
+                const url = 'checkout'; // 이동할 페이지 URL을 여기에 입력하세요
+                window.location.href = url.replace('.ejs', ''); // .ejs 확장자 제거
+              });
+            });
+          </script>
   </body>
+
 </html>

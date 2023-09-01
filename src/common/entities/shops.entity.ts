@@ -2,7 +2,6 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -32,7 +31,7 @@ export class ShopsEntity {
   @IsNumber()
   public user_id: number;
 
-  @OneToOne(() => UsersEntity, (user) => user.shop)
+  @OneToOne(() => UsersEntity, (user) => user.shop, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   public user: UsersEntity;
 

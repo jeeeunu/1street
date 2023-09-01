@@ -180,8 +180,12 @@
           }
 
           const formData = new FormData();
-          formData.append('files', profileImageInput.files[0]);
-          formData.append('password', passwordInput.value);
+          if (profileImageInput.files[0] !== undefined) {
+            formData.append('files', profileImageInput.files[0]);
+          }
+          if (passwordInput.value !== '') {
+            formData.append('password', passwordInput.value);
+          }
           formData.append('name', nameInput.value);
           formData.append('phone_number', phoneNumberInput.value);
           formData.append('address', addressInput.value);

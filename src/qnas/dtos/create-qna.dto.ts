@@ -1,9 +1,13 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateQnasDto {
   // @IsNotEmpty()
   // @IsNumber()
   // readonly id: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  readonly product_id: number;
 
   @IsNotEmpty()
   @IsString()

@@ -1,7 +1,3 @@
-<!-- Humberger Begin -->
-<!-- <% if (authUser) { %>
-<h1><%- authUser.user_id %></h1>
-<% } %> -->
 <div class="humberger__menu__overlay"></div>
 <div class="humberger__menu__wrapper">
   <div class="humberger__menu__logo">
@@ -9,17 +5,21 @@
   </div>
   <div class="humberger__menu__cart">
     <ul>
+      <% if (user) { %>
       <li>
-        <a href="#"><i class="fa fa-heart"></i> <span>1</span></a>
+        <a href="/like"
+          ><i class="fa fa-heart"></i> <span><%= user.like_count %></span></a
+        >
       </li>
       <li>
         <a href="/cart"><i class="fa fa-shopping-bag"></i> <span>3</span></a>
       </li>
+      <% } %>
       <li>
         <a href="#"><i class="fa fa-eye"></i></a>
       </li>
     </ul>
-    <div class="header__cart__price">item: <span>$150.00</span></div>
+    <!-- <div class="header__cart__price">item: <span>$150.00</span></div> -->
   </div>
   <div class="humberger__menu__widget">
     <div class="header__top__right__auth">
@@ -27,7 +27,7 @@
     </div>
   </div>
   <nav class="humberger__menu__nav mobile-menu">
-    <ul>
+    <!-- <ul>
       <li class="active"><a href="/">Home</a></li>
       <li><a href="./shop-grid.html">Shop</a></li>
       <li>
@@ -40,7 +40,7 @@
         </ul>
       </li>
       <li><a href="./blog.html">Blog</a></li>
-    </ul>
+    </ul> -->
   </nav>
   <div id="mobile-menu-wrap"></div>
   <div class="header__top__right__social">
@@ -106,7 +106,7 @@
       </div>
       <div class="col-lg-6">
         <nav class="header__menu">
-          <ul>
+          <!-- <ul>
             <li class="active"><a href="/">Home</a></li>
             <li><a href="./shop-grid.html">Shop</a></li>
             <li>
@@ -119,26 +119,28 @@
               </ul>
             </li>
             <li><a href="./blog.html">Blog</a></li>
-          </ul>
+          </ul> -->
         </nav>
       </div>
       <div class="col-lg-3">
         <div class="header__cart">
           <ul>
+            <% if (user) { %>
             <li>
-              <a href="#"><i class="fa fa-heart"></i> <span>1</span></a>
+              <a href="/like"
+                ><i class="fa fa-heart"></i>
+                <span><%= user.like_count %></span></a
+              >
             </li>
             <li>
               <a href="/cart"
                 ><i class="fa fa-shopping-bag"></i> <span>3</span></a
               >
             </li>
-            <li>
-              <a href="#"><i class="fa fa-eye"></i></a>
-            </li>
+            <% } %>
           </ul>
           <% if (authUser) { %>
-          <div class="header__cart__price">item: <span>$150.00</span></div>
+          <!-- <div class="header__cart__price">item: <span>$150.00</span></div> -->
           <% } %>
         </div>
       </div>

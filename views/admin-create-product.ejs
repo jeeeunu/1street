@@ -25,7 +25,17 @@
             <h2 class="section-title">상품 등록</h2>
             <p class="create-title">*상품의 카테고리를 선택해주세요.</p>
             <div class="radios">
+              <% categories.forEach(category => { %>
               <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="<%=
+                  category.category_number %>" <%= category.category_number ===
+                  1 ? 'checked' : '' %> />
+                  <span><%= category.category_name %></span>
+                </label>
+              </div>
+              <% }); %>
+              <!-- <div class="radio-wrap">
                 <label>
                   <input type="radio" name="category" value="1" checked />
                   <span>의류</span>
@@ -114,7 +124,7 @@
                   <input type="radio" name="category" value="15" />
                   <span>헬스 / 건강식품</span>
                 </label>
-              </div>
+              </div> -->
             </div>
             <div class="input-container">
               <div class="content-box">
@@ -193,7 +203,7 @@
         selector: '#myTextarea',
         plugins: 'image paste',
         images_file_types: 'jpg,svg,webp',
-        height: 450,
+        height: 650,
         setup: function (editor) {
           editor.on('input', function () {
             const productDesc = editor.getContent();

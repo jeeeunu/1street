@@ -112,12 +112,7 @@
 
       //-- 구글 로그인 --//
       const loginGoogle = async (button) => {
-        const authenticationCookie = document.cookie.includes('Authentication');
-        if (authenticationCookie) {
-          return alert('로그인 상태입니다.');
-        } else {
-          window.location.href = '/auth/google/login/callback';
-        }
+        window.location.href = '/auth/google/login/callback';
       };
     </script>
   </body>

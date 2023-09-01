@@ -12,7 +12,7 @@ import { OrdersService } from './orders.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser } from '../auth/auth.decorator';
 import { Request } from 'supertest';
-import { OrderCreateDto, OrderStatusDto } from './dtos';
+import { Order2CreateDto, OrderCreateDto, OrderStatusDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from 'src/users/interfaces';
 
@@ -20,21 +20,29 @@ import { RequestUserInterface } from 'src/users/interfaces';
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
+  //-- 장바구니 주문 작성 --//
+  @Post('/carts')
+  async createOrder(
+    @Body() data: Order2CreateDto,
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<ResultableInterface> {
+    return this.ordersService.createOrder(data, authUser.user_id);
+  }
+
   //-- 주문 작성 --//
   @Post()
   @UseGuards(AuthGuard)
   async postOrder(
     @Body() data: OrderCreateDto,
-    @Req() req: Request,
+    @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    const authUser: RequestUserInterface = req['user'];
-    return await this.ordersService.postOrder(data, authUser);
+    return await this.ordersService.postOrder(data, authUser.user_id);
   }
   //-- 주문 확인 --//
   @Get()
   @UseGuards(AuthGuard)
-  async getOrders(): Promise<any> {
-    return await this.ordersService.getOrders();
+  async getOrders(@AuthUser() authUser: RequestUserInterface): Promise<any> {
+    return await this.ordersService.getOrders(authUser.user_id);
   }
   //-- 주문 상세 확인 --//
   @Get('/:order_id')

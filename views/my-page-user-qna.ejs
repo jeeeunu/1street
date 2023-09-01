@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+  <body>
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
+
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+    <!-- Qna Page Section Begin -->
+    <section class="qna-page spad">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="qna__title">
+              <h2>Q&A</h2>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="qna__table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>작성일자</th>
+                    <th>판매자</th>
+                    <th>상품명</th>
+                    <th>질문 내용</th>
+                    <th>질문상태</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>2023-08-30</td>
+                    <td>판매자 이름</td>
+                    <td>상품 A</td>
+                    <td>상품 A에 대한 질문 내용입니다.</td>
+                    <td>답변완료</td>
+                  </tr>
+                  <tr>
+                    <td>2023-08-29</td>
+                    <td>다른 판매자</td>
+                    <td>상품 B</td>
+                    <td>상품 B에 대한 질문 내용입니다.</td>
+                    <td>답변대기중</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Qna Page Section End -->
+
+    <!-- include : footer -->
+    <%- include('includes/footer') %>
+  </body>
+</html>

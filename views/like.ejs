@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+
+  <body>
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
+
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+    <!-- include : hero -->
+    <%- include('includes/hero') %>
+
+    <!-- include : viewed-products -->
+    <%- include('includes/viewed-products') %>
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-section set-bg" data-setbg="img/breadcrumb.jpg">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <div class="breadcrumb__text">
+              <h2>좋아요한 상품</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Shoping Cart Section Begin -->
+    <section class="shoping-cart spad">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="shoping__cart__table">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="shoping__product">좋아요 한 상품</th>
+                    <th>가격</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% myLikes.forEach(like => { %>
+                  <tr
+                    class="product-item"
+                    data-item-id="<%= like.product.id %>"
+                  >
+                    <td class="shoping__cart__item">
+                      <img
+                        src="<%= like.product.product_image[0].url %>"
+                        alt=""
+                      />
+                      <div>
+                        <a
+                          href="/contact/<%= like.product.shop.id %>"
+                          style="display: block"
+                          ><i class="fa fa-home" aria-hidden="true"></i> <%=
+                          like.product.shop.shop_name %></a
+                        >
+                        <small style="display: block"
+                          >카테고리: <%= like.product.category.category_name
+                          %></small
+                        >
+                        <h5>
+                          <a href="/product-detail/<%= like.product.id %>"
+                            ><span style="font-size: 14px; font-weight: 400"
+                              >상품명:
+                            </span>
+                            <%= like.product.product_name %></a
+                          >
+                        </h5>
+                      </div>
+                    </td>
+                    <td class="shoping__cart__price">
+                      <%= like.product.product_price.toLocaleString() %> 원
+                    </td>
+                    <td class="shoping__cart__item__close">
+                      <span
+                        class="icon_close"
+                        onclick="deleteShop(event)"
+                      ></span>
+                    </td>
+                  </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Shoping Cart Section End -->
+
+    <!-- include : footer -->
+    <%- include('includes/footer') %>
+    <script>
+      //-- 좋아요 삭제 api --//
+      const deleteShop = async (event) => {
+        const firstConfirm = window.confirm('좋아요를 취소 하시겠습니까?');
+        const productWrap = event.target.closest('.product-item');
+        const productId = productWrap.getAttribute('data-item-id');
+
+        if (firstConfirm) {
+          try {
+            const response = await fetch(`likes/${productId}`, {
+              method: 'DELETE',
+            });
+
+            const data = await response.json();
+            console.log(data);
+
+            if (response.ok) {
+              alert(data.message);
+              location.reload();
+            } else {
+              alert(data.message);
+              console.error('좋아요 취소를 실패했습니다.');
+              location.reload();
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            alert('오류가 발생했습니다.');
+          }
+        }
+      };
+    </script>
+  </body>
+</html>
