@@ -659,6 +659,11 @@ fieldset {
   display: flex;
 }
 
+.input-box + .input-box,
+.input-box + .basic-input-box {
+  margin-top: 15px;
+}
+
 .label {
   flex-shrink: 0;
   min-width: 12%;
@@ -857,4 +862,10 @@ fieldset {
 
 .btn-viewed-products {
   background-color: transparent;
+}
+
+/* 리뷰 */
+.create-review .list-container {
+  padding-top: 10px;
+  margin-top: 0;
 }
