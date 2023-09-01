@@ -63,7 +63,11 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
-    const latestProducts = await this.productsService.findAllBasic();
+    const latestProducts = await this.productsService.findLatestProducts();
+    const findPopularProducts =
+      await this.productsService.findPopularProducts();
+    const findHighlyRatedProducts =
+      await this.productsService.findHighlyRatedProducts();
 
     if (authUser && authUser !== null && authUser.isAdmin === true) {
       return response.redirect('admin-my-page');
@@ -76,6 +80,8 @@ export class AppController {
       authUser,
       categories,
       latestProducts,
+      findPopularProducts,
+      findHighlyRatedProducts,
     });
   }
 
