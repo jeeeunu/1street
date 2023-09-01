@@ -409,4 +409,14 @@ export class AppController {
       categories,
     });
   }
+
+  //-- 채팅구현 중 --//
+  @Get('chat')
+  async chat(@Res() response: Response) {
+    response.render('chat');
+  }
+  @Get('live')
+  async live(@Res() response: Response, @Query('title') title: string) {
+    response.render('live', { title });
+  }
 }

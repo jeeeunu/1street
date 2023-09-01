@@ -1,0 +1,123 @@
+<html>
+  <head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <!-- 방 만들기 모달 -->
+    <div
+      class="modal fade"
+      id="liveRoomModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">라이브 방송</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="liveTitle" class="form-label">방송 제목</label>
+              <input
+                type="text"
+                class="form-control"
+                id="liveTitle"
+                placeholder="방송제목을 입력해주세요"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              취소
+            </button>
+            <button type="button" class="btn btn-primary liveStartBtn">
+              라이브 시작
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <header>
+      <h1>라이브 방송</h1>
+    </header>
+    <main>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#liveRoomModal"
+      >
+        방 만들기 (판매자 전용)
+      </button>
+      <ul id="liveList">
+        <li>라이브 방송 리스트 올 곳</li>
+      </ul>
+    </main>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+      integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const title = document.querySelector('#liveTitle');
+      const liveList = document.querySelector('#liveList');
+      const socket = io('');
+
+      //- 라이브 창으로 이동 -//
+      document
+        .querySelector('.liveStartBtn')
+        .addEventListener('click', async () => {
+          window.open(`/live?title=${title.value}`);
+        });
+
+      //- 라이브 목록 보여주기 -//
+      socket.on('roomChange', (data) => {
+        liveList.innerHTML = '';
+        for (let i in data) {
+          const liveTitle = i;
+          const liveCount = data[i];
+          const li = document.createElement('li');
+          li.innerText = `${liveTitle} (${liveCount}명)`;
+          li.setAttribute('data-title', liveTitle);
+          li.setAttribute('class', 'liveItem');
+          liveList.append(li);
+        }
+
+        //- 라이브 창 열기 -//
+        document.querySelectorAll('.liveItem').forEach((item) => {
+          item.addEventListener('click', (e) => {
+            const title = e.target.getAttribute('data-title');
+            window.open(`/live?title=${title}`);
+          });
+        });
+      });
+
+      socket.on('disconnect', function () {
+        console.log('Disconnected');
+      });
+    </script>
+  </body>
+</html>
