@@ -86,39 +86,43 @@ export class ProductsService {
         .leftJoinAndSelect('product.order_detail', 'order_detail');
     }
 
-    query.take(limit || 10);
+    if (query) {
+      query.take(limit || 10);
 
-    // TODO :: 랭킹
-    if (sort === 'rank') {
-      console.log('랭킹 순으로 정렬');
-      query.orderBy('product.product_price', 'ASC');
+      // TODO :: 랭킹
+      if (sort === 'rank') {
+        console.log('랭킹 순으로 정렬');
+        query.orderBy('product.product_price', 'ASC');
+      }
+
+      if (sort === 'lowPrice') {
+        console.log('낮은 가격순으로 정렬');
+        query.orderBy('product.product_price', 'ASC');
+      }
+
+      if (sort === 'highPrice') {
+        console.log('높은 가격순으로 정렬');
+        query.orderBy('product.product_price', 'DESC');
+      }
+
+      if (sort === 'sales') {
+        console.log('판매량순으로 정렬');
+        query.orderBy('product.order_detail', 'DESC');
+      }
+
+      if (sort === 'desc') {
+        console.log('최신순으로 정렬');
+        query.orderBy('product.created_at', 'ASC');
+      }
+
+      if (cursor) {
+        query.andWhere('product.id > :cursor', { cursor });
+      }
+
+      return await query.getMany();
+    } else {
+      return [];
     }
-
-    if (sort === 'lowPrice') {
-      console.log('낮은 가격순으로 정렬');
-      query.orderBy('product.product_price', 'ASC');
-    }
-
-    if (sort === 'highPrice') {
-      console.log('높은 가격순으로 정렬');
-      query.orderBy('product.product_price', 'DESC');
-    }
-
-    if (sort === 'sales') {
-      console.log('판매량순으로 정렬');
-      query.orderBy('product.order_detail', 'DESC');
-    }
-
-    if (sort === 'desc') {
-      console.log('최신순으로 정렬');
-      query.orderBy('product.created_at', 'ASC');
-    }
-
-    if (cursor) {
-      query.andWhere('product.id > :cursor', { cursor });
-    }
-
-    return await query.getMany();
   }
 
   //-- 상품 검색 (카테고리)--//
