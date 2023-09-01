@@ -73,7 +73,6 @@ export class CartsService {
     if (cart === null) {
       return [];
     }
-    console.log(cart);
     const content: any[] = [];
     for (const item of cart) {
       const product_id = item.product_id;

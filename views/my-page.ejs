@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <!-- include : head -->
-  <%- include('includes/head') %>
+<!-- include : head -->
+<%- include('includes/head') %>
 
   <body>
     <!-- include : top-button -->
@@ -110,66 +110,294 @@
                           alt=""
                         />
                       </div>
-                      <div class="text-wrap">
-                        <a href="">
-                          <span>20228284895894</span>
-                          <span class="product-title">텔레비전</span>
-                          <span>옵션1/2/3</span>
-                        </a>
+                      <div>
+                        <span>포인트: </span>
+                        <span><%- user.point %>원</span>
+                      </div>
+                      <div>
+                        <span>잔여 쿠폰: </span>
+                        <span>2개</span>
                       </div>
                     </div>
+                    <hr />
+                    <div class="provider-text">
+                      <% if (user.provider==="google" ) { %>
+                        <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
+                          style="width: 15px; height: 15px; margin-right: 7px;" alt="">구글 로그인
+                        <% } %>
+                    </div>
+                    <button type="button" class="gray-text btn-user-delete" onclick="deleteUser()">회원 탈퇴</button>
                   </div>
-                  <div class="td status-wrap">
-                    <span>배송완료</spㄴ>
-                  </div>
-                  <div class="td">
-                    <!-- TODO :: 버튼 각 상황에 맞게 -->
-                    <button type="button" class="btn-primary-s">배송완료 확인</button>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </section>
-        </section>
-      </div>
-    </main>
+                </aside>
 
-    <!-- include : footer -->
-    <%- include('includes/footer') %>
+                <section class="col-lg-9">
+                  <section class="status-container">
+                    <ul class="status-list">
+                      <li class="status-item">
+                        <p>장바구니</p>
+                        <p><a href="">100건</a></p>
+                      </li>
+                      <li class="status-item">
+                        <p>주문내역</p>
+                        <p>
+                          <a href="">
+                            <span id="order-count"></span>
+                            <!-- <% if (authUser.user_count) { %>
+                              <%= user.like_count %>
+                                <% } else { %>
+                                  0
+                                  <% } %>
+                                    건 -->
+                          </a>
+                        </p>
+                      </li>
+                      <li class="status-item">
+                        <p>좋아요한 상품</p>
+                        <p><a href="">
+                            <% if (user.like_count) { %>
+                              <%= user.like_count %>
+                                <% } else { %>
+                                  0
+                                  <% } %>
+                                    건
+                          </a></p>
+                      </li>
+                      <li class="status-item">
+                        <p>최근 본 상품</p>
+                        <p><a href="">100건</a></p>
+                      </li>
+                    </ul>
+                  </section>
+                  <section class="list-container">
+                    <div class="title-wrap">
+                      <h3>최근 주문 내역</h3>
+                      <a href="">더보기</a>
+                    </div>
+                    <div class="order-list-table">
+                      <ul class="t-head">
+                        <li class="td">날짜</li>
+                        <li class="td">주문정보</li>
+                        <li class="td">상태</li>
+                        <li class="td">확인/신청</li>
+                      </ul>
+                      <ul class="t-body">
+                        <li class="tr">
+                          <div class="td">
+                            <p class="date-text">2023.01.01</p>
+                          </div>
+                          <div class="td">
+                            <div class="order-info-wrap">
+                              <div class="img-wrap">
+                                <img
+                                  src="https://i.namu.wiki/i/slmFMXb1Fchs2zN0ZGOzqfuPDvhRS-H9eBp7Gp613-DNKi6i6Ct7eFkTUpauqv5HAYR97mrNqrvvcCDEyBdL_g.webp"
+                                  alt="" />
+                              </div>
+                              <div class="text-wrap">
+                                <a href="">
+                                  <span>20228284895894</span>
+                                  <span class="product-title">텔레비전</span>
+                                  <span>옵션1/2/3</span>
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="td status-wrap">
+                            <span>배송완료</span>
+                          </div>
+                          <div class="td">
+                            <!-- TODO :: 버튼 각 상황에 맞게 -->
+                            <button type="button" class="btn-primary-s">배송완료 확인</button>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </section>
+                </section>
+              </div>
+            </main>
 
-    <script>
-    //-- 유저 탈퇴 api --//
-    const deleteUser = async () => {
-      const firstConfirm = window.confirm('회원 탈퇴 하시겠습니까?');
+            <!-- include : footer -->
+            <%- include('includes/footer') %>
 
-      if (firstConfirm) {
-        const secondConfirm = window.confirm('다시 되돌릴 수 없습니다. 정말 탈퇴하시겠습니까?');
+              <script>
+                //-- 유저 탈퇴 api --//
+                const deleteUser = async () => {
+                  const firstConfirm = window.confirm('회원 탈퇴 하시겠습니까?');
 
-        if (secondConfirm) {
-          try {
-            const response = await fetch('users', {
-              method: 'DELETE',
-            });
+                  if (firstConfirm) {
+                    const secondConfirm = window.confirm('다시 되돌릴 수 없습니다. 정말 탈퇴하시겠습니까?');
 
-            const data = await response.json();
-            console.log(data)
+                    if (secondConfirm) {
+                      try {
+                        const response = await fetch('users', {
+                          method: 'DELETE',
+                        });
 
-            if (response.ok) {
-              alert(data.message);
-              window.location.href = '/';
-            } else {
-              alert(data.message);
-              console.error('회원 탈퇴중 오류가 발생했습니다.');
-              window.location.href = '/';
-            }
+                        const data = await response.json();
+                        console.log(data)
 
-          } catch (error) {
-            console.error('Error:', error);
-            alert('오류가 발생했습니다.');
-          }
-        }
-      }
-    };
-    </script>
+                        if (response.ok) {
+                          alert(data.message);
+                          window.location.href = '/';
+                        } else {
+                          alert(data.message);
+                          console.error('회원 탈퇴중 오류가 발생했습니다.');
+                          window.location.href = '/';
+                        }
+
+                      } catch (error) {
+                        console.error('Error:', error);
+                        alert('오류가 발생했습니다.');
+                      }
+                    }
+                  }
+                };
+
+                fetchOrder()
+
+                const orderListContainer = document.querySelector('.t-body');
+
+                async function fetchOrder() {
+                  const orderCountElement = document.getElementById('order-count');
+                  try {
+                    const response = await fetch(`/orders`);
+                    if (response.ok) {
+                      const orders = await response.json();
+                      orderCountElement.textContent = (`${orders.length} 건`);
+
+                      orders.forEach(async (order) => {
+                        const orderDetails = await fetchOrderDetails(order.id); // 주문 상세 정보 가져오기
+                        renderOrder(order, orderDetails); // 주문 정보와 상세 정보를 HTML에 표시
+                      })
+                    } else {
+                      console.error('주문 내역을 가져오는 데 실패했습니다.');
+                    }
+                  } catch (error) {
+                    console.error('ERROR:', error);
+                  }
+                }
+
+                async function fetchOrderDetails(order_id) {
+                  try {
+                    const response = await fetch(`/orders/${order_id}`); // 주문 상세 정보를 가져오는 API 엔드포인트 URL을 적절히 변경하세요.
+                    if (response.ok) {
+                      return await response.json();
+                    } else {
+                      console.error('주문 상세 정보를 가져오는 데 실패했습니다.');
+                      return null;
+                    }
+                  } catch (error) {
+                    console.error('ERROR:', error);
+                    return null;
+                  }
+                }
+
+                function renderOrder(order, orderDetails) {
+                  // 주문 정보와 상세 정보를 이용하여 HTML을 생성하고 orderListContainer에 추가합니다.
+                  const orderItem = document.createElement('li');
+                  orderItem.classList.add('tr');
+                  console.log(order)
+                  // 주문 상태에 따른 버튼 HTML을 동적으로 생성
+                  let buttonHtml = '';
+                  if (order.order_status === 'OrderPending') {
+                    buttonHtml = `<button type="button" id="order_cancel" class="btn-primary-s">주문 취소</button>`;
+                  } else if (order.order_status === 'DeliveryComplete') {
+                    buttonHtml = `<button type="button" class="btn-primary-s">리뷰 작성</button>`;
+                  } else if (order.order_status === 'OrderConfirm' || order.order_status === 'OrderShipping' || order.order_status === 'orderDelivering') {
+                    buttonHtml = `<button type="button" class="btn-primary-s">•••</button>`;
+                  }
+
+                  const productHtml = orderDetails.order_details
+                    .map((detail) => {
+                      const productImages = Array.isArray(detail.product.product_image)
+                        ? detail.product.product_image.map((image) => `
+                                <div class="img-wrap">
+                                  <img src="${image.url}" alt="" />
+                                </div>
+                              `)
+                        : `
+                                <div class="img-wrap">
+                                  <img src="${detail.product.product_image.url}" alt="" />
+                                </div>
+                              `;
+
+                      return `
+                            <div class="img-container">
+                              ${productImages.join('')}
+                            </div>
+                          `;
+                    })
+                    .join('');
+
+                  // 버튼 HTML을 추가
+                  orderItem.innerHTML = `
+                        <div class="td">
+                          <p class="date-text">${order.created_at.slice(0, 10).replace(/-/g, '.')}</p>
+                        </div>
+                        <div class="td">
+                          <div class="order-info-wrap">
+                            ${productHtml}
+                            <div class="text-wrap">
+                              <a href="">
+                                <span>${order.created_at.slice(0, 10).replace(/-/g, '') + order.id}</span>
+                                <!-- 주문 상세 정보를 반복하여 표시합니다 -->
+                                ${orderDetails.order_details
+                      .map((detail) => {
+                        // product가 배열이 아닌 경우에 대비하여 확인 후 처리합니다.
+                        if (Array.isArray(detail.product)) {
+                          return `
+                                        <div class="product-title">
+                                          ${detail.product
+                              .map((product) => product.product_name)
+                              .join(', ')}
+                                        </div>
+                                      `;
+                        } else {
+                          return `<div class="product-title">${detail.product.product_name}</div>`;
+                        }
+                      })
+                      .join('')}
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="td status-wrap">
+                          <span>${order.order_status}</span>
+                        </div>
+                        <div class="td">
+                          <!-- TODO :: 버튼 각 상황에 맞게 -->
+                          ${buttonHtml}
+                        </div>
+                      </li>
+                      `;
+
+                  orderListContainer.appendChild(orderItem);
+
+
+                  document.getElementById('order_cancel').addEventListener('click', async function cancelOrder() {
+
+                    try {
+                      const response = await fetch(`/orders/${order.id}/cancel`, {
+                        method: 'PATCH',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                      });
+                      const data = await response.json();
+                      if (response.ok) {
+                        console.log(data.message);
+                        alert('주문이 취소되었습니다.');
+                        window.location.reload();
+                      } else {
+                        console.log(data.message);
+                        alert(data.message);
+                      }
+                    } catch (err) {
+                      console.error('Error:', err);
+                    }
+                  });
+                }
+              </script>
   </body>
+
 </html>
