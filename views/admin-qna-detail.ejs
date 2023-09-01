@@ -112,6 +112,8 @@
             if (response.ok) {
               // 서버로부터 응답이 정상적으로 오면 완료 메시지를 출력하고 페이지를 갱신합니다.
               alert('답변 작성이 완료되었습니다.');
+              const statusCell = document.querySelector('.status-cell');
+              statusCell.textContent = '답변완료';
               window.location.href = '/admin-qna'; // admin-qna.ejs 페이지 주소로 이동
             } else {
               alert('서버 오류가 발생했습니다. 다시 시도해주세요.');
