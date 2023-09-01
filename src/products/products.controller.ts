@@ -30,7 +30,6 @@ export class ProductsController {
     @Query('limit') limit: number,
     @Query('cursor') cursor: number,
   ): Promise<ProductsEntity[]> {
-    console.log('상품 전체보기 검색중');
     return this.productsService.findAll(limit, cursor);
   }
 
