@@ -3,6 +3,20 @@ textarea {
   resize: none;
 }
 
+span,
+a {
+  font-size: 1.4rem;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea,
+small {
+  font-size: 1.2rem;
+}
+
 body {
   font-size: 10px;
 }
@@ -460,7 +474,7 @@ span {
 }
 
 [type='radio']:checked {
-  border: 0.4em solid #7fad39;
+  border: 6px solid #7fad39;
 }
 
 [type='radio']:focus-visible {

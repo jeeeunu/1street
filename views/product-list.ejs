@@ -21,17 +21,20 @@
 
     <main class="product-list-page">
       <!-- 검색 정보 -->
-      <section class="container search-info-container">
-        <h2 class="search-info-title">
-          <span id="searchKeyword">'<%= searchContent %>'</span>에 대한 검색결과
-        </h2>
-        <div class="search-list-wrap">
-          <span>연관 검색어:</span>
-          <ul class="search-keyword-list">
-            <li>바나나 우유</li>
-            <li>바나나 과일</li>
-            <li>프리미엄 바나나</li>
-          </ul>
+      <section class="search-info-container">
+        <div class="container">
+          <h2 class="search-info-title">
+            <span id="searchKeyword">'<%= searchContent %>'</span>에 대한
+            검색결과
+          </h2>
+          <div class="search-list-wrap">
+            <span>연관 검색어:</span>
+            <ul class="search-keyword-list">
+              <li>바나나 우유</li>
+              <li>바나나 과일</li>
+              <li>프리미엄 바나나</li>
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -128,8 +131,9 @@
             const allProductsContainer = document.querySelector(
               '#allProductsContainer',
             );
-            newData.forEach((item) => {
-              allProductsContainer.innerHTML += `
+            if (newData.length > 0) {
+              newData.forEach((item) => {
+                allProductsContainer.innerHTML += `
               <div class="col-lg-3 col-md-4 col-sm-6 mix category">
                 <div class="featured__item product-item">
                   <div
@@ -149,19 +153,25 @@
                   </div>
                   <div class="featured__item__text">
                     <h6><a href="product-detail/${item.id}">${
-                item.product_name
-              }</a></h6>
+                  item.product_name
+                }</a></h6>
                     <h5>${item.product_price.toLocaleString()}원</h5>
                   </div>
                 </div>
               </div>
              `;
-            });
+              });
 
-            cursor = newData[newData.length - 1]?.id;
+              cursor = newData[newData.length - 1]?.id;
 
-            if (newData.length < limit) {
-              hasMoreData = false;
+              if (newData.length < limit) {
+                hasMoreData = false;
+              }
+            } else {
+              // 데이터 없을 시에
+              allProductsContainer.innerHTML = `
+                 <p style="width: 100%; padding: 50px; text-align: center;">등록된 상품이 없습니다.</p>
+               `;
             }
           } else {
             alert(newData.message);

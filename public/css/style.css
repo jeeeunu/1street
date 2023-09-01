@@ -589,6 +589,10 @@ ol {
   padding-bottom: 30px;
 }
 
+/* .hero.hero-normal .col-lg-3 {
+  padding-left: 0;
+} */
+
 .hero.hero-normal .hero__categories {
   position: relative;
 }
@@ -1983,7 +1987,7 @@ ol {
 .shoping__cart__table table tbody tr td.shoping__cart__item h5 {
   color: #1c1c1c;
   display: inline-block;
-  padding-top: 25px;
+  padding-top: 20px;
   font-size: 16px;
   font-weight: 700;
 }
@@ -2846,6 +2850,10 @@ ol {
 
 .contact__widget {
   margin-bottom: 30px;
+}
+
+.contact__widget a {
+  font-size: 14px;
 }
 
 .contact__widget span {

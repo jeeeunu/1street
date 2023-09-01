@@ -21,7 +21,7 @@ export class AppController {
   //-- 공통 : 유저 --//
   async userPageData(request: Request, authUser: RequestUserInterface) {
     const isIndexPath = request.url === '/';
-    const isSearchPath = request.url.startsWith('/search');
+    const isSearchPath = request.url.startsWith('/product-list');
     const categories = await this.categorysService.findAll();
     if (authUser) {
       const userInfo = await this.userService.find(authUser.user_id);
@@ -136,6 +136,10 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
+
+    if (authUser && authUser !== null && authUser.isAdmin === true) {
+      return response.redirect('admin-my-page');
+    }
 
     response.render('my-page', {
       isIndexPath,
