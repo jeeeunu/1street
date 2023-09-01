@@ -30,7 +30,6 @@ export class ProductsController {
     @Query('limit') limit: number,
     @Query('cursor') cursor: number,
   ): Promise<ProductsEntity[]> {
-    console.log('상품 전체보기 검색중');
     return this.productsService.findAll(limit, cursor);
   }
 
@@ -85,8 +84,6 @@ export class ProductsController {
     @Body() data: ProductCreateDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    console.log(files);
-    console.log(data);
     return await this.productsService.create(data, authUser, files);
   }
 

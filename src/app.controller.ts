@@ -302,6 +302,24 @@ export class AppController {
     });
   }
 
+  //-- 리뷰 쓰기 --//
+  @Get('create-review')
+  async createReview(
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
+    response.render('create-review', {
+      isIndexPath,
+      isSearchPath,
+      authUser,
+      user,
+      categories,
+    });
+  }
+
   //-- admin : 메인 - 마이 페이지 --//
   @Get('admin-my-page')
   async adminMyPage(

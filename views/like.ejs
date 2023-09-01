@@ -116,11 +116,11 @@
 
             if (response.ok) {
               alert(data.message);
-              window.location.href = '/';
+              location.reload();
             } else {
               alert(data.message);
               console.error('좋아요 취소를 실패했습니다.');
-              window.location.href = '/';
+              location.reload();
             }
           } catch (error) {
             console.error('Error:', error);

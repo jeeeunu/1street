@@ -29,7 +29,7 @@ export class ProductsService {
 
   //-- 상품 전체보기 --//
   async findAllBasic(): Promise<ProductsEntity[]> {
-    const products = this.productRepository.find({
+    const products = await this.productRepository.find({
       relations: ['product_image'],
     });
     return products;
@@ -37,14 +37,14 @@ export class ProductsService {
 
   //-- 상품 전체보기(무한 스크롤) --//
   async findAll(limit: number, cursor: number): Promise<ProductsEntity[]> {
-    const query = this.productRepository
+    const query = await this.productRepository
       .createQueryBuilder('product')
       .orderBy('product.id', 'DESC')
       .leftJoinAndSelect('product.product_image', 'product_image')
       .take(limit || 10);
 
     if (cursor) {
-      query.where('product.id > :cursor', { cursor });
+      await query.where('product.id < :cursor', { cursor });
     }
 
     return await query.getMany();

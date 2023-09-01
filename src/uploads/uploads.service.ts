@@ -83,4 +83,17 @@ export class UploadsService {
     const uploadedUrls = await Promise.all(uploadPromises);
     return uploadedUrls;
   }
+
+  //-- 이미지 저장 : 리뷰 이미지 --//
+  async createReviewImages(files: Express.Multer.File[]): Promise<string[]> {
+    const uploadPromises: Promise<string>[] = files.map(async (file) => {
+      const uniqueId = uuidv4();
+      const key = `uploads-reviews/${uniqueId}`;
+      await this.uploadPromise(file, key);
+      return `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`;
+    });
+
+    const uploadedUrls = await Promise.all(uploadPromises);
+    return uploadedUrls;
+  }
 }
