@@ -69,8 +69,9 @@
           <div class="order-list-table">
             <ul class="t-head">
               <li class="td">작성 날짜</li>
-              <li class="td">주문정보</li>
+              <li class="td">주문 정보</li>
               <li class="td" style="flex: 1">리뷰 내용</li>
+              <li class="td">수정</li>
             </ul>
             <ul id="reviewDatContainer" class="t-body">
               <!-- 리뷰내용 추가됨 -->
@@ -157,7 +158,12 @@
               <div class="td" style="flex-direction: column; flex: 1;">
                 <span>${starRating}</span>
                 <span>${item.review_content}</span>
-              </div>`;
+              </div>
+              <div class="td d-flex-column">
+                <a href="/my-page/edit-review/${item.order_detail.id}" class="btn-primary-s">수정하기</a>
+                <button type="button" class="btn-primary-s" onClick="deleteReview(${item.order_detail.id})">삭제하기</button>
+              </div>
+              `;
 
               fragment.appendChild(productItem); // Fragment에 추가
             });
@@ -200,6 +206,33 @@
 
         lastScrollY = currentScrollY;
       });
+
+      //-- 리뷰 삭제 api --//
+      const deleteReview = async (orderDetailId) => {
+        const firstConfirm = window.confirm('리뷰를 삭제 하시겠습니까?');
+
+        if (firstConfirm) {
+          try {
+            const response = await fetch(`/reviews/${orderDetailId}`, {
+              method: 'DELETE',
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              alert(data.message);
+              window.location.href = '/my-page/review-list';
+            } else {
+              alert(data.message);
+              console.error('리뷰 삭제중 오류가 발생했습니다.');
+              window.location.href = '/my-page/review-list';
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            alert('오류가 발생했습니다.');
+          }
+        }
+      };
     </script>
   </body>
 </html>

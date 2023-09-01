@@ -85,6 +85,8 @@ export class ShopsService {
     const shop = await this.shopRepository.findOne({
       where: { user_id: authUser.user_id },
     });
+    if (!shop) throw new NotFoundException('삭제할 스토어를 찾을 수 없습니다.');
+
     await this.shopRepository.remove(shop);
     return { status: true, message: '스토어 삭제에 성공했습니다.' };
   }

@@ -1,4 +1,8 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ResultableInterface } from 'src/common/interfaces';
@@ -6,6 +10,7 @@ import { ReviewsEntity } from 'src/common/entities';
 import { CreateReviewsDto } from './dtos';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { ReviewImageEntity } from 'src/uploads/entities/review-image.entity';
+import { EditReviewsDto } from './dtos/edit-reviews.dto';
 
 @Injectable()
 export class ReviewsService {
@@ -74,5 +79,40 @@ export class ReviewsService {
     }
 
     return query.getMany();
+  }
+
+  //-- 리뷰 조회 : orderDetailId  --//
+  async getByRevieworderDetailId(orderDetailId: number) {
+    return await this.reviewsEntity.findOne({
+      where: { order_detail_id: orderDetailId },
+    });
+  }
+
+  //-- 리뷰 수정 --//
+  async update(orderDetailId: number, editReviewsDto: EditReviewsDto) {
+    const existingReview = await this.reviewsEntity.findOne({
+      where: {
+        order_detail_id: orderDetailId,
+      },
+    });
+
+    if (!existingReview)
+      throw new NotFoundException('수정할 리뷰를 찾을 수 없습니다.');
+
+    const updateReview = Object.assign(existingReview, editReviewsDto);
+    await this.reviewsEntity.save(updateReview);
+
+    return { status: true, message: '리뷰를 수정했습니다.' };
+  }
+
+  //-- 리뷰 삭제 --//
+  async delete(orderDetailId: number) {
+    const review = await this.reviewsEntity.findOne({
+      where: { order_detail_id: orderDetailId },
+    });
+    if (!review) throw new NotFoundException('삭제할 리뷰를 찾을 수 없습니다.');
+
+    await this.reviewsEntity.remove(review);
+    return { status: true, message: '리뷰를 삭제했습니다.' };
   }
 }

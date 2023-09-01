@@ -230,6 +230,7 @@ export class ProductsService {
       .leftJoinAndSelect('product.product_image', 'product_image')
       .where('product.id = :productId', { productId })
       .getOne();
+
     Object.assign(existingProduct, data);
     const updatedProduct = await this.productRepository.save(existingProduct);
 
