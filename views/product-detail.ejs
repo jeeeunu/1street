@@ -74,9 +74,14 @@
                 </div>
               </div>
               <a href="#" class="primary-btn">ADD TO CARD</a>
-              <a href="#" class="heart-icon"
-                ><span class="icon_heart_alt"></span
-              ></a>
+              <button
+                type="button"
+                id="btnLike"
+                class="heart-icon"
+                data-item-id="<%- product.id %>"
+              >
+                ❤️
+              </button>
               <ul>
                 <li>
                   <b>스토어</b>
@@ -406,6 +411,13 @@
       };
 
       createViewedProduct();
+
+      //-- 좋아요 기능 --//
+      document.querySelector('#btnLike').addEventListener('click', () => {
+        console.log('좋아요');
+        const productId = event.target.getAttribute('data-item-id');
+        createLike(productId);
+      });
     </script>
   </body>
 </html>

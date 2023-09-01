@@ -121,7 +121,7 @@ export class ProductsService {
 
       return await query.getMany();
     } else {
-      return [];
+      throw new NotFoundException('검색어를 입력해주세요');
     }
   }
 
