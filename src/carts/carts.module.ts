@@ -18,5 +18,6 @@ import { ProductImageEntity } from 'src/products/entities/product-image.entity';
   ],
   controllers: [CartsController],
   providers: [CartsService, UserService, UploadsService],
+  exports: [CartsService],
 })
 export class CartsModule {}

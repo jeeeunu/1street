@@ -28,6 +28,10 @@
   border-right: 1px solid #f1f1f1;
 }
 
+.status-item a {
+  font-size: 1.8rem;
+}
+
 .status-item:last-child {
   border-right: 0;
 }

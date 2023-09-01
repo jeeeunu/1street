@@ -71,7 +71,7 @@ export class CartsService {
     const cartKey = `${user_id}_cart`;
     const cart = (await this.cacheManager.get(cartKey)) as any[];
     if (cart === null) {
-      throw new NotFoundException('장바구니의 물품이 존재하지 않습니다.');
+      return [];
     }
     console.log(cart);
     const content: any[] = [];

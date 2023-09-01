@@ -4,8 +4,9 @@ textarea {
 }
 
 span,
-a {
-  font-size: 1.4rem;
+a,
+legend {
+  font-size: 1.6rem;
 }
 
 button,
@@ -387,6 +388,7 @@ img {
 
 .sign-form .tit-page {
   margin-bottom: 5rem;
+  font-size: 2rem;
   font-weight: 700;
 }
 
@@ -646,11 +648,11 @@ fieldset {
 }
 
 .order-info-wrap .text-wrap span:first-child {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
 }
 
 .order-info-wrap .text-wrap span:nth-child(3) {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
 }
 
 .input-box {

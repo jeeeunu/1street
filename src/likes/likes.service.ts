@@ -38,13 +38,13 @@ export class LikesService {
     });
     if (existingLike) {
       await this.likeRepository.remove(existingLike);
-      return { status: true, message: '좋아요를 취소했습니다.' };
+      return { status: true, message: '해당 상품에 좋아요를 취소했습니다.' };
     } else {
       await this.likeRepository.save({
         user: { id: authUser.user_id },
         product: { id },
       });
-      return { status: true, message: '좋아요를 눌렀습니다.' };
+      return { status: true, message: '해당 상품에 좋아요를 눌렀습니다.' };
     }
   }
 

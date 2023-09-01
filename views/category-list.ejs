@@ -124,20 +124,20 @@
           if (response.ok) {
             data = data.concat(newData);
 
-            const allProductsContainer = document.querySelector(
-              '#allProductsContainer',
-            );
+            const fragment = document.createDocumentFragment(); // Fragment 생성
+
             if (newData.length > 0) {
               newData.forEach((item) => {
-                allProductsContainer.innerHTML += `
-                <div class="col-lg-3 col-md-4 col-sm-6 mix category">
-                  <div class="featured__item product-item">
-                    <div
-                      class="featured__item__pic set-bg"
-                      style="background-image: url('${
-                        item.product_image[0].url
-                      }');"
-                    >
+                const productItem = document.createElement('div');
+                productItem.className =
+                  'col-lg-3 col-md-4 col-sm-6 mix category product-item';
+                productItem.setAttribute('data-item-id', item.id);
+
+                productItem.innerHTML = `
+                  <div class="featured__item">
+                    <div class="featured__item__pic set-bg" style="background-image: url('${
+                      item.product_image[0].url
+                    }');">
                       <ul class="featured__item__pic__hover">
                         <li>
                           <button type="button" class="btn-like">❤️</button>
@@ -154,9 +154,15 @@
                       <h5>${item.product_price.toLocaleString()}원</h5>
                     </div>
                   </div>
-                </div>
-               `;
+                `;
+
+                fragment.appendChild(productItem); // Fragment에 추가
               });
+              const allProductsContainer = document.querySelector(
+                '#allProductsContainer',
+              );
+
+              allProductsContainer.appendChild(fragment); // Fragment를 실제 DOM에 추가
               cursor = newData[newData.length - 1]?.id;
 
               if (newData.length < limit) {

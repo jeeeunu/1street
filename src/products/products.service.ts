@@ -121,7 +121,7 @@ export class ProductsService {
 
       return await query.getMany();
     } else {
-      return [];
+      throw new NotFoundException('검색어를 입력해주세요');
     }
   }
 
@@ -167,8 +167,11 @@ export class ProductsService {
       .leftJoinAndSelect('product.product_image', 'product_image')
       .leftJoinAndSelect('product.category', 'category')
       .where('product.shop_id = :shopId', { shopId })
-      .orderBy('product_image.id', 'ASC')
+      .orderBy('product.created_at', 'DESC')
+      .addOrderBy('product_image.id', 'ASC')
       .getMany();
+
+    console.log(products);
 
     return products;
   }

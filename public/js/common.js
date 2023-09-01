@@ -88,7 +88,7 @@ if (siteSearchButton) {
 //-- 좋아요 api --//
 const createLike = async (productId) => {
   try {
-    const response = await fetch(`likes/${productId}`, {
+    const response = await fetch(`/likes/${productId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
