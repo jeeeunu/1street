@@ -79,6 +79,10 @@
         socket.emit('join_room', title);
       };
 
+      socket.on('room_manager', (id) => {
+        roomManager = id;
+      });
+
       //- 채팅 하기 -//
       chatInputBtn.addEventListener('click', async () => {
         if (chatInput.value.replace(/ /g, '').length === 0) return;
@@ -90,9 +94,9 @@
       });
 
       //- 채팅 내용 보여주기 -//
-      socket.on('newMsg', (data) => {
+      socket.on('newMsg', (msg) => {
         const li = document.createElement('li');
-        li.innerText = `${data}`;
+        li.innerText = `${msg}`;
         chatList.append(li);
       });
 
@@ -110,7 +114,9 @@
           stream = await navigator.mediaDevices.getUserMedia(
             deviceId ? cameraOption : defaultOption,
           );
-          liveVideo.srcObject = stream;
+          if (roomManager === null || socket.id === roomManager) {
+            liveVideo.srcObject = stream;
+          }
           if (!deviceId) {
             getCamera();
           }
@@ -185,18 +191,18 @@
       });
 
       //- offer -> answer -//
-      socket.on('offer', async (data) => {
-        await peerConnection.setRemoteDescription(data);
+      socket.on('offer', async (offer) => {
+        await peerConnection.setRemoteDescription(offer);
         const answer = await peerConnection.createAnswer();
         await peerConnection.setLocalDescription(answer);
         socket.emit('answer', { answer, title });
       });
 
       //- answer 받기 -//
-      socket.on('answer', async (data) => {
+      socket.on('answer', async (answer) => {
         if (peerConnection.signalingState === 'have-local-offer') {
           try {
-            await peerConnection.setRemoteDescription(data);
+            await peerConnection.setRemoteDescription(answer);
           } catch (error) {
             console.error('SDP 파싱 오류', error);
           }
@@ -227,21 +233,20 @@
           .forEach((track) => peerConnection.addTrack(track, stream));
       };
 
-      const handleIce = (data) => {
-        socket.emit('ice', { candidate: data.candidate, title });
+      const handleIce = (ice) => {
+        socket.emit('ice', { candidate: ice.candidate, title });
       };
 
       //- stream 연결 -//
       const handleTrack = (data) => {
-        console.log('peerConnection', peerConnection);
-        const feerVideo = document.querySelector('.feerVideo');
-        console.log('feerVideo', data.streams[0]);
-        console.log('myVideo', stream);
-        feerVideo.srcObject = data.streams[0];
+        console.log(peerConnection);
+        if (socket.id !== roomManager) {
+          liveVideo.srcObject = data.streams[0];
+        }
       };
 
-      socket.on('ice', (data) => {
-        peerConnection.addIceCandidate(data);
+      socket.on('ice', (ice) => {
+        peerConnection.addIceCandidate(ice);
       });
     </script>
   </body>

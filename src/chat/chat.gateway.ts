@@ -111,7 +111,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('join_room')
   joinRoom(@MessageBody() data, @ConnectedSocket() socket: Socket) {
     console.log('들어온 사람 아이디', socket.id);
-    socket.join(data);
+    if (!this.publicRooms().hasOwnProperty(data)) {
+      socket.join(data);
+      this.server.of('/').to(data).emit('room_manager', socket.id);
+    } else {
+      socket.join(data);
+    }
     this.server.emit('roomChange', this.publicRooms());
     socket.to(data).emit('welcome');
   }
