@@ -44,11 +44,15 @@ export class OrdersController {
   async getOrders(@AuthUser() authUser: RequestUserInterface): Promise<any> {
     return await this.ordersService.getOrders(authUser.user_id);
   }
+
   //-- 주문 상세 확인 --//
   @Get('/:order_id')
   @UseGuards(AuthGuard)
-  getDetailOrder(@Param('order_id') order_id: number): Promise<any> {
-    return this.ordersService.getDetailOrder(order_id);
+  getDetailOrder(
+    @AuthUser() authUser: RequestUserInterface,
+    @Param('order_id') order_id: number,
+  ): Promise<any> {
+    return this.ordersService.getDetailOrder(authUser.user_id, order_id);
   }
 
   // //-- 주문 취소하기 --//
@@ -60,6 +64,7 @@ export class OrdersController {
   ): Promise<ResultableInterface> {
     return await this.ordersService.cancelOrder(authUser.user_id, order_id);
   }
+
   //-- 주문 부분 취소하기 --//
   @Patch('/:order_id/:order_detail_id/select')
   @UseGuards(AuthGuard)
