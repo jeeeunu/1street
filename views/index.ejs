@@ -13,6 +13,54 @@
     <!-- include : header -->
     <%- include('includes/header') %>
 
+    <!-- 라이브 방 만들기 모달 -->
+    <div
+      class="modal fade"
+      id="liveRoomModal"
+      tabindex="-1"
+      aria-labelledby="liveRoomModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="liveRoomModalLabel">
+              라이브 방송
+            </h2>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="liveTitle" class="form-label">방송 제목</label>
+              <input
+                type="text"
+                class="form-control"
+                id="liveTitle"
+                placeholder="방송제목을 입력해주세요"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              취소
+            </button>
+            <button type="button" class="btn btn-primary liveStartBtn">
+              라이브 시작
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- include : hero -->
     <%- include('includes/hero') %>
 
@@ -51,7 +99,7 @@
     <!-- Categories Section End -->
 
     <!-- Banner Begin -->
-    <div class="banner">
+    <!-- <div class="banner">
       <div class="container">
         <h4 style="margin-bottom: 20px; font-weight: 700">Event</h4>
         <div class="row">
@@ -73,9 +121,36 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- Banner End -->
+    <div class="container">
+      <div style="vertical-align: top">
+        <h3
+          style="
+            margin-bottom: 20px;
+            font-weight: 700;
+            display: inline;
+            margin-right: 2rem;
+          "
+        >
+          라이브 방송
+        </h3>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#liveRoomModal"
+          style="font-size: 2rem; margin-bottom: 15px"
+        >
+          방 만들기 (판매자 전용)
+        </button>
+      </div>
 
+      <ul id="liveList" class="mt-4 d-flex flex-wrap">
+        <li class="liveListBox">라이브 방송 썸네일</li>
+        <li class="liveListBox">라이브 방송 썸네일</li>
+      </ul>
+    </div>
     <!-- Latest Product Section Begin -->
     <section class="latest-product spad">
       <div class="container">
@@ -225,7 +300,16 @@
       </div>
     </section>
     <!-- Featured Section End -->
-
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+      integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+      crossorigin="anonymous"
+    ></script>
     <script>
       //-- 상품 전체보기 api --//
       let data = [];
@@ -332,6 +416,44 @@
         }
 
         lastScrollY = currentScrollY;
+      });
+
+      //-- 라이브 방송 목록 보여주기 --//
+      const title = document.querySelector('#liveTitle');
+      const liveList = document.querySelector('#liveList');
+      const socket = io('');
+
+      //- 라이브 창으로 이동 -//
+      document
+        .querySelector('.liveStartBtn')
+        .addEventListener('click', async () => {
+          window.open(`/live?title=${title.value}`);
+        });
+
+      //- 라이브 목록 보여주기 -//
+      socket.on('roomChange', (data) => {
+        liveList.innerHTML = '';
+        for (let i in data) {
+          const liveTitle = i;
+          const liveCount = data[i];
+          const li = document.createElement('li');
+          li.innerText = `${liveTitle} (${liveCount}명)`;
+          li.setAttribute('data-title', liveTitle);
+          li.setAttribute('class', 'liveItem liveListBox');
+          liveList.append(li);
+        }
+
+        //- 라이브 창 열기 -//
+        document.querySelectorAll('.liveItem').forEach((item) => {
+          item.addEventListener('click', (e) => {
+            const title = e.target.getAttribute('data-title');
+            window.open(`/live?title=${title}`);
+          });
+        });
+      });
+
+      socket.on('disconnect', function () {
+        console.log('Disconnected');
       });
     </script>
   </body>
