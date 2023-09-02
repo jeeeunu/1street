@@ -20,5 +20,6 @@ import { UserService } from 'src/users/users.service';
   ],
   controllers: [ReviewsController],
   providers: [ReviewsService, UploadsService, ShopsService, UserService],
+  exports: [ReviewsService],
 })
 export class ReviewsModule {}

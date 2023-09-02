@@ -322,6 +322,12 @@
               const phone = document.getElementById('phone').value;
               const email = document.getElementById('email').value;
 
+              // TODO :: 임시 결제 처리
+              const cartData = await fetchCartData();
+              const checkoutOrder = document.querySelector('.checkout__order');
+              const productList = cartData;
+              const subtotal = calculateSubtotal(productList);
+
               if (!address || !name || !phone || !email) {
                 alert('내용을 입력해주세요.');
                 return;
@@ -338,13 +344,14 @@
                     order_address: address,
                     order_phone: phone,
                     order_email: email,
-                    order_payment_amount: 10000,
+                    order_payment_amount: subtotal,
                   }),
                 });
                 const data = await response.json();
                 if (response.ok) {
                   console.log(data.message);
                   alert('주문이 등록되었습니다.');
+                  window.location.href = '/';
                 } else {
                   console.log(data.message);
                   alert(data.message);

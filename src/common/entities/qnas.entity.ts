@@ -4,7 +4,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -29,15 +28,6 @@ export class QnasEntity {
   @Column('varchar', { length: 1000 })
   public qna_content: string;
 
-  // @Column() // Add status column
-  // @IsNotEmpty()
-  // @IsString()
-  // public status: string;
-
-  // @Column() // Add results column
-  // @IsNotEmpty()
-  // public results: string;
-
   @CreateDateColumn({ type: 'timestamp' })
   created_at: string;
 
@@ -45,10 +35,8 @@ export class QnasEntity {
   updated_at: string;
 
   @ManyToOne(() => UsersEntity, (user) => user.qna)
-  // @JoinColumn({ name: 'product_id' })
   public user: UsersEntity;
 
   @ManyToOne(() => ProductsEntity, (product) => product.qna)
-  // @JoinColumn({ name: 'product_id' })
   public product: ProductsEntity;
 }

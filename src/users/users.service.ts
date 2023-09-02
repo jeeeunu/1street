@@ -68,6 +68,7 @@ export class UserService {
       .where('user.id = :id', { id: userId })
       .loadRelationCountAndMap('user.like_count', 'user.likes')
       .loadRelationCountAndMap('orders.orders_count', 'user.orders')
+      .loadRelationCountAndMap('user.review_count', 'user.review')
       .select([
         'user.id',
         'user.email',

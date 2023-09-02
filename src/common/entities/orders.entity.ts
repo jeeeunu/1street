@@ -10,12 +10,12 @@ import {
 import { OrderDetailsEntity } from '../../orders/entities/order-detail.entity';
 
 export enum OrderStatus {
-  OrderCancel = '0',
-  OrderPending = '1',
-  OrderConfirm = '2',
-  OrderShipping = '3',
-  orderDelivering = '4',
-  DeliveryComplete = '5',
+  OrderCancel = 'OrderCancel',
+  OrderPending = 'OrderPending',
+  OrderConfirm = 'OrderConfirm',
+  OrderShipping = 'OrderShipping',
+  orderDelivering = 'orderDelivering',
+  DeliveryComplete = 'DeliveryComplete',
 }
 
 @Entity({ name: 'orders' })
@@ -42,8 +42,12 @@ export class OrdersEntity {
   public order_address: string;
   @Column()
   public order_payment_amount: number;
-  @Column({ default: '1' })
-  public order_status: string;
+  @Column({
+    default: OrderStatus.OrderPending,
+    type: 'enum',
+    enum: OrderStatus,
+  })
+  public order_status: OrderStatus;
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created_at: Timestamp;
 }

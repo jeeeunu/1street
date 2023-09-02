@@ -8,6 +8,8 @@ import { ProductsService } from './products/products.service';
 import { CategorysService } from './categorys/categorys.service';
 import { LikesService } from './likes/likes.service';
 import { CartsService } from './carts/carts.service';
+import { OrdersService } from './orders/orders.service';
+import { ReviewsService } from './reviews/reviews.service';
 
 @Controller()
 export class AppController {
@@ -16,8 +18,10 @@ export class AppController {
     private readonly categorysService: CategorysService,
     private readonly shopsService: ShopsService,
     private readonly productsService: ProductsService,
+    private readonly ordersService: OrdersService,
     private readonly likesService: LikesService,
     private readonly cartsService: CartsService,
+    private readonly reviewsService: ReviewsService,
   ) {}
 
   //-- 공통 : 유저 --//
@@ -59,7 +63,11 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
-    const latestProducts = await this.productsService.findAllBasic();
+    const latestProducts = await this.productsService.findLatestProducts();
+    const findPopularProducts =
+      await this.productsService.findPopularProducts();
+    const findHighlyRatedProducts =
+      await this.productsService.findHighlyRatedProducts();
 
     if (authUser && authUser !== null && authUser.isAdmin === true) {
       return response.redirect('admin-my-page');
@@ -72,6 +80,8 @@ export class AppController {
       authUser,
       categories,
       latestProducts,
+      findPopularProducts,
+      findHighlyRatedProducts,
     });
   }
 
@@ -302,21 +312,72 @@ export class AppController {
     });
   }
 
-  //-- 리뷰 쓰기 --//
-  @Get('create-review')
-  async createReview(
+  //-- 리뷰 리스트 --//
+  @Get('my-page/review-list')
+  async reviewList(
     @AuthUser() authUser: RequestUserInterface,
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
+    response.render('review-list', {
+      isIndexPath,
+      isSearchPath,
+      authUser,
+      user,
+      categories,
+    });
+  }
+
+  //-- 리뷰 작성 --//
+  @Get('my-page/create-review/:order_detail_id')
+  async createReview(
+    @Param('order_detail_id') orderDetailId: number,
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
+    const orderDetail = await this.ordersService.getDetailOrderById(
+      orderDetailId,
+    );
     response.render('create-review', {
       isIndexPath,
       isSearchPath,
       authUser,
       user,
       categories,
+      orderDetail,
+    });
+  }
+
+  //-- 리뷰 수정 --//
+  @Get('my-page/edit-review/:order_detail_id')
+  async editReview(
+    @Param('order_detail_id') orderDetailId: number,
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
+    const orderDetail = await this.ordersService.getDetailOrderById(
+      orderDetailId,
+    );
+    const review = await this.reviewsService.getByRevieworderDetailId(
+      orderDetailId,
+    );
+
+    response.render('edit-review', {
+      isIndexPath,
+      isSearchPath,
+      authUser,
+      user,
+      categories,
+      orderDetail,
+      review,
     });
   }
 
