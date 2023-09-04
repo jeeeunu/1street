@@ -178,7 +178,7 @@
                   <% }); %>
                 </div>
                 <div class="latest-prdouct__slider__item">
-                  <% latestProducts.slice(4, 7).forEach(product => { %>
+                  <% latestProducts.slice(3, 6).forEach(product => { %>
                   <a href="#" class="latest-product__item">
                     <div class="latest-product__item__pic">
                       <img src="<%= product.product_image[0].url %>" alt="" />
@@ -218,7 +218,7 @@
                   <% }); %>
                 </div>
                 <div class="latest-prdouct__slider__item">
-                  <% findPopularProducts.slice(0, 3).forEach(product => { %>
+                  <% findPopularProducts.slice(3, 6).forEach(product => { %>
                   <a
                     href="/product-detail/<%= product.id %>"
                     class="latest-product__item"
@@ -261,7 +261,7 @@
                   <% }); %>
                 </div>
                 <div class="latest-prdouct__slider__item">
-                  <% findHighlyRatedProducts.slice(0, 3).forEach(product => { %>
+                  <% findHighlyRatedProducts.slice(3, 6).forEach(product => { %>
                   <a
                     href="/product-detail/<%= product.id %>"
                     class="latest-product__item"
