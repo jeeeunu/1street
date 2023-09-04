@@ -121,8 +121,6 @@ export class ProductsService {
       .limit(6)
       .getRawMany();
 
-    console.log(productsRank);
-
     const productIds = productsRank.map((item) => item.product_id);
 
     const products = [];
@@ -221,7 +219,7 @@ export class ProductsService {
 
       if (sort === 'desc') {
         console.log('최신순으로 정렬');
-        query.orderBy('product.created_at', 'ASC');
+        query.orderBy('product.created_at', 'DESC');
       }
 
       if (cursor) {

@@ -23,6 +23,9 @@ export class LikesService {
         'product.category',
         'product.product_image',
       ],
+      order: {
+        created_at: 'DESC',
+      },
     });
     return likes;
   }
