@@ -395,11 +395,13 @@ export class AppController {
     const products = await this.productsService.findRegisteredAll(
       authUser.shop_id,
     );
+    const reviews = await this.reviewsService.getAllByShopId(authUser.shop_id);
     response.render('admin-my-page', {
       authUser,
       user,
       shop,
       products,
+      reviews,
     });
   }
 
