@@ -99,7 +99,9 @@
                             />
                           </div>
                           <div class="text-wrap">
-                            <a href="">
+                            <a
+                              href="/product-detail/<%= orderDetail.product.id %>"
+                            >
                               <span><%= orderDetail.order.id%></span>
                               <span class="product-title"
                                 ><%= orderDetail.product.product_name %></span
@@ -534,7 +536,7 @@
           if (response.ok) {
             alert(data.message);
 
-            window.location.href = '/review-list';
+            window.location.href = '/my-page/review-list';
           } else {
             console.log(data.message);
             if (Array.isArray(data.message)) {

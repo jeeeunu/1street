@@ -48,13 +48,13 @@
           <div class="col-lg-6 col-md-6">
             <div class="product__details__text">
               <h3><%= product.product_name %></h3>
-              <div class="product__details__rating">
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star-half-o"></i>
-                <span>(18 reviews)</span>
+              <div class="product__details__rating" style="display: flex; align-items: bottom">
+                  <%= '⭐ '.repeat(reviewRating) %>
+                </i>
+                <span style="font-size: 14px; font-weight: 600; color: #555;">(<%= reviewRating.toFixed(1) %>)</span>
+                <span style="margin-left: 10px; font-size: 14px;text-decoration: underline; color: #222;"
+                  >리뷰 총 <%= reviews.length %> 건</span
+                >
               </div>
               <div class="product__details__price">
                 <%- product.product_price.toLocaleString() %><span
@@ -141,7 +141,7 @@
                     href="#tabs-3"
                     role="tab"
                     aria-selected="false"
-                    >Reviews <span>(1)</span></a
+                    >Reviews <span>(<%= reviews.length %>)</span></a
                   >
                 </li>
                 <li class="nav-item">
@@ -168,60 +168,37 @@
                   <div class="product__details__tab__desc">
                     <div class="comments-area">
                       <div class="list-comment">
-                        <h6>Reviews (1)</h6>
-                        <!-- TODO :: comment 없을시 하단 내용 보이도록 -->
-                        <!-- <div class="list-comment empty"></div> -->
+                        <h6>Reviews (<%= reviews.length %>)</h6>
+                        <% if (reviews.length === 0) { %>
+                        <div class="list-comment empty"></div>
+                        <% } %>
                         <ul class="list-comment">
+                          <% reviews.forEach(review => { %>
                           <li class="item-comment">
                             <div class="title-wrap">
                               <div class="profile-img-wrap">
-                                <img
-                                  src="https://images.chosun.com/resizer/mllCG6ewJwOYHFeZofvofp458Oo=/616x0/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/WXCEKPWV2VH4VPHWYDKXDVFDZY.jpg"
-                                  alt=""
-                                />
+                                <img src="<%= review.user.profile_image %>" alt="유저 프로필">
                               </div>
-                              <p>인테리어 꿈나무</p>
+                              <p><%= review.user.name %></p>
                             </div>
                             <ul class="review-img-list">
-                              <!-- TODO :: 최대 3 개 -->
-                              <li class="review-img-item">
-                                <img
-                                  src="https://recipe1.ezmember.co.kr/cache/recipe/2017/08/21/bedeb8d013baef5cdb6dc5be824c34201.jpg"
-                                  alt=""
-                                />
-                              </li>
-                              <li class="review-img-item">
-                                <img
-                                  src="https://recipe1.ezmember.co.kr/cache/recipe/2017/08/21/bedeb8d013baef5cdb6dc5be824c34201.jpg"
-                                  alt=""
-                                />
-                              </li>
-                              <li class="review-img-item">
-                                <img
-                                  src="https://recipe1.ezmember.co.kr/cache/recipe/2017/08/21/bedeb8d013baef5cdb6dc5be824c34201.jpg"
-                                  alt=""
-                                />
-                              </li>
+                              <% if (review.review_image) { %>
+                                <% review.review_image.forEach((reviewImage) => { %>
+                                  <li class="review-img-item">
+                                    <img src="<%= reviewImage.url %>" alt="" />
+                                  </li>
+                                <% }) %>
+                              <% } %>
                             </ul>
-                            <p class="comment-rating">⭐️⭐️⭐️⭐️⭐️</p>
+                            <p class="comment-rating"><%= '⭐ '.repeat(review.review_rating) %></p>
                             <p class="comment-txt">
-                              휴양지카페 느낌 플러스 이국적인 유럽풍의
-                              주방인테리어 완전 제 꿈의 주방이네요.우드질감의
-                              씽크대와 색감, 아치형 확장베란다에 홈카페수
-                              휴양지카페 느낌 플러스 이국적인 유럽풍의
-                              주방인테리어 완전 제 꿈의 주방이네요.우드질감의
-                              씽크대와 색감, 아치형 확장베란다에 홈카페수
-                              휴양지카페 느낌 플러스 이국적인 유럽풍의
-                              주방인테리어 완전 제 꿈의 주방이네요.우드질감의
-                              씽크대와 색감, 아치형 확장베란다에 홈카페수
-                              휴양지카페 느낌 플러스 이국적인 유럽풍의
-                              주방인테리어 완전 제 꿈의 주방이네요.우드질감의
-                              씽크대와 색감, 아치형 확장베란다에 홈카페수
+                              <%= review.review_content %>
                             </p>
                             <div class="comment-date content-right">
-                              <p>작성일 : 2023.08.19</p>
+                              <p>작성일 : <%= review.created_at.toISOString().substr(0, 10) %></p>
                             </div>
                           </li>
+                          <% }); %>
                         </ul>
                       </div>
                     </div>
