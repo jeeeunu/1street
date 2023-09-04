@@ -278,6 +278,8 @@ export class AppController {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
     const product = await this.productsService.findById(productId);
+    const reviewRating = await this.productsService.getRatingAverage(productId);
+    const reviews = await this.reviewsService.getAllByReviews(productId);
     response.render('product-detail', {
       isIndexPath,
       isSearchPath,
@@ -285,6 +287,8 @@ export class AppController {
       authUser,
       product,
       categories,
+      reviewRating,
+      reviews,
     });
   }
 

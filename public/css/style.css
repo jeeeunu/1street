@@ -1917,6 +1917,7 @@ ol {
 }
 
 .product__details__tab .product__details__tab__desc p {
+  margin-bottom: 0;
   color: #666666;
 }
 

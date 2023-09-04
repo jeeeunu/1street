@@ -235,16 +235,46 @@ export class ProductsService {
 
   //-- 상품 상세보기 --//
   async findById(id: number): Promise<ProductsEntity> {
-    const product = await this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.category', 'category')
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .leftJoinAndSelect('product.shop', 'shop')
-      .leftJoinAndSelect('shop.user', 'user')
-      .where('product.id = :id', { id })
-      .getOne();
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: [
+        'category',
+        'order_detail',
+        'order_detail.review',
+        'product_image',
+        'shop',
+        'shop.user',
+      ],
+    });
+
     if (!product) throw new NotFoundException('해당 상품이 존재하지 않습니다.');
     return product;
+  }
+
+  //-- 상품별 평점 평균값 구하기 --//
+  async getRatingAverage(productId: number): Promise<number> {
+    const reviews = await this.reviewsEntity
+      .createQueryBuilder('review')
+      .innerJoin('review.order_detail', 'order_detail')
+      .where('order_detail.product_id = :productId', { productId })
+      .getMany();
+
+    console.log(reviews);
+
+    if (!reviews || reviews.length === 0) {
+      return 0;
+    }
+
+    const ratings = reviews.map((review) => review.review_rating);
+
+    const averageRating =
+      ratings.reduce(
+        (accumulator, currentRating) => accumulator + currentRating,
+        0,
+      ) / ratings.length;
+
+    console.log(averageRating);
+    return averageRating;
   }
 
   //-- admin : 등록된 상품 보기 --//

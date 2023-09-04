@@ -8,6 +8,7 @@ import { UploadsService } from 'src/uploads/uploads.service';
 import { ReviewImageEntity } from 'src/uploads/entities/review-image.entity';
 import { ShopsService } from 'src/shops/shops.service';
 import { UserService } from 'src/users/users.service';
+import { OrderDetailsEntity } from 'src/orders/entities/order-detail.entity';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UserService } from 'src/users/users.service';
       ReviewsEntity,
       ReviewImageEntity,
       ShopsEntity,
+      OrderDetailsEntity,
     ]),
   ],
   controllers: [ReviewsController],

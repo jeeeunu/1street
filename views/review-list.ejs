@@ -173,8 +173,10 @@
             );
             reviewDatContainer.appendChild(fragment); // Fragment를 실제 DOM에 추가
 
+            if (newData.length === 0) {
+              reviewDatContainer.innerHTML = `<p class="gray-text" style="padding: 30px 0; font-size: 14px; text-align: center;">작성한 리뷰가 없습니다.</p>`;
+            }
             cursor = newData[newData.length - 1]?.id;
-            console.log(cursor);
 
             if (newData.length < limit) {
               hasMoreData = false;

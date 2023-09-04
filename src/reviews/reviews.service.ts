@@ -2,6 +2,7 @@ import {
   Injectable,
   ConflictException,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +12,7 @@ import { CreateReviewsDto } from './dtos';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { ReviewImageEntity } from 'src/uploads/entities/review-image.entity';
 import { EditReviewsDto } from './dtos/edit-reviews.dto';
+import { OrderDetailsEntity } from 'src/orders/entities/order-detail.entity';
 
 @Injectable()
 export class ReviewsService {
@@ -19,6 +21,8 @@ export class ReviewsService {
     private reviewsEntity: Repository<ReviewsEntity>,
     @InjectRepository(ReviewImageEntity)
     private reviewImageEntity: Repository<ReviewImageEntity>,
+    @InjectRepository(OrderDetailsEntity)
+    private orderDetailsEntity: Repository<OrderDetailsEntity>,
     private uploadsService: UploadsService,
   ) {}
 
@@ -29,9 +33,18 @@ export class ReviewsService {
     createReviewsDto: CreateReviewsDto,
     files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
+    const orderDetail = await this.orderDetailsEntity.findOne({
+      where: { id: orderDetailId },
+      relations: ['order', 'order.user'],
+    });
+
     const reviewFind = await this.reviewsEntity.findOne({
       where: { order_detail_id: orderDetailId },
     });
+
+    if (orderDetail.order.user.id !== userId) {
+      throw new ForbiddenException('해당 주문에 권한이 없습니다.');
+    }
 
     if (reviewFind) {
       throw new ConflictException('이미 리뷰를 작성하셨습니다.');
@@ -57,6 +70,20 @@ export class ReviewsService {
     }
 
     return { status: true, message: '리뷰작성이 완료되었습니다.' };
+  }
+
+  //-- 리뷰 조회 : 상품 아이디 --//
+  async getAllByReviews(productId: number): Promise<ReviewsEntity[]> {
+    const reviews = this.reviewsEntity.find({
+      where: {
+        order_detail: {
+          product: { id: productId },
+        },
+      },
+      relations: ['order_detail', 'review_image', 'user'],
+    });
+
+    return reviews;
   }
 
   //-- 리뷰 조회 : 유저  --//
