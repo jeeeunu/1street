@@ -107,35 +107,34 @@ export class ProductsService {
 
   //-- 평점이 높은 상품 --//
   async findHighlyRatedProducts(): Promise<any> {
-    const orderDetail = await this.reviewsEntity
-      .createQueryBuilder('review')
-      .select('review.order_detail_id', 'order_detail_id')
-      .addSelect('SUM(review.review_rating)', 'ratingSum')
-      .groupBy('review.order_detail_id')
-      .orderBy('ratingSum', 'DESC')
+    const productsRank = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.order_detail', 'order_detail')
+      .leftJoinAndSelect('order_detail.review', 'review')
+      .select([
+        'product.id AS product_id',
+        'AVG(review.review_rating) AS averageRating',
+      ])
+      .groupBy('product.id')
+      .having('averageRating IS NOT NULL')
+      .orderBy('averageRating', 'DESC')
       .limit(6)
       .getRawMany();
 
-    const orderDetailIds = orderDetail.map((item) => item.order_detail_id);
-    console.log(orderDetailIds);
+    const productIds = productsRank.map((item) => item.product_id);
 
-    const orderDetailEntities = await this.orderDetailsEntity.find({
-      where: {
-        id: In(orderDetailIds),
-      },
-      relations: ['product'],
-    });
-
-    const productIds = orderDetailEntities.map(
-      (orderDetail) => orderDetail.product.id,
-    );
-
-    const products = await this.productRepository.find({
-      where: {
-        id: In(productIds),
-      },
-      relations: ['product_image'],
-    });
+    const products = [];
+    for (const productId of productIds) {
+      const product = await this.productRepository.findOne({
+        where: {
+          id: productId,
+        },
+        relations: ['product_image'],
+      });
+      if (product) {
+        products.push(product);
+      }
+    }
 
     return products;
   }
@@ -146,7 +145,7 @@ export class ProductsService {
       .createQueryBuilder('product')
       .orderBy('product.id', 'DESC')
       .leftJoinAndSelect('product.product_image', 'product_image')
-      .take(limit || 10);
+      .take(limit || 8);
 
     if (cursor) {
       await query.where('product.id < :cursor', { cursor });
@@ -220,7 +219,7 @@ export class ProductsService {
 
       if (sort === 'desc') {
         console.log('최신순으로 정렬');
-        query.orderBy('product.created_at', 'ASC');
+        query.orderBy('product.created_at', 'DESC');
       }
 
       if (cursor) {
@@ -297,12 +296,12 @@ export class ProductsService {
     data: ProductUpdateDto,
     files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
-    const existingProduct = await this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .where('product.id = :productId', { productId })
-      .getOne();
+    const existingProduct = await this.productRepository.findOne({
+      where: { id: productId },
+      relations: ['product_image', 'category'],
+    });
 
+    existingProduct.category.id = data.category_id;
     Object.assign(existingProduct, data);
     const updatedProduct = await this.productRepository.save(existingProduct);
 
@@ -310,7 +309,6 @@ export class ProductsService {
     if (files.length > 0) {
       const imageDetails = await this.uploadsService.createProductImages(files);
       for (const imageDetail of imageDetails) {
-        console.log(imageDetail, 'heheheheheheheheheheh');
         const productImage = await this.productImageRepository.create({
           url: imageDetail,
           product_id: productId,

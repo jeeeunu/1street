@@ -27,26 +27,23 @@
             <ul class="status-list">
               <li class="status-item">
                 <p>접수된 주문</p>
-                <p><a href="">100건</a></p>
+                <p><a href=""> 건</a></p>
               </li>
               <li class="status-item">
                 <p>배송중</p>
                 <p>
-                  <a href=""> </a>
+                  <a href=""> 건</a>
                 </p>
               </li>
               <li class="status-item">
                 <p>배송완료</p>
                 <p>
-                  <a href="">
-                    <% if (user.like_count) { %> <%= user.like_count %> <% }
-                    else { %> 0 <% } %> 건</a
-                  >
+                  <a href=""> 건</a>
                 </p>
               </li>
               <li class="status-item">
-                <p>새 리뷰</p>
-                <p><a href="">100건</a></p>
+                <p>리뷰</p>
+                <p><a href=""><%= reviews.length %> 건</a></p>
               </li>
             </ul>
           </section>

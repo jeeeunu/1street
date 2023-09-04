@@ -108,6 +108,27 @@ export class ReviewsService {
     return query.getMany();
   }
 
+  //-- 리뷰 조회 : 스토어 아이디 --//
+  async getAllByShopId(shopId: number) {
+    const reviews = this.reviewsEntity.find({
+      where: {
+        order_detail: {
+          product: {
+            shop: {
+              id: shopId,
+            },
+          },
+        },
+      },
+      relations: [
+        'order_detail',
+        'order_detail.product',
+        'order_detail.product.shop',
+      ],
+    });
+    return reviews;
+  }
+
   //-- 리뷰 조회 : orderDetailId  --//
   async getByRevieworderDetailId(orderDetailId: number) {
     return await this.reviewsEntity.findOne({

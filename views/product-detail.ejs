@@ -154,15 +154,15 @@
                                                 <%= review.user.name %>
                                               </p>
                                             </div>
+                                            <% if (review.review_image) { %>
                                             <ul class="review-img-list">
-                                              <% if (review.review_image) { %>
                                                 <% review.review_image.forEach((reviewImage)=> { %>
                                                   <li class="review-img-item">
                                                     <img src="<%= reviewImage.url %>" alt="" />
                                                   </li>
                                                   <% }) %>
-                                                    <% } %>
                                             </ul>
+                                            <% } %>
                                             <p class="comment-rating">
                                               <%= '⭐ ' .repeat(review.review_rating) %>
                                             </p>
@@ -178,118 +178,13 @@
                                       </ul>
                                 </div>
                               </div>
-                              <div class="col-lg-12 sticky-wrap">
-                                <div class="product__details__tab">
-                                  <ul class="nav nav-tabs" role="tablist">
-                                    <li class="nav-item">
-                                      <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab"
-                                        aria-selected="true">Description</a>
-                                    </li>
-                                    <li class="nav-item">
-                                      <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab"
-                                        aria-selected="false">Reviews <span>(1)</span></a>
-                                    </li>
-                                    <li class="nav-item">
-                                      <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab"
-                                        aria-selected="false">상품문의
-                                        (2)</a>
-                                    </li>
-                                  </ul>
-                                  <div class="tab-content">
-                                    <!-- description -->
-                                    <div class="tab-pane active" id="tabs-1" role="tabpanel">
-                                      <div class="product__details__tab__desc">
-                                        <%- product.product_desc .replace(/&amp;/g, '&' ) .replace(/&lt;/g, '<' )
-                                          .replace(/&gt;/g, '>' ) %>
-                                      </div>
-                                    </div>
-                                    <!-- 리뷰 -->
-                                    <div class="tab-pane" id="tabs-3" role="tabpanel">
-                                      <div class="product__details__tab__desc">
-                                        <div class="comments-area">
-                                          <div class="list-comment">
-                                            <h6>Reviews (1)</h6>
-                                            <!-- TODO :: comment 없을시 하단 내용 보이도록 -->
-                                            <!-- <div class="list-comment empty"></div> -->
-                                            <ul class="list-comment">
-                                              <li class="item-comment">
-                                                <div class="title-wrap">
-                                                  <div class="profile-img-wrap">
-                                                    <img
-                                                      src="https://images.chosun.com/resizer/mllCG6ewJwOYHFeZofvofp458Oo=/616x0/smart/cloudfront-ap-northeast-1.images.arcpublishing.com/chosun/WXCEKPWV2VH4VPHWYDKXDVFDZY.jpg"
-                                                      alt="" />
-                                                  </div>
-                                                  <p>인테리어 꿈나무</p>
-                                                </div>
-                                                <ul class="review-img-list">
-                                                  <!-- TODO :: 최대 3 개 -->
-                                                  <li class="review-img-item">
-                                                    <img
-                                                      src="https://recipe1.ezmember.co.kr/cache/recipe/2017/08/21/bedeb8d013baef5cdb6dc5be824c34201.jpg"
-                                                      alt="" />
-                                                  </li>
-                                                  <li class="review-img-item">
-                                                    <img
-                                                      src="https://recipe1.ezmember.co.kr/cache/recipe/2017/08/21/bedeb8d013baef5cdb6dc5be824c34201.jpg"
-                                                      alt="" />
-                                                  </li>
-                                                  <li class="review-img-item">
-                                                    <img
-                                                      src="https://recipe1.ezmember.co.kr/cache/recipe/2017/08/21/bedeb8d013baef5cdb6dc5be824c34201.jpg"
-                                                      alt="" />
-                                                  </li>
-                                                </ul>
-                                                <p class="comment-rating">⭐️⭐️⭐️⭐️⭐️</p>
-                                                <p class="comment-txt">
-                                                  휴양지카페 느낌 플러스 이국적인 유럽풍의
-                                                  주방인테리어 완전 제 꿈의 주방이네요.우드질감의
-                                                  씽크대와 색감, 아치형 확장베란다에 홈카페수
-                                                  휴양지카페 느낌 플러스 이국적인 유럽풍의
-                                                  주방인테리어 완전 제 꿈의 주방이네요.우드질감의
-                                                  씽크대와 색감, 아치형 확장베란다에 홈카페수
-                                                  휴양지카페 느낌 플러스 이국적인 유럽풍의
-                                                  주방인테리어 완전 제 꿈의 주방이네요.우드질감의
-                                                  씽크대와 색감, 아치형 확장베란다에 홈카페수
-                                                  휴양지카페 느낌 플러스 이국적인 유럽풍의
-                                                  주방인테리어 완전 제 꿈의 주방이네요.우드질감의
-                                                  씽크대와 색감, 아치형 확장베란다에 홈카페수
-                                                </p>
-                                                <div class="comment-date content-right">
-                                                  <p>작성일 : 2023.08.19</p>
-                                                </div>
-                                              </li>
-                                            </ul>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <!-- Q&A -->
-                                    <div class="tab-pane" id="tabs-2" role="tabpanel">
-                                      <div class="product__details__tab__desc">
-                                        <h6>상품문의</h6>
-                                        <ul class="qna">
-                                          <li>
-                                            <input type="checkbox" id="qna-1" />
-                                            <label for="qna-1">
-                                              <span class="title">빨간색이 무슨 빨간색임요</span>
-                                              <span>작성자뀨</span>
-                                              <span class="comment-date">2022.03.23</span>
-                                            </label>
-                                            <div>
-                                              <p>
-                                                다른 사람 명의로는 환불할 수 없습니다. 고객님 본인
-                                                명의 계좌로만 환불이 가능합니다.
-                                              </p>
-                                            </div>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
                             </div>
-                          </div>
+                          </div>      
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                </div> 
               </section>
               <!-- Product Details Section End -->
 
