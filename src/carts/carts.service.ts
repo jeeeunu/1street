@@ -32,9 +32,9 @@ export class CartsService {
       (item) => item.product_id === product_id,
     );
 
-    if (existingItem) {
-      throw new Error('이미 장바구니에 있는 상품입니다.');
-    }
+    // if (existingItem) {
+    //   throw new Error('이미 장바구니에 있는 상품입니다.');
+    // }
     // 새로운 물품 추가
     const newItem = { product_id, quantity };
     const updatedCart = [...previousCart, newItem];
@@ -69,14 +69,17 @@ export class CartsService {
   //-- 장바구니 불러오기 --//
   async getCart(user_id: number): Promise<any[]> {
     const cartKey = `${user_id}_cart`;
+
     const cart = (await this.cacheManager.get(cartKey)) as any[];
     if (cart === null) {
       return [];
     }
+    console.log(cart);
     const content: any[] = [];
     for (const item of cart) {
       const product_id = item.product_id;
       const quantity = item.quantity;
+      console.log(product_id);
       const product = await this.productRepository.findOne({
         where: { id: product_id },
       });
