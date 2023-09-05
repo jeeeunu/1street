@@ -29,7 +29,7 @@ export class ShopsService {
   }
 
   //-- 스토어 아이디로 스토어 찾기 --//
-  async find(id: number): Promise<ShopsEntity> {
+  async findOne(id: number): Promise<ShopsEntity> {
     try {
       const shop = await this.shopRepository.findOne({
         where: { id },

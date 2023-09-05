@@ -306,7 +306,7 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
-    const shop = await this.shopsService.find(shopId);
+    const shop = await this.shopsService.findOne(shopId);
     const products = await this.productsService.findRegisteredAll(shopId);
 
     response.render('contact', {

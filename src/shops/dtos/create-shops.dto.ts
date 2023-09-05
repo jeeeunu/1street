@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 export class ShopCreateDto {
   //-- 스토어 이름--//
   @IsNotEmpty({ message: '스토어 이름을 입력해주세요.' })
