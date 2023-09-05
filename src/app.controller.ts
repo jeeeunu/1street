@@ -210,14 +210,13 @@ export class AppController {
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<void> {
-    const { isIndexPath, isSearchPath, categories } = await this.userPageData(
-      request,
-      authUser,
-    );
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
     response.render('checkout', {
       isIndexPath,
       isSearchPath,
       authUser,
+      user,
       categories,
     });
   }
