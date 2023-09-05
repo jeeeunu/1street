@@ -3,7 +3,7 @@ import { CartsController } from './carts.controller';
 import { CartsService } from './carts.service';
 import { ProductsEntity, ShopsEntity, UsersEntity } from '../common/entities';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserService } from '../users/users.service';
+import { UsersService } from '../users/users.service';
 import { UploadsService } from '../uploads/uploads.service';
 import { ProductImageEntity } from 'src/products/entities/product-image.entity';
 
@@ -17,7 +17,7 @@ import { ProductImageEntity } from 'src/products/entities/product-image.entity';
     ]),
   ],
   controllers: [CartsController],
-  providers: [CartsService, UserService, UploadsService],
+  providers: [CartsService, UsersService, UploadsService],
   exports: [CartsService],
 })
 export class CartsModule {}

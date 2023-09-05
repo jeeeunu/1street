@@ -11,7 +11,7 @@ import { ReviewsEntity } from 'src/common/entities';
 import { CreateReviewsDto } from './dtos';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { ReviewImageEntity } from 'src/uploads/entities/review-image.entity';
-import { EditReviewsDto } from './dtos/edit-reviews.dto';
+import { UpdateReviewsDto } from './dtos/update-reviews.dto';
 import { OrderDetailsEntity } from 'src/orders/entities/order-detail.entity';
 
 @Injectable()
@@ -73,7 +73,7 @@ export class ReviewsService {
   }
 
   //-- 리뷰 조회 : 상품 아이디 --//
-  async getAllByReviews(productId: number): Promise<ReviewsEntity[]> {
+  async findAllByProductId(productId: number): Promise<ReviewsEntity[]> {
     const reviews = this.reviewsEntity.find({
       where: {
         order_detail: {
@@ -87,7 +87,7 @@ export class ReviewsService {
   }
 
   //-- 리뷰 조회 : 유저  --//
-  async getAllByUserId(limit: number, cursor: number, userId: number) {
+  async findAllByUserId(limit: number, cursor: number, userId: number) {
     const query = await this.reviewsEntity
       .createQueryBuilder('review')
       .where('review.user_id = :userId', {
@@ -109,7 +109,7 @@ export class ReviewsService {
   }
 
   //-- 리뷰 조회 : 스토어 아이디 --//
-  async getAllByShopId(shopId: number) {
+  async findAllByShopId(shopId: number) {
     const reviews = this.reviewsEntity.find({
       where: {
         order_detail: {
@@ -130,14 +130,14 @@ export class ReviewsService {
   }
 
   //-- 리뷰 조회 : orderDetailId  --//
-  async getByRevieworderDetailId(orderDetailId: number) {
+  async findByOrderDetailId(orderDetailId: number) {
     return await this.reviewsEntity.findOne({
       where: { order_detail_id: orderDetailId },
     });
   }
 
   //-- 리뷰 수정 --//
-  async update(orderDetailId: number, editReviewsDto: EditReviewsDto) {
+  async update(orderDetailId: number, updateReviewsDto: UpdateReviewsDto) {
     const existingReview = await this.reviewsEntity.findOne({
       where: {
         order_detail_id: orderDetailId,
@@ -147,7 +147,7 @@ export class ReviewsService {
     if (!existingReview)
       throw new NotFoundException('수정할 리뷰를 찾을 수 없습니다.');
 
-    const updateReview = Object.assign(existingReview, editReviewsDto);
+    const updateReview = Object.assign(existingReview, updateReviewsDto);
     await this.reviewsEntity.save(updateReview);
 
     return { status: true, message: '리뷰를 수정했습니다.' };

@@ -24,7 +24,7 @@ export class ShopsController {
   //-- 스토어 상세보기 --//
   @Get(':id')
   async findShop(@Param('id') id: number): Promise<ShopsEntity> {
-    return await this.shopsService.find(id);
+    return await this.shopsService.findOne(id);
   }
 
   //-- 스토어 생성 --//

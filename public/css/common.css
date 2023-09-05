@@ -881,9 +881,10 @@ fieldset {
 }
 
 #viewedProductList > li {
-  margin: 0 auto 10px;
+  margin: 8px auto;
   width: 67px;
   height: 67px;
+  border: 1px solid #ddd;
   border-radius: 5px;
   overflow: hidden;
 }

@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { UserService } from './users/users.service';
+import { UsersService } from './users/users.service';
 import { AuthUser } from './auth/auth.decorator';
 import { RequestUserInterface } from './users/interfaces';
 import { ShopsService } from './shops/shops.service';
@@ -14,7 +14,7 @@ import { ReviewsService } from './reviews/reviews.service';
 @Controller()
 export class AppController {
   constructor(
-    private readonly userService: UserService,
+    private readonly usersService: UsersService,
     private readonly categorysService: CategorysService,
     private readonly shopsService: ShopsService,
     private readonly productsService: ProductsService,
@@ -30,7 +30,7 @@ export class AppController {
     const isSearchPath = request.url.startsWith('/product-list');
     const categories = await this.categorysService.findAll();
     if (authUser) {
-      const userInfo = await this.userService.find(authUser.user_id);
+      const userInfo = await this.usersService.findUserInfo(authUser.user_id);
       const user = userInfo.results;
       return { isIndexPath, isSearchPath, user, categories };
     } else {
@@ -46,11 +46,11 @@ export class AppController {
       });
       return;
     }
-
-    const userInfo = await this.userService.find(authUser.user_id);
+    const userInfo = await this.usersService.findUserInfo(authUser.user_id);
     const user = userInfo.results;
     const shop = await this.shopsService.findByUserId(authUser.user_id);
     const categories = await this.categorysService.findAll();
+
     return { user, shop, categories };
   }
 
@@ -68,10 +68,6 @@ export class AppController {
       await this.productsService.findPopularProducts();
     const findHighlyRatedProducts =
       await this.productsService.findHighlyRatedProducts();
-
-    if (authUser && authUser !== null && authUser.isAdmin === true) {
-      return response.redirect('admin-my-page');
-    }
 
     response.render('index', {
       isIndexPath,
@@ -94,6 +90,7 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
+
     response.render('sign-up', {
       isIndexPath,
       isSearchPath,
@@ -112,6 +109,7 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
+
     response.render('sign-in', {
       isIndexPath,
       isSearchPath,
@@ -130,6 +128,7 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
+
     response.render('my-page-user-edit', {
       isIndexPath,
       isSearchPath,
@@ -175,6 +174,7 @@ export class AppController {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
     const myLikes = await this.likesService.findAllLikes(authUser);
+
     response.render('like', {
       isIndexPath,
       isSearchPath,
@@ -194,6 +194,7 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
+
     response.render('cart', {
       isIndexPath,
       isSearchPath,
@@ -212,6 +213,7 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
+
     response.render('checkout', {
       isIndexPath,
       isSearchPath,
@@ -232,6 +234,7 @@ export class AppController {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
     const thisPath = request.url;
+
     response.render('product-list', {
       isIndexPath,
       isSearchPath,
@@ -255,6 +258,7 @@ export class AppController {
       await this.userPageData(request, authUser);
     const pageCategory = await this.categorysService.findOne(categoryId);
     const thisPath = request.url;
+
     response.render('category-list', {
       isIndexPath,
       isSearchPath,
@@ -278,7 +282,8 @@ export class AppController {
       await this.userPageData(request, authUser);
     const product = await this.productsService.findById(productId);
     const reviewRating = await this.productsService.getRatingAverage(productId);
-    const reviews = await this.reviewsService.getAllByReviews(productId);
+    const reviews = await this.reviewsService.findAllByProductId(productId);
+
     response.render('product-detail', {
       isIndexPath,
       isSearchPath,
@@ -301,7 +306,7 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
-    const shop = await this.shopsService.find(shopId);
+    const shop = await this.shopsService.findOne(shopId);
     const products = await this.productsService.findRegisteredAll(shopId);
 
     response.render('contact', {
@@ -324,6 +329,7 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
+
     response.render('review-list', {
       isIndexPath,
       isSearchPath,
@@ -346,6 +352,7 @@ export class AppController {
     const orderDetail = await this.ordersService.getDetailOrderById(
       orderDetailId,
     );
+
     response.render('create-review', {
       isIndexPath,
       isSearchPath,
@@ -369,9 +376,7 @@ export class AppController {
     const orderDetail = await this.ordersService.getDetailOrderById(
       orderDetailId,
     );
-    const review = await this.reviewsService.getByRevieworderDetailId(
-      orderDetailId,
-    );
+    const review = await this.reviewsService.findByOrderDetailId(orderDetailId);
 
     response.render('edit-review', {
       isIndexPath,
@@ -395,7 +400,8 @@ export class AppController {
     const products = await this.productsService.findRegisteredAll(
       authUser.shop_id,
     );
-    const reviews = await this.reviewsService.getAllByShopId(authUser.shop_id);
+    const reviews = await this.reviewsService.findAllByShopId(authUser.shop_id);
+
     response.render('admin-my-page', {
       authUser,
       user,
@@ -413,6 +419,7 @@ export class AppController {
     @Res() response: Response,
   ): Promise<void> {
     const { user, shop } = await this.adminPageData(authUser, response);
+
     response.render('admin-create-store', {
       authUser,
       user,
@@ -428,6 +435,7 @@ export class AppController {
     @Res() response: Response,
   ): Promise<void> {
     const { user, shop } = await this.adminPageData(authUser, response);
+
     response.render('admin-edit-store', {
       authUser,
       user,
@@ -446,6 +454,7 @@ export class AppController {
       authUser,
       response,
     );
+
     response.render('admin-create-product', {
       authUser,
       user,
@@ -467,6 +476,7 @@ export class AppController {
       response,
     );
     const product = await this.productsService.findById(productId);
+
     response.render('admin-edit-product', {
       authUser,
       user,

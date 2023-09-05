@@ -65,16 +65,6 @@ export class ProductsController {
     return await this.productsService.findById(id);
   }
 
-  //-- 상품 검색 (카테고리 번호)--//
-  // @Get('categories/:categoryId')
-  // async searchCategory(
-  //   @Param('category') categoryId: number,
-  //   @Query('limit') limit: number,
-  //   @Query('cursor') cursor: number,
-  // ): Promise<ProductsEntity[]> {
-  //   return await this.productsService.findByCategory(limit, cursor, categoryId);
-  // }
-
   //-- 상품 등록 --//
   @Post()
   @UseGuards(AuthGuard)
@@ -106,10 +96,4 @@ export class ProductsController {
   async deleteProduct(@Param('id') id: number): Promise<ResultableInterface> {
     return await this.productsService.delete(id);
   }
-
-  //-- 카테고리 만들기 (개발용) --//
-  //   @Post('category')
-  //   async category(@Body() data) {
-  //     return await this.productsService.category(data);
-  //   }
 }
