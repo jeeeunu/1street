@@ -10,7 +10,6 @@ import {
   Query,
   UseInterceptors,
   UploadedFiles,
-  Put,
   Patch,
   Delete,
 } from '@nestjs/common';
@@ -20,10 +19,9 @@ import { CreateReviewsDto } from './dtos';
 import { AuthUser } from '../auth/auth.decorator';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RequestUserInterface } from '../users/interfaces';
-import { ReviewInterface } from './interfaces';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ReviewsEntity } from 'src/common/entities';
-import { EditReviewsDto } from './dtos/edit-reviews.dto';
+import { UpdateReviewsDto } from './dtos/update-reviews.dto';
 
 @Controller('reviews')
 export class ReviewsController {
@@ -52,12 +50,12 @@ export class ReviewsController {
   @Get()
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
-  async getReviews(
+  async findReviews(
     @AuthUser() authUser: RequestUserInterface,
     @Query('limit') limit: number,
     @Query('cursor') cursor: number,
   ): Promise<ReviewsEntity[]> {
-    return await this.reviewsService.getAllByUserId(
+    return await this.reviewsService.findAllByUserId(
       limit,
       cursor,
       authUser.user_id,
@@ -68,11 +66,11 @@ export class ReviewsController {
   @Patch('/:order_detail_id')
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
-  async editReviews(
+  async updateReviews(
     @Param('order_detail_id') orderDetailId: number,
-    @Body() editReviewsDto: EditReviewsDto,
+    @Body() updateReviewsDto: UpdateReviewsDto,
   ): Promise<ResultableInterface> {
-    return await this.reviewsService.update(orderDetailId, editReviewsDto);
+    return await this.reviewsService.update(orderDetailId, updateReviewsDto);
   }
 
   //-- 리뷰 삭제 --//
