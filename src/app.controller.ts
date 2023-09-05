@@ -10,6 +10,7 @@ import { LikesService } from './likes/likes.service';
 import { CartsService } from './carts/carts.service';
 import { OrdersService } from './orders/orders.service';
 import { ReviewsService } from './reviews/reviews.service';
+import { QnasService } from './qnas/qnas.service';
 
 @Controller()
 export class AppController {
@@ -22,6 +23,7 @@ export class AppController {
     private readonly likesService: LikesService,
     private readonly cartsService: CartsService,
     private readonly reviewsService: ReviewsService,
+    private readonly qnasService: QnasService,
   ) {}
 
   //-- 공통 : 유저 --//
@@ -153,11 +155,13 @@ export class AppController {
     }
 
     const carts = await this.cartsService.getCart(authUser.user_id);
+    const qnaCount = await this.qnasService.getQnaCount();
 
     response.render('my-page', {
       isIndexPath,
       isSearchPath,
       user,
+      qnaCount,
       authUser,
       categories,
       carts,
@@ -199,6 +203,48 @@ export class AppController {
       isIndexPath,
       isSearchPath,
       user,
+      authUser,
+      categories,
+    });
+  }
+
+  //-- QNA 리스트 --//
+  @Get('my-page-user-qna/:user_id')
+  async myPageUserQna(
+    @Param('user_id') userId: number,
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
+    const qna = await this.qnasService.getForUser(userId);
+    response.render('my-page-user-qna', {
+      isIndexPath,
+      isSearchPath,
+      user,
+      qna,
+      authUser,
+      categories,
+    });
+  }
+
+  //-- QNA 등록 --//
+  @Get('user-qna/:product_id')
+  async userQna(
+    @Param('product_id') productId: number,
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
+    const qna = await this.qnasService.getForProduct(productId);
+    response.render('user-qna', {
+      isIndexPath,
+      isSearchPath,
+      user,
+      qna,
       authUser,
       categories,
     });

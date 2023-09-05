@@ -33,20 +33,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>2023-08-30</td>
-                    <td>판매자 이름</td>
-                    <td>상품 A</td>
-                    <td>상품 A에 대한 질문 내용입니다.</td>
-                    <td class="status-cell">답변완료</td>
-                  </tr>
-                  <tr>
-                    <td>2023-08-29</td>
-                    <td>다른 판매자</td>
-                    <td>상품 B</td>
-                    <td>상품 B에 대한 질문 내용입니다.</td>
-                    <td class="status-cell">답변대기중</td>
-                  </tr>
+                  <!-- 이 부분은 자바스크립트에서 동적으로 데이터를 추가할 곳입니다. -->
                 </tbody>
               </table>
             </div>
@@ -56,39 +43,57 @@
     </section>
     <!-- Qna Page Section End -->
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const questionRows = document.querySelectorAll('.qna__table tbody tr');
-        // 각 질문에 대한 데이터 가져오기
-        // .product-image, .product-name, .inquiry-content, .written-date, .seller-name 등의 클래스 이름은
-        // my-page-user-qna.ejs 페이지에서 실제로 사용하는 클래스 이름과 일치해야 한다.
-        questionRows.forEach((row) => {
-          const productImage = row.querySelector('.product-image').textContent;
-          const productName = row.querySelector('.product-name').textContent;
-          const inquiryContent =
-            row.querySelector('.inquiry-content').textContent;
-          const writtenDate = row.querySelector('.written-date').textContent;
-          const sellerName = row.querySelector('.seller-name').textContent;
+      // 로그인한 사용자 정보를 저장한 객체 (가정)
+      // 현재 로그인한 내 정보를 바탕으로 페이지를 불러오기에 성공했지만,
+      // 익명의 누군가가 접속했을 때 해당 userId를 통해 QNA 정보를 확인하는 것으로 수정해야한다.
+      const currentUser = {
+        id: 3, // 사용자의 고유 ID
+      };
 
-          // 데이터를 해당 요소에 추가하여 화면에 표시
-          const productImageCell = row.querySelector('.product-image-cell');
-          const productNameCell = row.querySelector('.product-name-cell');
-          const inquiryContentCell = row.querySelector('.inquiry-content-cell');
-          const writtenDateCell = row.querySelector('.written-date-cell');
-          const sellerNameCell = row.querySelector('.seller-name-cell');
-          const statusCell = row.querySelector('.status-cell');
+      // 로그인한 사용자의 ID를 userId 변수에 저장
+      const userId = currentUser.id;
 
-          productImageCell.textContent = productImage;
-          productNameCell.textContent = productName;
-          inquiryContentCell.textContent = inquiryContent;
-          writtenDateCell.textContent = writtenDate;
-          sellerNameCell.textContent = sellerName;
+      // userId를 사용하여 서버로 요청 보내는 예시
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          // 서버에서 Q&A 데이터를 가져오는 요청을 보냅니다.
+          const response = await fetch(`/qnas/user/${userId}`);
 
-          // 질문상태 처리 (기본값: '답변대기중')
-          statusCell.textContent = '답변대기중'; // 기본값 설정
+          if (response.ok) {
+            // 서버 응답이 성공인 경우
+            const qnaList = await response.json();
 
-          // 판매자가 답변 등록한 경우 동작 처리
-          statusCell.textContent = '답변완료';
-        });
+            // Q&A 데이터를 화면에 표시합니다.
+            const tbody = document.querySelector('.qna__table tbody');
+
+            // 이전의 예시 데이터를 삭제합니다.
+            tbody.innerHTML = '';
+
+            qnaList.forEach((qna) => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${qna.created_at}</td>
+                <td>${qna.user.name}</td>
+                <td>${qna.product.product_name}</td>
+                <td>${qna.qna_content}</td>
+                <td class="status-cell">${qna.status}</td>
+              `;
+
+              tbody.appendChild(row);
+            });
+          } else {
+            // 서버 응답이 실패인 경우
+            console.error(
+              '서버 응답 오류:',
+              response.status,
+              response.statusText,
+            );
+            alert('데이터를 불러오는데 실패했습니다.');
+          }
+        } catch (error) {
+          console.error('오류 발생:', error);
+          alert('오류가 발생했습니다.');
+        }
       });
     </script>
 

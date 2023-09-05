@@ -14,7 +14,7 @@ export class QnasService {
   constructor(
     @InjectRepository(QnasEntity)
     private qnaRepository: Repository<QnasEntity>,
-    private usersService: UsersService,
+    private userService: UsersService,
     @InjectRepository(ProductsEntity)
     private productRepository: Repository<ProductsEntity>,
   ) {}
@@ -27,7 +27,7 @@ export class QnasService {
     authUser: RequestUserInterface,
     // productId: number,
   ): Promise<ResultableInterface> {
-    const user = await this.usersService.findUser(authUser.user_id);
+    const user = await this.userService.findUser(authUser.user_id);
     const { product_id, qna_name, qna_content } = data;
     // product 존재 여부 확인
     // const product = await this.productRepository.findOne({ where: { id } }); //
@@ -60,36 +60,46 @@ export class QnasService {
 
   //-- 상품 아이디로 QNA 찾기 --//
 
-  // async getForProduct(productId: number): Promise<QnasEntity[]> {
-  //   const qna = await this.qnaRepository
-  //     .createQueryBuilder('qna')
-  //     .leftJoinAndSelect('qna.product', 'product')
-  //     .where('product_id = :productId', { productId })
-  //     .getMany();
-  //   if (!qna) {
-  //     throw new NotFoundException('해당 QNA가 존재하지 않습니다.');
-  //   }
+  async getForProduct(productId: number): Promise<QnasEntity[]> {
+    const qna = await this.qnaRepository
+      .createQueryBuilder('qna')
+      .leftJoinAndSelect('qna.product', 'product')
+      .where('product_id = :productId', { productId })
+      .getMany();
+    if (!qna) {
+      throw new NotFoundException('해당 QNA가 존재하지 않습니다.');
+    }
 
-  //   return qna;
-  // }
+    return qna;
+  }
 
-  // shop_id로 QNA 찾기
-  // async findByShopId(shopId: number): Promise<QnasEntity[]> {
-  //   const products = await this.productRepository.find({
-  //     where: {
-  //       shop: { id: shopId },
-  //     },
-  //   });
-  //   const productIds = products.map((product) => product.id);
+  // user_id로 QNA 찾기
+  async getForUser(userId: number): Promise<QnasEntity[]> {
+    const qna = await this.qnaRepository
+      .createQueryBuilder('qna')
+      .leftJoinAndSelect('qna.user', 'user')
+      .leftJoinAndSelect('qna.product', 'product')
+      .where('user_id = :userId', { userId })
+      .getMany();
+    if (!qna) {
+      throw new NotFoundException('해당 QNA가 존재하지 않습니다.');
+    }
 
-  //   const qnas = await this.qnaRepository.find({
-  //     where: {
-  //       product: In(productIds),
-  //     },
-  //   });
+    return qna;
+  }
 
-  //   return qnas;
-  // }
+  // QNA 개수 세기
+  async getQnaCount(): Promise<number> {
+    try {
+      const qnaCount = await this.qnaRepository.count();
+
+      // 조회된 Q&A 데이터 개수를 반환합니다.
+      return qnaCount;
+    } catch (error) {
+      console.error('Q&A 데이터 개수 조회 중 오류 발생:', error);
+      return 0;
+    }
+  }
 
   //-- QNA 수정 --//
   async update(

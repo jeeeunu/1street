@@ -19,5 +19,6 @@ import { ProductsEntity, ShopsEntity } from 'src/common/entities';
   ],
   controllers: [QnasController],
   providers: [QnasService, UploadsService, UsersService],
+  exports: [QnasService],
 })
 export class QnasModule {}
