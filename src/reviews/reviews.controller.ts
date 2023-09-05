@@ -32,7 +32,7 @@ export class ReviewsController {
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
   @UseInterceptors(FilesInterceptor('files'))
-  async signUp(
+  async createReview(
     @Param('order_detail_id') orderDetailId: number,
     @UploadedFiles() files: Express.Multer.File[],
     @Body() createReviewsDto: CreateReviewsDto,
@@ -66,7 +66,7 @@ export class ReviewsController {
   @Patch('/:order_detail_id')
   @UseGuards(AuthGuard)
   @UsePipes(ValidationPipe)
-  async updateReviews(
+  async updateReview(
     @Param('order_detail_id') orderDetailId: number,
     @Body() updateReviewsDto: UpdateReviewsDto,
   ): Promise<ResultableInterface> {
@@ -76,7 +76,7 @@ export class ReviewsController {
   //-- 리뷰 삭제 --//
   @Delete('/:order_detail_id')
   @UseGuards(AuthGuard)
-  async deleteShop(
+  async deleteReview(
     @Param('order_detail_id') orderDetailId: number,
   ): Promise<ResultableInterface> {
     return await this.reviewsService.delete(orderDetailId);

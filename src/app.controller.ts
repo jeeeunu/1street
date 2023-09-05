@@ -282,7 +282,7 @@ export class AppController {
       await this.userPageData(request, authUser);
     const product = await this.productsService.findById(productId);
     const reviewRating = await this.productsService.getRatingAverage(productId);
-    const reviews = await this.reviewsService.findAllByReviews(productId);
+    const reviews = await this.reviewsService.findAllByProductId(productId);
 
     response.render('product-detail', {
       isIndexPath,
@@ -376,9 +376,7 @@ export class AppController {
     const orderDetail = await this.ordersService.getDetailOrderById(
       orderDetailId,
     );
-    const review = await this.reviewsService.findByRevieworderDetailId(
-      orderDetailId,
-    );
+    const review = await this.reviewsService.findByOrderDetailId(orderDetailId);
 
     response.render('edit-review', {
       isIndexPath,

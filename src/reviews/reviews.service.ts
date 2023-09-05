@@ -73,7 +73,7 @@ export class ReviewsService {
   }
 
   //-- 리뷰 조회 : 상품 아이디 --//
-  async findAllByReviews(productId: number): Promise<ReviewsEntity[]> {
+  async findAllByProductId(productId: number): Promise<ReviewsEntity[]> {
     const reviews = this.reviewsEntity.find({
       where: {
         order_detail: {
@@ -130,7 +130,7 @@ export class ReviewsService {
   }
 
   //-- 리뷰 조회 : orderDetailId  --//
-  async findByRevieworderDetailId(orderDetailId: number) {
+  async findByOrderDetailId(orderDetailId: number) {
     return await this.reviewsEntity.findOne({
       where: { order_detail_id: orderDetailId },
     });
