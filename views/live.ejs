@@ -6,6 +6,7 @@
       integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
       crossorigin="anonymous"
     />
+    <link rel="short icon" href="/img/logo.png" />
   </head>
 
   <body>
@@ -68,6 +69,7 @@
       let stream;
       let isMuted = false;
       let isCameraOff = false;
+      let roomUser = [];
 
       window.onload = async () => {
         await joinRoom();
@@ -184,14 +186,21 @@
       });
 
       //- 방장: offer전송 -//
-      socket.on('welcome', async () => {
-        const offer = await peerConnection.createOffer();
-        peerConnection.setLocalDescription(offer);
-        socket.emit('offer', { offer, title });
+      socket.on('welcome', async (id) => {
+        roomUser.push(id);
+        console.log('roomUser', roomUser);
+        if (socket.id === roomManager) {
+          console.log('welcome 누군가 들어옴!', id);
+          const offer = await peerConnection.createOffer();
+          peerConnection.setLocalDescription(offer);
+          console.log('방장이 프론트에서 offer보냄', roomManager);
+          socket.emit('offer', { offer, title, id });
+        }
       });
 
       //- offer -> answer -//
       socket.on('offer', async (offer) => {
+        console.log('offer 누가 받은 것임..?', socket.id);
         await peerConnection.setRemoteDescription(offer);
         const answer = await peerConnection.createAnswer();
         await peerConnection.setLocalDescription(answer);
@@ -200,14 +209,17 @@
 
       //- answer 받기 -//
       socket.on('answer', async (answer) => {
-        if (peerConnection.signalingState === 'have-local-offer') {
-          try {
-            await peerConnection.setRemoteDescription(answer);
-          } catch (error) {
-            console.error('SDP 파싱 오류', error);
+        if (roomManager === socket.id) {
+          console.log(peerConnection, 'answer 받음', roomManager, socket.id);
+          if (peerConnection.signalingState === 'have-local-offer') {
+            try {
+              await peerConnection.setRemoteDescription(answer);
+            } catch (error) {
+              console.error('SDP 파싱 오류', error);
+            }
+          } else {
+            console.log('have-local-offer 상태가 아님');
           }
-        } else {
-          console.log('have-local-offer 상태가 아님');
         }
       });
 
@@ -234,7 +246,10 @@
       };
 
       const handleIce = (ice) => {
-        socket.emit('ice', { candidate: ice.candidate, title });
+        console.log('roomUser', roomUser);
+        roomUser.forEach((user) => {
+          socket.emit('ice', { candidate: ice.candidate, title, user });
+        });
       };
 
       //- stream 연결 -//
@@ -247,6 +262,11 @@
 
       socket.on('ice', (ice) => {
         peerConnection.addIceCandidate(ice);
+      });
+
+      //- 연결 끊김 -//
+      socket.on('disconnectRoom', (id) => {
+        roomUser = roomUser.filter((user) => user !== id);
       });
     </script>
   </body>
