@@ -72,7 +72,22 @@ export class ProductsService {
     return { status: true, message: '상품을 성공적으로 등록했습니다' };
   }
 
-  //-- 신상품 --//
+  //-- 상품 전체보기(무한 스크롤) --//
+  async findAll(limit: number, cursor: number): Promise<ProductsEntity[]> {
+    const query = await this.productRepository
+      .createQueryBuilder('product')
+      .orderBy('product.id', 'DESC')
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .take(limit || 8);
+
+    if (cursor) {
+      await query.where('product.id < :cursor', { cursor });
+    }
+
+    return await query.getMany();
+  }
+
+  //-- 상품 조회 : 신상품 --//
   async findLatestProducts(): Promise<ProductsEntity[]> {
     const products = await this.productRepository.find({
       relations: ['product_image'],
@@ -83,7 +98,7 @@ export class ProductsService {
     return products;
   }
 
-  //-- 인기 상품 --//
+  //-- 상품 조회 : 인기 상품 --//
   async findPopularProducts(): Promise<any> {
     const orderDetail = await this.orderDetailsEntity
       .createQueryBuilder('order_detail')
@@ -105,7 +120,7 @@ export class ProductsService {
     return products;
   }
 
-  //-- 평점이 높은 상품 --//
+  //-- 상품 조회 : 평점 높은 상품 --//
   async findHighlyRatedProducts(): Promise<any> {
     const productsRank = await this.productRepository
       .createQueryBuilder('product')
@@ -139,22 +154,7 @@ export class ProductsService {
     return products;
   }
 
-  //-- 상품 전체보기(무한 스크롤) --//
-  async findAll(limit: number, cursor: number): Promise<ProductsEntity[]> {
-    const query = await this.productRepository
-      .createQueryBuilder('product')
-      .orderBy('product.id', 'DESC')
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .take(limit || 8);
-
-    if (cursor) {
-      await query.where('product.id < :cursor', { cursor });
-    }
-
-    return await query.getMany();
-  }
-
-  //-- 상품 검색 (검색어)--//
+  //-- 상품 검색 : 키워드 --//
   async findByKeyword(
     limit: number,
     cursor: number,
@@ -250,6 +250,20 @@ export class ProductsService {
     return product;
   }
 
+  //-- 상품 조회 : admin-등록된 상품 보기 --//
+  async findRegisteredAll(shopId: number): Promise<ProductsEntity[]> {
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .leftJoinAndSelect('product.category', 'category')
+      .where('product.shop_id = :shopId', { shopId })
+      .orderBy('product.created_at', 'DESC')
+      .addOrderBy('product_image.id', 'ASC')
+      .getMany();
+
+    return products;
+  }
+
   //-- 상품별 평점 평균값 구하기 --//
   async getRatingAverage(productId: number): Promise<number> {
     const reviews = await this.reviewsEntity
@@ -274,20 +288,6 @@ export class ProductsService {
 
     console.log(averageRating);
     return averageRating;
-  }
-
-  //-- admin : 등록된 상품 보기 --//
-  async findRegisteredAll(shopId: number): Promise<ProductsEntity[]> {
-    const products = await this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .leftJoinAndSelect('product.category', 'category')
-      .where('product.shop_id = :shopId', { shopId })
-      .orderBy('product.created_at', 'DESC')
-      .addOrderBy('product_image.id', 'ASC')
-      .getMany();
-
-    return products;
   }
 
   //-- 상품 수정 --//
