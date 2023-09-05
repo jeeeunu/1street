@@ -9,7 +9,7 @@ import { UploadsService } from 'src/uploads/uploads.service';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto, EditUserDto } from './dtos';
+import { CreateUserDto, UpdateUserDto } from './dtos';
 import { UsersEntity } from '../common/entities/users.entity';
 import { userInfo } from './interfaces';
 import { ResultableInterface } from 'src/common/interfaces';
@@ -101,7 +101,7 @@ export class UsersService {
   //-- 유저 수정 --//
   async update(
     userId: number,
-    editUserDto: EditUserDto,
+    updateUserDto: UpdateUserDto,
     files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
     const existingUser = await this.usersEntity.findOne({
@@ -125,7 +125,7 @@ export class UsersService {
       }
     }
 
-    Object.assign(existingUser, editUserDto);
+    Object.assign(existingUser, updateUserDto);
     await this.usersEntity.save(existingUser);
 
     return { status: true, message: '회원 정보가 수정되었습니다.' };

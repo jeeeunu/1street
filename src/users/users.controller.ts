@@ -12,7 +12,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, EditUserDto } from './dtos';
+import { CreateUserDto, UpdateUserDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from './interfaces/index';
 import { AuthGuard } from '../auth/auth.guard';
@@ -41,10 +41,14 @@ export class UserController {
   @UseInterceptors(FilesInterceptor('files'))
   async editUser(
     @UploadedFiles() files: Express.Multer.File[],
-    @Body() editUserDto: EditUserDto,
+    @Body() updateUserDto: UpdateUserDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    return await this.usersService.update(authUser.user_id, editUserDto, files);
+    return await this.usersService.update(
+      authUser.user_id,
+      updateUserDto,
+      files,
+    );
   }
 
   //-- 유저 탈퇴 --//
