@@ -435,10 +435,10 @@
 
             //-- 결제 기능 --//
             var IMP = window.IMP; // 생략가능
-            IMP.init('imp18070708'); // <-- 본인 가맹점 식별코드 삽입
+            IMP.init('가맹점키'); // <-- 본인 가맹점 식별코드 삽입
 
             function requestPay() {
-              IMP.init('imp18070708'); // <-- 본인 가맹점 식별코드 삽입
+              IMP.init('가맹점키'); // <-- 본인 가맹점 식별코드 삽입
               IMP.request_pay({
                 pg: "INIpayTest",
                 pay_method: "card",
