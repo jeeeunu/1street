@@ -7,7 +7,7 @@ export class LoginDto {
 
   @IsString({ message: '올바른 비밀번호를 입력해주세요.' })
   @IsNotEmpty({ message: '패스워드를 입력해주세요.' })
-  @Matches(/^(?=.*[a-z])(?=.*[0-9])[a-z0-9]+$/i, {
+  @Matches(/^(?=.*[a-z])(?=.*[0-9])[a-z0-9!@#$%^&*()_+{}:;<>,.?~=-]+$/i, {
     message: '비밀번호는 최소 하나의 소문자와 하나의 숫자를 포함해야 합니다.',
   })
   @Length(8, 20, {
