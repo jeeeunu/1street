@@ -7,7 +7,7 @@ import { UsersEntity } from 'src/common/entities/users.entity';
 import { UploadsService } from 'src/uploads/uploads.service';
 import { ReviewImageEntity } from 'src/uploads/entities/review-image.entity';
 import { ShopsService } from 'src/shops/shops.service';
-import { UserService } from 'src/users/users.service';
+import { UsersService } from 'src/users/users.service';
 import { OrderDetailsEntity } from 'src/orders/entities/order-detail.entity';
 
 @Module({
@@ -21,7 +21,7 @@ import { OrderDetailsEntity } from 'src/orders/entities/order-detail.entity';
     ]),
   ],
   controllers: [ReviewsController],
-  providers: [ReviewsService, UploadsService, ShopsService, UserService],
+  providers: [ReviewsService, UploadsService, ShopsService, UsersService],
   exports: [ReviewsService],
 })
 export class ReviewsModule {}

@@ -11,7 +11,7 @@ import {
   UseInterceptors,
   Res,
 } from '@nestjs/common';
-import { UserService } from './users.service';
+import { UsersService } from './users.service';
 import { CreateUserDto, EditUserDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from './interfaces/index';
@@ -22,7 +22,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   //-- 일반 회원가입 --//
   @Post()
@@ -32,7 +32,7 @@ export class UserController {
     @UploadedFiles() files: Express.Multer.File[],
     @Body() createUserDto: CreateUserDto,
   ): Promise<ResultableInterface> {
-    return await this.userService.signUp(createUserDto, files);
+    return await this.usersService.signUp(createUserDto, files);
   }
 
   //-- 유저 수정 --//
@@ -44,7 +44,7 @@ export class UserController {
     @Body() editUserDto: EditUserDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    return await this.userService.update(authUser.user_id, editUserDto, files);
+    return await this.usersService.update(authUser.user_id, editUserDto, files);
   }
 
   //-- 유저 탈퇴 --//
@@ -55,7 +55,7 @@ export class UserController {
     @Res() res: Response,
   ): Promise<any> {
     res.clearCookie('Authentication');
-    const message = await this.userService.delete(authUser.user_id);
+    const message = await this.usersService.delete(authUser.user_id);
     return res.json({
       status: true,
       message: message,

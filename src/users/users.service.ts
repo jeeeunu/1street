@@ -21,7 +21,7 @@ export class UserNotFoundException extends NotFoundException {
 }
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     @InjectRepository(UsersEntity)
     private usersEntity: Repository<UsersEntity>,

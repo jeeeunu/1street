@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { UserService } from './users/users.service';
+import { UsersService } from './users/users.service';
 import { AuthUser } from './auth/auth.decorator';
 import { RequestUserInterface } from './users/interfaces';
 import { ShopsService } from './shops/shops.service';
@@ -14,7 +14,7 @@ import { ReviewsService } from './reviews/reviews.service';
 @Controller()
 export class AppController {
   constructor(
-    private readonly userService: UserService,
+    private readonly usersService: UsersService,
     private readonly categorysService: CategorysService,
     private readonly shopsService: ShopsService,
     private readonly productsService: ProductsService,
@@ -30,7 +30,7 @@ export class AppController {
     const isSearchPath = request.url.startsWith('/product-list');
     const categories = await this.categorysService.findAll();
     if (authUser) {
-      const userInfo = await this.userService.findUserInfo(authUser.user_id);
+      const userInfo = await this.usersService.findUserInfo(authUser.user_id);
       const user = userInfo.results;
       return { isIndexPath, isSearchPath, user, categories };
     } else {
@@ -46,7 +46,7 @@ export class AppController {
       });
       return;
     }
-    const userInfo = await this.userService.findUserInfo(authUser.user_id);
+    const userInfo = await this.usersService.findUserInfo(authUser.user_id);
     const user = userInfo.results;
     const shop = await this.shopsService.findByUserId(authUser.user_id);
     const categories = await this.categorysService.findAll();
