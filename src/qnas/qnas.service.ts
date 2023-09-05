@@ -27,7 +27,7 @@ export class QnasService {
     authUser: RequestUserInterface,
     // productId: number,
   ): Promise<ResultableInterface> {
-    const user = await this.userService.findOne(authUser.user_id);
+    const user = await this.userService.findUser(authUser.user_id);
     const { product_id, qna_name, qna_content } = data;
     // product 존재 여부 확인
     // const product = await this.productRepository.findOne({ where: { id } }); //

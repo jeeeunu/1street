@@ -44,7 +44,7 @@ export class UserController {
     @Body() editUserDto: EditUserDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    return await this.userService.edit(authUser.user_id, editUserDto, files);
+    return await this.userService.update(authUser.user_id, editUserDto, files);
   }
 
   //-- 유저 탈퇴 --//

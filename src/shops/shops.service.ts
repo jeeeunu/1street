@@ -52,7 +52,7 @@ export class ShopsService {
   ): Promise<ResultableInterface> {
     if (!authUser.isAdmin)
       throw new ForbiddenException('판매자만 스토어를 개설할 수 있습니다.');
-    const user = await this.userService.findOne(authUser.user_id);
+    const user = await this.userService.findUser(authUser.user_id);
     const foundShop = await this.shopRepository.findOne({
       where: { user: { id: user.id } },
     });
