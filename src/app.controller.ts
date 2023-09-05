@@ -30,7 +30,7 @@ export class AppController {
     const isSearchPath = request.url.startsWith('/product-list');
     const categories = await this.categorysService.findAll();
     if (authUser) {
-      const userInfo = await this.userService.find(authUser.user_id);
+      const userInfo = await this.userService.findUser(authUser.user_id);
       const user = userInfo.results;
       return { isIndexPath, isSearchPath, user, categories };
     } else {
@@ -47,7 +47,7 @@ export class AppController {
       return;
     }
 
-    const userInfo = await this.userService.find(authUser.user_id);
+    const userInfo = await this.userService.findUser(authUser.user_id);
     const user = userInfo.results;
     const shop = await this.shopsService.findByUserId(authUser.user_id);
     const categories = await this.categorysService.findAll();

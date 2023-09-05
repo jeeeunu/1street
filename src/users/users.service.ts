@@ -57,7 +57,7 @@ export class UserService {
   }
 
   //-- 유저 조회 --//
-  async find(userId: number): Promise<userInfo> {
+  async findUser(userId: number): Promise<userInfo> {
     // TODO :: 장바구니 개수, orders_details 불러오기
     const user = await this.usersEntity
       .createQueryBuilder('user')

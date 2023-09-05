@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   UsePipes,
@@ -34,13 +33,6 @@ export class UserController {
     @Body() createUserDto: CreateUserDto,
   ): Promise<ResultableInterface> {
     return await this.userService.signUp(createUserDto, files);
-  }
-
-  //-- 유저 조회 --//
-  @Get('/:category')
-  @UseGuards(AuthGuard)
-  async getUserInfo(@AuthUser() authUser: RequestUserInterface): Promise<any> {
-    return await this.userService.find(authUser.user_id);
   }
 
   //-- 유저 수정 --//
