@@ -44,7 +44,7 @@ export class UploadsService {
   }
 
   //-- 이미지 수정 : 유저 프로필 --//
-  async editProfileImage(
+  async updateProfileImage(
     url: string,
     files: Express.Multer.File[],
   ): Promise<string> {

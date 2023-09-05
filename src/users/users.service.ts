@@ -112,7 +112,7 @@ export class UsersService {
 
     if (files.length > 0) {
       if (existingUser.profile_image) {
-        const imageUrl = await this.uploadsService.editProfileImage(
+        const imageUrl = await this.uploadsService.updateProfileImage(
           existingUser.profile_image,
           files,
         );
