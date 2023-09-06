@@ -100,23 +100,36 @@ export class ProductsService {
 
   //-- 상품 조회 : 인기 상품 --//
   async findPopularProducts(): Promise<any> {
-    const orderDetail = await this.orderDetailsEntity
-      .createQueryBuilder('order_detail')
-      .select('order_detail.product_id', 'product_id')
-      .addSelect('COUNT(order_detail.product_id)', 'count')
-      .groupBy('order_detail.product_id')
-      .orderBy('count', 'DESC')
-      .limit(6)
-      .getRawMany();
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoin(
+        (subQuery) =>
+          subQuery
+            .select([
+              'order_detail.product_id',
+              'SUM(order_detail.order_quantity) as total_sales',
+            ])
+            .from(OrderDetailsEntity, 'order_detail')
+            .groupBy('order_detail.product_id'),
+        'order_detail',
+        'order_detail.product_id = product.id',
+      )
+      .select([
+        'product.id',
+        'product.product_name',
+        'product.product_desc',
+        'product.product_domestic',
+        'product.product_price',
+        'product.shop_id',
+        'product.created_at',
+        'product.updated_at',
+        'product.category_id',
+        'IFNULL(total_sales, 0) as total_sales',
+      ])
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .orderBy('total_sales', 'DESC')
+      .getMany();
 
-    const productIds = orderDetail.map((item) => item.product_id);
-
-    const products = await this.productRepository.find({
-      where: {
-        id: In(productIds),
-      },
-      relations: ['product_image'],
-    });
     return products;
   }
 
@@ -133,7 +146,7 @@ export class ProductsService {
       .groupBy('product.id')
       .having('averageRating IS NOT NULL')
       .orderBy('averageRating', 'DESC')
-      .limit(6)
+      .limit(8)
       .getRawMany();
 
     const productIds = productsRank.map((item) => item.product_id);
@@ -160,14 +173,7 @@ export class ProductsService {
     cursor: number,
     keyword: string,
     categoryId: number,
-    sort:
-      | 'asc'
-      | 'desc'
-      | 'rank'
-      | 'lowPrice'
-      | 'highPrice'
-      | 'sales'
-      | 'latest',
+    sort: 'asc' | 'desc' | 'lowPrice' | 'highPrice' | 'sales' | 'latest',
   ): Promise<ProductsEntity[]> {
     let query;
 
@@ -176,9 +182,8 @@ export class ProductsService {
       console.log('카테고리 검색');
       query = await this.productRepository
         .createQueryBuilder('product')
-        .leftJoinAndSelect('product.category', 'category')
-        .leftJoinAndSelect('product.product_image', 'product_image')
-        .where('category.id = :categoryId', { categoryId });
+        .where('category.id = :categoryId', { categoryId })
+        .limit(8);
     }
 
     // 키워드 검색
@@ -189,17 +194,40 @@ export class ProductsService {
         .where('product.product_name LIKE :keyword', {
           keyword: `%${keyword}%`,
         })
-        .leftJoinAndSelect('product.product_image', 'product_image')
-        .leftJoinAndSelect('product.order_detail', 'order_detail');
+        .limit(8);
     }
 
     if (query) {
-      query.take(limit || 10);
+      query.take(limit || 8);
 
-      // TODO :: 랭킹
-      if (sort === 'rank') {
-        console.log('랭킹 순으로 정렬');
-        query.orderBy('product.product_price', 'ASC');
+      if (sort === 'sales') {
+        console.log('판매량순으로 정렬/반환');
+        query
+          .leftJoin(
+            (subQuery) =>
+              subQuery
+                .select([
+                  'order_detail.product_id',
+                  'SUM(order_detail.order_quantity) as total_sales',
+                ])
+                .from(OrderDetailsEntity, 'order_detail')
+                .groupBy('order_detail.product_id'),
+            'order_detail',
+            'order_detail.product_id = product.id',
+          )
+          .select([
+            'product.id',
+            'product.product_name',
+            'product.product_desc',
+            'product.product_domestic',
+            'product.product_price',
+            'product.shop_id',
+            'product.created_at',
+            'product.updated_at',
+            'IFNULL(total_sales, 0) as total_sales',
+          ])
+          .orderBy('total_sales', 'DESC')
+          .take(limit || 8);
       }
 
       if (sort === 'lowPrice') {
@@ -212,11 +240,6 @@ export class ProductsService {
         query.orderBy('product.product_price', 'DESC');
       }
 
-      if (sort === 'sales') {
-        console.log('판매량순으로 정렬');
-        query.orderBy('product.order_detail', 'DESC');
-      }
-
       if (sort === 'desc') {
         console.log('최신순으로 정렬');
         query.orderBy('product.created_at', 'DESC');
@@ -226,7 +249,10 @@ export class ProductsService {
         query.andWhere('product.id > :cursor', { cursor });
       }
 
-      return await query.getMany();
+      return await query
+        .leftJoinAndSelect('product.category', 'category')
+        .leftJoinAndSelect('product.product_image', 'product_image')
+        .getMany();
     } else {
       throw new NotFoundException('검색어를 입력해주세요');
     }

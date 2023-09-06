@@ -177,9 +177,7 @@ img {
   font-weight: 700;
 }
 
-.list-comment.empty::after {
-  content: '작성된 댓글이 없습니다.';
-  flex: 1;
+.empty {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -187,6 +185,10 @@ img {
   font-size: 1.6rem;
   font-weight: 700;
   color: #999;
+}
+
+.list-comment.empty::after {
+  content: '작성된 리뷰가 없습니다.';
 }
 
 .item-comment:first-child {
@@ -894,6 +896,8 @@ fieldset {
 }
 
 .btn-viewed-products {
+  display: flex;
+  font-size: 14px;
   background-color: transparent;
 }
 
