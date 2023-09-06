@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersEntity } from 'src/common/entities/users.entity';
 import { QnasEntity } from 'src/common/entities/qnas.entity';
 import { UploadsService } from 'src/uploads/uploads.service';
-import { UserService } from 'src/users/users.service';
+import { UsersService } from 'src/users/users.service';
 import { ProductsEntity, ShopsEntity } from 'src/common/entities';
 
 @Module({
@@ -18,6 +18,7 @@ import { ProductsEntity, ShopsEntity } from 'src/common/entities';
     ]),
   ],
   controllers: [QnasController],
-  providers: [QnasService, UploadsService, UserService],
+  providers: [QnasService, UploadsService, UsersService],
+  exports: [QnasService],
 })
 export class QnasModule {}

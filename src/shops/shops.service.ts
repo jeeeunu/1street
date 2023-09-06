@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { ShopsEntity } from '../common/entities';
 import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
-import { UserService } from '../users/users.service';
+import { UsersService } from '../users/users.service';
 import { ShopCreateDto, ShopUpdateDto } from './dtos/index';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class ShopsService {
   constructor(
     @InjectRepository(ShopsEntity)
     private shopRepository: Repository<ShopsEntity>,
-    private userService: UserService,
+    private usersService: UsersService,
   ) {}
 
   //-- 마이페이지 스토어 정보 --//
@@ -29,7 +29,7 @@ export class ShopsService {
   }
 
   //-- 스토어 아이디로 스토어 찾기 --//
-  async find(id: number): Promise<ShopsEntity> {
+  async findOne(id: number): Promise<ShopsEntity> {
     try {
       const shop = await this.shopRepository.findOne({
         where: { id },
@@ -52,7 +52,7 @@ export class ShopsService {
   ): Promise<ResultableInterface> {
     if (!authUser.isAdmin)
       throw new ForbiddenException('판매자만 스토어를 개설할 수 있습니다.');
-    const user = await this.userService.findOne(authUser.user_id);
+    const user = await this.usersService.findUser(authUser.user_id);
     const foundShop = await this.shopRepository.findOne({
       where: { user: { id: user.id } },
     });

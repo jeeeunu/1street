@@ -72,7 +72,22 @@ export class ProductsService {
     return { status: true, message: '상품을 성공적으로 등록했습니다' };
   }
 
-  //-- 신상품 --//
+  //-- 상품 전체보기(무한 스크롤) --//
+  async findAll(limit: number, cursor: number): Promise<ProductsEntity[]> {
+    const query = await this.productRepository
+      .createQueryBuilder('product')
+      .orderBy('product.id', 'DESC')
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .take(limit || 8);
+
+    if (cursor) {
+      await query.where('product.id < :cursor', { cursor });
+    }
+
+    return await query.getMany();
+  }
+
+  //-- 상품 조회 : 신상품 --//
   async findLatestProducts(): Promise<ProductsEntity[]> {
     const products = await this.productRepository.find({
       relations: ['product_image'],
@@ -83,7 +98,7 @@ export class ProductsService {
     return products;
   }
 
-  //-- 인기 상품 --//
+  //-- 상품 조회 : 인기 상품 --//
   async findPopularProducts(): Promise<any> {
     const orderDetail = await this.orderDetailsEntity
       .createQueryBuilder('order_detail')
@@ -105,57 +120,41 @@ export class ProductsService {
     return products;
   }
 
-  //-- 평점이 높은 상품 --//
+  //-- 상품 조회 : 평점 높은 상품 --//
   async findHighlyRatedProducts(): Promise<any> {
-    const orderDetail = await this.reviewsEntity
-      .createQueryBuilder('review')
-      .select('review.order_detail_id', 'order_detail_id')
-      .addSelect('SUM(review.review_rating)', 'ratingSum')
-      .groupBy('review.order_detail_id')
-      .orderBy('ratingSum', 'DESC')
+    const productsRank = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.order_detail', 'order_detail')
+      .leftJoinAndSelect('order_detail.review', 'review')
+      .select([
+        'product.id AS product_id',
+        'AVG(review.review_rating) AS averageRating',
+      ])
+      .groupBy('product.id')
+      .having('averageRating IS NOT NULL')
+      .orderBy('averageRating', 'DESC')
       .limit(6)
       .getRawMany();
 
-    const orderDetailIds = orderDetail.map((item) => item.order_detail_id);
-    console.log(orderDetailIds);
+    const productIds = productsRank.map((item) => item.product_id);
 
-    const orderDetailEntities = await this.orderDetailsEntity.find({
-      where: {
-        id: In(orderDetailIds),
-      },
-      relations: ['product'],
-    });
-
-    const productIds = orderDetailEntities.map(
-      (orderDetail) => orderDetail.product.id,
-    );
-
-    const products = await this.productRepository.find({
-      where: {
-        id: In(productIds),
-      },
-      relations: ['product_image'],
-    });
+    const products = [];
+    for (const productId of productIds) {
+      const product = await this.productRepository.findOne({
+        where: {
+          id: productId,
+        },
+        relations: ['product_image'],
+      });
+      if (product) {
+        products.push(product);
+      }
+    }
 
     return products;
   }
 
-  //-- 상품 전체보기(무한 스크롤) --//
-  async findAll(limit: number, cursor: number): Promise<ProductsEntity[]> {
-    const query = await this.productRepository
-      .createQueryBuilder('product')
-      .orderBy('product.id', 'DESC')
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .take(limit || 10);
-
-    if (cursor) {
-      await query.where('product.id < :cursor', { cursor });
-    }
-
-    return await query.getMany();
-  }
-
-  //-- 상품 검색 (검색어)--//
+  //-- 상품 검색 : 키워드 --//
   async findByKeyword(
     limit: number,
     cursor: number,
@@ -220,7 +219,7 @@ export class ProductsService {
 
       if (sort === 'desc') {
         console.log('최신순으로 정렬');
-        query.orderBy('product.created_at', 'ASC');
+        query.orderBy('product.created_at', 'DESC');
       }
 
       if (cursor) {
@@ -251,6 +250,20 @@ export class ProductsService {
     return product;
   }
 
+  //-- 상품 조회 : admin-등록된 상품 보기 --//
+  async findRegisteredAll(shopId: number): Promise<ProductsEntity[]> {
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .leftJoinAndSelect('product.category', 'category')
+      .where('product.shop_id = :shopId', { shopId })
+      .orderBy('product.created_at', 'DESC')
+      .addOrderBy('product_image.id', 'ASC')
+      .getMany();
+
+    return products;
+  }
+
   //-- 상품별 평점 평균값 구하기 --//
   async getRatingAverage(productId: number): Promise<number> {
     const reviews = await this.reviewsEntity
@@ -277,32 +290,18 @@ export class ProductsService {
     return averageRating;
   }
 
-  //-- admin : 등록된 상품 보기 --//
-  async findRegisteredAll(shopId: number): Promise<ProductsEntity[]> {
-    const products = await this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .leftJoinAndSelect('product.category', 'category')
-      .where('product.shop_id = :shopId', { shopId })
-      .orderBy('product.created_at', 'DESC')
-      .addOrderBy('product_image.id', 'ASC')
-      .getMany();
-
-    return products;
-  }
-
   //-- 상품 수정 --//
   async update(
     productId: number,
     data: ProductUpdateDto,
     files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
-    const existingProduct = await this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .where('product.id = :productId', { productId })
-      .getOne();
+    const existingProduct = await this.productRepository.findOne({
+      where: { id: productId },
+      relations: ['product_image', 'category'],
+    });
 
+    existingProduct.category.id = data.category_id;
     Object.assign(existingProduct, data);
     const updatedProduct = await this.productRepository.save(existingProduct);
 
@@ -310,7 +309,6 @@ export class ProductsService {
     if (files.length > 0) {
       const imageDetails = await this.uploadsService.createProductImages(files);
       for (const imageDetail of imageDetails) {
-        console.log(imageDetail, 'heheheheheheheheheheh');
         const productImage = await this.productImageRepository.create({
           url: imageDetail,
           product_id: productId,

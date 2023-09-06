@@ -203,7 +203,7 @@ img {
 .item-comment .title-wrap {
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 5px;
   font-weight: 700;
 }
 
@@ -875,15 +875,16 @@ fieldset {
 }
 
 #viewedProductList {
-  height: 242px;
+  height: 240px;
   overflow: auto;
   padding: 10px 0;
 }
 
 #viewedProductList > li {
-  margin: 0 auto 10px;
+  margin: 8px auto;
   width: 67px;
   height: 67px;
+  border: 1px solid #ddd;
   border-radius: 5px;
   overflow: hidden;
 }
