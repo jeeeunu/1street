@@ -21,7 +21,7 @@ import { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
-export class UserController {
+export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   //-- 일반 회원가입 --//

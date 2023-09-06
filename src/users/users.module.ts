@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MulterModule } from '@nestjs/platform-express';
 import { UsersService } from './users.service';
-import { UserController } from './users.controller';
+import { UsersController } from './users.controller';
 import { UsersEntity } from '../common/entities/users.entity';
 import { UploadsService } from 'src/uploads/uploads.service';
 import * as cookieParser from 'cookie-parser';
@@ -17,7 +17,7 @@ import { ShopsEntity } from 'src/common/entities';
     }),
     TypeOrmModule.forFeature([UsersEntity, ShopsEntity]),
   ],
-  controllers: [UserController],
+  controllers: [UsersController],
   providers: [UsersService, UploadsService],
   exports: [UsersService],
 })
