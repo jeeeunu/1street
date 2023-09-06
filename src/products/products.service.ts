@@ -182,8 +182,6 @@ export class ProductsService {
       console.log('카테고리 검색');
       query = await this.productRepository
         .createQueryBuilder('product')
-        .leftJoinAndSelect('product.category', 'category')
-        .leftJoinAndSelect('product.product_image', 'product_image')
         .where('category.id = :categoryId', { categoryId })
         .limit(8);
     }
@@ -196,30 +194,15 @@ export class ProductsService {
         .where('product.product_name LIKE :keyword', {
           keyword: `%${keyword}%`,
         })
-        .leftJoinAndSelect('product.product_image', 'product_image')
-        .leftJoinAndSelect('product.order_detail', 'order_detail');
+        .limit(8);
     }
 
     if (query) {
-      query.take(limit || 10);
-
-      if (sort === 'lowPrice') {
-        console.log('낮은 가격순으로 정렬');
-        query.orderBy('product.product_price', 'ASC');
-      }
-
-      if (sort === 'highPrice') {
-        console.log('높은 가격순으로 정렬');
-        query.orderBy('product.product_price', 'DESC');
-      }
+      query.take(limit || 8);
 
       if (sort === 'sales') {
         console.log('판매량순으로 정렬/반환');
-        return await this.productRepository
-          .createQueryBuilder('product')
-          .where('product.product_name LIKE :keyword', {
-            keyword: `%${keyword}%`,
-          })
+        query
           .leftJoin(
             (subQuery) =>
               subQuery
@@ -241,13 +224,20 @@ export class ProductsService {
             'product.shop_id',
             'product.created_at',
             'product.updated_at',
-            'product.category_id',
             'IFNULL(total_sales, 0) as total_sales',
           ])
-          .leftJoinAndSelect('product.product_image', 'product_image')
           .orderBy('total_sales', 'DESC')
-          .take(limit || 8)
-          .getMany();
+          .take(limit || 8);
+      }
+
+      if (sort === 'lowPrice') {
+        console.log('낮은 가격순으로 정렬');
+        query.orderBy('product.product_price', 'ASC');
+      }
+
+      if (sort === 'highPrice') {
+        console.log('높은 가격순으로 정렬');
+        query.orderBy('product.product_price', 'DESC');
       }
 
       if (sort === 'desc') {
@@ -259,7 +249,10 @@ export class ProductsService {
         query.andWhere('product.id > :cursor', { cursor });
       }
 
-      return await query.getMany();
+      return await query
+        .leftJoinAndSelect('product.category', 'category')
+        .leftJoinAndSelect('product.product_image', 'product_image')
+        .getMany();
     } else {
       throw new NotFoundException('검색어를 입력해주세요');
     }
