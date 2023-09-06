@@ -44,18 +44,27 @@ export class QnasController {
   }
 
   // QNA 조회 (product_id)
-  // @Get('product/:product_id')
-  // @UseGuards(AuthGuard)
-  // async getQnasForProduct(
-  //   @Query('product_id') productId: number,
-  // ): Promise<QnasEntity[]> {
-  //   return await this.qnasService.getForProduct(productId);
-  // }
+  @Get('product/:product_id')
+  @UseGuards(AuthGuard)
+  async getQnasForProduct(
+    @Param('product_id') productId: number,
+  ): Promise<QnasEntity[]> {
+    return await this.qnasService.getForProduct(productId);
+  }
+
+  // QNA 조회 (user_id)
+  @Get('user/:user_id')
+  @UseGuards(AuthGuard)
+  async getForUser(@Param('user_id') userId: number): Promise<QnasEntity[]> {
+    return await this.qnasService.getForUser(userId);
+  }
 
   // QNA 조회 (shop_id)
   // shop을 또 어떻게 표현해줘야할까 직접적으로 qna에 심어주자니 너무 넓어지는것 같고
   // 직접 그렇게 하는것보다
   // shop -> product -> qna의 관계를 끌어와서 검색할 수 있으면 좋을텐데
+  // product 정보를 불러왔을때 shop_id 정보를 받아올 수 있다.
+  // product를 등록할 때 포함되는 정보에 shop_id가 포함되기 때문에
   // @Get('shop/:shop_id')
   // async getQnasForShop(
   //   @Param('shop_id') shopId: number,
