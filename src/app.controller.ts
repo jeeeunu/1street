@@ -11,6 +11,7 @@ import { CartsService } from './carts/carts.service';
 import { OrdersService } from './orders/orders.service';
 import { ReviewsService } from './reviews/reviews.service';
 import { QnasService } from './qnas/qnas.service';
+import { rename } from 'fs';
 
 @Controller()
 export class AppController {
@@ -70,6 +71,10 @@ export class AppController {
       await this.productsService.findPopularProducts();
     const findHighlyRatedProducts =
       await this.productsService.findHighlyRatedProducts();
+
+    if (authUser && authUser !== null && authUser.isAdmin === true) {
+      return response.redirect('admin-my-page');
+    }
 
     response.render('index', {
       isIndexPath,
