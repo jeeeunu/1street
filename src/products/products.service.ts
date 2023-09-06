@@ -32,41 +32,6 @@ export class ProductsService {
     private uploadsService: UploadsService,
   ) {}
 
-  //-- 공통 : 인기 상품 조회 --//
-  private async getPopularProducts(): Promise<any> {
-    const products = await this.productRepository
-      .createQueryBuilder('product')
-      .leftJoin(
-        (subQuery) =>
-          subQuery
-            .select([
-              'order_detail.product_id',
-              'SUM(order_detail.order_quantity) as total_sales',
-            ])
-            .from(OrderDetailsEntity, 'order_detail')
-            .groupBy('order_detail.product_id'),
-        'order_detail',
-        'order_detail.product_id = product.id',
-      )
-      .select([
-        'product.id',
-        'product.product_name',
-        'product.product_desc',
-        'product.product_domestic',
-        'product.product_price',
-        'product.shop_id',
-        'product.created_at',
-        'product.updated_at',
-        'product.category_id',
-        'IFNULL(total_sales, 0) as total_sales',
-      ])
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .orderBy('total_sales', 'DESC')
-      .getMany();
-
-    return products;
-  }
-
   //-- 상품 등록 --//
   async create(
     data: ProductCreateDto,
@@ -135,7 +100,37 @@ export class ProductsService {
 
   //-- 상품 조회 : 인기 상품 --//
   async findPopularProducts(): Promise<any> {
-    return await this.getPopularProducts();
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoin(
+        (subQuery) =>
+          subQuery
+            .select([
+              'order_detail.product_id',
+              'SUM(order_detail.order_quantity) as total_sales',
+            ])
+            .from(OrderDetailsEntity, 'order_detail')
+            .groupBy('order_detail.product_id'),
+        'order_detail',
+        'order_detail.product_id = product.id',
+      )
+      .select([
+        'product.id',
+        'product.product_name',
+        'product.product_desc',
+        'product.product_domestic',
+        'product.product_price',
+        'product.shop_id',
+        'product.created_at',
+        'product.updated_at',
+        'product.category_id',
+        'IFNULL(total_sales, 0) as total_sales',
+      ])
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .orderBy('total_sales', 'DESC')
+      .getMany();
+
+    return products;
   }
 
   //-- 상품 조회 : 평점 높은 상품 --//
@@ -231,8 +226,40 @@ export class ProductsService {
       }
 
       if (sort === 'sales') {
-        console.log('판매량순으로 정렬');
-        return await this.getPopularProducts();
+        console.log('판매량순으로 정렬/반환');
+        return await this.productRepository
+          .createQueryBuilder('product')
+          .where('product.product_name LIKE :keyword', {
+            keyword: `%${keyword}%`,
+          })
+          .leftJoin(
+            (subQuery) =>
+              subQuery
+                .select([
+                  'order_detail.product_id',
+                  'SUM(order_detail.order_quantity) as total_sales',
+                ])
+                .from(OrderDetailsEntity, 'order_detail')
+                .groupBy('order_detail.product_id'),
+            'order_detail',
+            'order_detail.product_id = product.id',
+          )
+          .select([
+            'product.id',
+            'product.product_name',
+            'product.product_desc',
+            'product.product_domestic',
+            'product.product_price',
+            'product.shop_id',
+            'product.created_at',
+            'product.updated_at',
+            'product.category_id',
+            'IFNULL(total_sales, 0) as total_sales',
+          ])
+          .leftJoinAndSelect('product.product_image', 'product_image')
+          .orderBy('total_sales', 'DESC')
+          .take(limit || 8)
+          .getMany();
       }
 
       if (sort === 'desc') {
