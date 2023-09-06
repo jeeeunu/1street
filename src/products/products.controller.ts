@@ -41,14 +41,7 @@ export class ProductsController {
     @Query('limit') limit: number,
     @Query('cursor') cursor: number,
     @Query('sort')
-    sort:
-      | 'asc'
-      | 'desc'
-      | 'rank'
-      | 'lowPrice'
-      | 'highPrice'
-      | 'sales'
-      | 'latest',
+    sort: 'asc' | 'desc' | 'lowPrice' | 'highPrice' | 'sales' | 'latest',
   ): Promise<ProductsEntity[]> {
     return this.productsService.findByKeyword(
       limit,

@@ -173,14 +173,7 @@ export class ProductsService {
     cursor: number,
     keyword: string,
     categoryId: number,
-    sort:
-      | 'asc'
-      | 'desc'
-      | 'rank'
-      | 'lowPrice'
-      | 'highPrice'
-      | 'sales'
-      | 'latest',
+    sort: 'asc' | 'desc' | 'lowPrice' | 'highPrice' | 'sales' | 'latest',
   ): Promise<ProductsEntity[]> {
     let query;
 
@@ -209,11 +202,6 @@ export class ProductsService {
 
     if (query) {
       query.take(limit || 10);
-
-      if (sort === 'rank') {
-        console.log('랭킹 순으로 정렬');
-        query.orderBy('product.product_price', 'ASC');
-      }
 
       if (sort === 'lowPrice') {
         console.log('낮은 가격순으로 정렬');

@@ -42,12 +42,17 @@
       <section class="product-list-container featured spad">
         <div class="container">
           <div class="btn-search-list">
-            <!-- TODO :: 랭킹순 -->
             <a
-              href="<%= `${thisPath.split('&sort=')[0]}&sort=rank` %>"
-              class="btn-serach-item <%= thisPath.includes('sort=rank') ? 'active' : '' %>"
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=sales` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=sales') ? 'active' : '' %>"
             >
-              랭킹순
+              판매량순
+            </a>
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=desc` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=desc') ? 'active' : '' %>"
+            >
+              최신순
             </a>
             <a
               href="<%= `${thisPath.split('&sort=')[0]}&sort=lowPrice` %>"
@@ -60,19 +65,6 @@
               class="btn-serach-item <%= thisPath.includes('sort=highPrice') ? 'active' : '' %>"
             >
               높은 가격순
-            </a>
-            <!-- TODO :: 판매량순 -->
-            <a
-              href="<%= `${thisPath.split('&sort=')[0]}&sort=sales` %>"
-              class="btn-serach-item <%= thisPath.includes('sort=sales') ? 'active' : '' %>"
-            >
-              판매량순
-            </a>
-            <a
-              href="<%= `${thisPath.split('&sort=')[0]}&sort=desc` %>"
-              class="btn-serach-item <%= thisPath.includes('sort=desc') ? 'active' : '' %>"
-            >
-              최신순
             </a>
           </div>
           <div id="allProductsContainer" class="row featured__filter"></div>
