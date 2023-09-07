@@ -29,6 +29,7 @@ export class ProductImageEntity {
 
   @ManyToOne(() => ProductsEntity, (product) => product.product_image, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   product: ProductsEntity;
 }
