@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+
+  <body>
+    <!-- include : top-button -->
+    <%- include('includes/top-button') %>
+
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
+
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+    <!-- 내정보 (일반) -->
+    <main class="mypage container mypage-info">
+      <h2 class="title">관리자 페이지</h2>
+      <div class="row">
+        <!-- include : aside -->
+        <%- include('includes/my-page-aside') %>
+
+        <!-- shop 존재시 -->
+        <% if (authUser.shop_id !== undefined) { %>
+        <section class="col-lg-9">
+          <section class="status-container">
+            <ul class="status-list">
+              <li class="status-item">
+                <p>접수된 주문</p>
+                <p><a href=""> 건</a></p>
+              </li>
+              <li class="status-item">
+                <p>배송중</p>
+                <p>
+                  <a href=""> 건</a>
+                </p>
+              </li>
+              <li class="status-item">
+                <p>배송완료</p>
+                <p>
+                  <a href=""> 건</a>
+                </p>
+              </li>
+              <li class="status-item">
+                <p>리뷰</p>
+                <p><a href=""><%= reviews.length %> 건</a></p>
+              </li>
+            </ul>
+          </section>
+          <section>
+            <ul class="my-page-content-list">
+              <li>
+                <a href="/admin-create-product">상품 등록하기</a>
+              </li>
+              <li>
+                <a href="">1:1 채팅 요청<span class="red-text">(2)</span></a>
+              </li>
+            </ul>
+          </section>
+          <section class="list-container">
+            <div class="title-wrap">
+              <h3>등록된 상품 ( <%= products.length %> )</h3>
+            </div>
+            <div class="order-list-table">
+              <ul class="t-head">
+                <li class="td">등록 날짜</li>
+                <li class="td">상품 정보</li>
+                <li class="td">상태</li>
+                <li class="td">편집</li>
+              </ul>
+              <ul class="t-body">
+                <!-- <li class="tr">
+                <div class="td">
+                  <p class="date-text">2023.01.01</p>
+                </div>
+                <div class="td">
+                  <div class="order-info-wrap">
+                    <div class="img-wrap">
+                      <img
+                        src="https://i.namu.wiki/i/slmFMXb1Fchs2zN0ZGOzqfuPDvhRS-H9eBp7Gp613-DNKi6i6Ct7eFkTUpauqv5HAYR97mrNqrvvcCDEyBdL_g.webp"
+                        alt=""
+                      />
+                    </div>
+                    <div class="text-wrap">
+                      <a href="">
+                        <span>20228284895894</span>
+                        <span class="product-title">텔레비전</span>
+                        <span>옵션1/2/3</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="td status-wrap">
+                  <span>배송완료</spㄴ>
+                </div>
+                <div class="td">
+                  <button type="button" class="btn-primary-s">배송완료 확인</button>
+                </div>
+              </li> -->
+                <% products.forEach((product) => { %>
+                <li class="tr">
+                  <div class="td">
+                    <p class="date-text">
+                      <%= product.created_at.toISOString().substr(0, 10) %>
+                    </p>
+                  </div>
+                  <div class="td">
+                    <div class="order-info-wrap">
+                      <div class="img-wrap">
+                        <img src="<%= product.product_image[0].url %>" alt="" />
+                      </div>
+                      <div class="text-wrap">
+                        <div>
+                          <span><small>id:</small> <%= product.id %></span>
+                          <span
+                            ><small>카테고리:</small> <%=
+                            product.category.category_name %></span
+                          >
+                          <span class="product-title"
+                            ><small>상품명:</small> <%= product.product_name
+                            %></span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="td status-wrap">
+                    <span>판매중</span>
+                  </div>
+                  <div class="td btns">
+                    <a
+                      href="/admin-edit-product/<%= product.id
+                    %>"
+                      class="btn-primary-s"
+                      >수정하기</a
+                    >
+                    <button
+                      type="button"
+                      class="btn-primary-s"
+                      data-id="<%= product.id
+                    %>"
+                      onclick="deleteProduct(event)"
+                    >
+                      삭제하기
+                    </button>
+                  </div>
+                </li>
+                <% }); %>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <% } %>
+        <!-- shop 없을시 -->
+        <% if (authUser.shop_id === undefined) { %>
+        <section class="col-lg-9">
+          <section>
+            <h2 class="section-title">스토어 등록</h2>
+            <div class="input-container">
+              <div class="content-box">
+                <h2 class="create-title">*스토어 정보를 등록해주세요</h2>
+                <!-- include : terms -->
+                <%- include('includes/terms') %>
+                <div class="input-box">
+                  <label class="label required">스토어명: </label>
+                  <input type="text" id="shopName" name="" required="" />
+                </div>
+                <div class="input-box">
+                  <label class="required label">스토어 설명: </label>
+                  <input type="text" id="shopDesc" name="" required="" />
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn-primary-m"
+                onclick="createStore()"
+              >
+                스토어 만들기
+              </button>
+            </div>
+          </section>
+        </section>
+        <% } %>
+      </div>
+    </main>
+
+    <script>
+      //-- 스토어 생성 api --//
+      const createStore = async () => {
+        try {
+          const shopName = document.querySelector('#shopName');
+          const shopDesc = document.querySelector('#shopDesc');
+
+          const requestData = {
+            shop_name: shopName.value,
+            shop_desc: shopDesc.value,
+          };
+
+          const response = await fetch('shops', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message);
+            window.location.href = '/';
+          } else {
+            console.log(data.message);
+            if (Array.isArray(data.message)) {
+              data.message.forEach((message) => {
+                alert(message.messages);
+              });
+            } else {
+              alert(data.message);
+            }
+            // window.location.href = '/';
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('오류가 발생했습니다.');
+        }
+      };
+      //-- 유저 탈퇴 api --//
+      const deleteUser = async () => {
+        const firstConfirm = window.confirm('회원 탈퇴 하시겠습니까?');
+
+        if (firstConfirm) {
+          const secondConfirm = window.confirm(
+            '다시 되돌릴 수 없습니다. 정말 탈퇴하시겠습니까?',
+          );
+
+          if (secondConfirm) {
+            try {
+              const response = await fetch('users', {
+                method: 'DELETE',
+              });
+
+              const data = await response.json();
+              console.log(data);
+
+              if (response.ok) {
+                alert(data.message);
+                window.location.href = '/';
+              } else {
+                alert(data.message);
+                console.error('회원 탈퇴중 오류가 발생했습니다.');
+                window.location.href = '/';
+              }
+            } catch (error) {
+              console.error('Error:', error);
+              alert('오류가 발생했습니다.');
+            }
+          }
+        }
+      };
+
+      //-- 스토어 삭제 api --//
+      const deleteShop = async () => {
+        const firstConfirm = window.confirm('스토어를 삭제 하시겠습니까?');
+
+        if (firstConfirm) {
+          const secondConfirm = window.confirm(
+            '다시 되돌릴 수 없습니다. 정말 삭제하시겠습니까?',
+          );
+
+          if (secondConfirm) {
+            try {
+              const response = await fetch('shops', {
+                method: 'DELETE',
+              });
+
+              const data = await response.json();
+              console.log(data);
+
+              if (response.ok) {
+                alert(data.message);
+                window.location.href = '/';
+              } else {
+                alert(data.message);
+                console.error('스토어 삭제중 오류가 발생했습니다.');
+                window.location.href = '/';
+              }
+            } catch (error) {
+              console.error('Error:', error);
+              alert('오류가 발생했습니다.');
+            }
+          }
+        }
+      };
+      //-- 상품삭제 api --//
+      const deleteProduct = async (event) => {
+        const firstConfirm = window.confirm('상품 삭제 하시겠습니까?');
+        if (firstConfirm) {
+          const secondConfirm = window.confirm(
+            '다시 되돌릴 수 없습니다. 정말 삭제하시겠습니까?',
+          );
+
+          if (secondConfirm) {
+            try {
+              const productId = event.target.getAttribute('data-id');
+              const response = await fetch(`products/${productId}`, {
+                method: 'DELETE',
+              });
+
+              const data = await response.json();
+              console.log(data);
+
+              if (response.ok) {
+                alert(data.message);
+                window.location.href = '/';
+              } else {
+                alert(data.message);
+                console.error('상품삭제중 오류가 발생했습니다.');
+                window.location.href = '/';
+              }
+            } catch (error) {
+              console.error('Error:', error);
+              alert('오류가 발생했습니다.');
+            }
+          }
+        }
+      };
+    </script>
+  </body>
+</html>

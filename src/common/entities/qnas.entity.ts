@@ -28,15 +28,6 @@ export class QnasEntity {
   @Column('varchar', { length: 1000 })
   public qna_content: string;
 
-  @Column() // Add status column
-  @IsNotEmpty()
-  @IsString()
-  public status: string;
-
-  @Column() // Add results column
-  @IsNotEmpty()
-  public results: string;
-
   @CreateDateColumn({ type: 'timestamp' })
   created_at: string;
 

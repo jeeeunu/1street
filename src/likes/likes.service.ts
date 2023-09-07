@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LikeEntity } from '../common/entities';
@@ -19,50 +15,48 @@ export class LikesService {
 
   //-- 좋아요 보기 --//
   async findAllLikes(authUser: RequestUserInterface) {
-    try {
-      const likes = await this.likeRepository.find({
-        where: { user: { id: authUser.user_id } },
-        relations: ['product'],
-      });
-      if (!likes)
-        throw new NotFoundException('좋아요한 상품이 존재하지 않습니다.');
-      return likes;
-    } catch (err) {
-      throw new InternalServerErrorException(
-        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-      );
-    }
+    const likes = await this.likeRepository.find({
+      where: { user: { id: authUser.user_id } },
+      relations: [
+        'product',
+        'product.shop',
+        'product.category',
+        'product.product_image',
+      ],
+      order: {
+        created_at: 'DESC',
+      },
+    });
+    return likes;
   }
 
-  //-- 좋아요 등록 --//
+  //-- 좋아요 --//
   async create(id: number, authUser: RequestUserInterface) {
-    try {
-      await this.productsService.findById(id);
+    // await this.productsService.findById(id);
+    const existingLike = await this.likeRepository.findOne({
+      where: {
+        user: { id: authUser.user_id },
+        product: { id },
+      },
+    });
+    if (existingLike) {
+      throw new BadRequestException('이미 좋아요를 누른 상품입니다.');
+    } else {
       await this.likeRepository.save({
         user: { id: authUser.user_id },
         product: { id },
       });
-      return { status: true, message: '상품에 좋아요를 눌렀습니다.' };
-    } catch (err) {
-      throw new InternalServerErrorException(
-        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-      );
+      return { status: true, message: '해당 상품에 좋아요를 눌렀습니다.' };
     }
   }
 
   //-- 좋아요 삭제 --//
   async delete(id: number, authUser: RequestUserInterface) {
-    try {
-      await this.productsService.findById(id);
-      await this.likeRepository.delete({
-        user: { id: authUser.user_id },
-        product: { id },
-      });
-      return { status: true, message: '좋아요를 취소하였습니다.' };
-    } catch (err) {
-      throw new InternalServerErrorException(
-        '서버 내부 오류로 처리할 수 없습니다. 나중에 다시 시도해주세요.',
-      );
-    }
+    await this.productsService.findById(id);
+    await this.likeRepository.delete({
+      user: { id: authUser.user_id },
+      product: { id },
+    });
+    return { status: true, message: '좋아요를 취소하였습니다.' };
   }
 }

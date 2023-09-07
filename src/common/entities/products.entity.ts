@@ -1,16 +1,19 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsNumber, IsString, MaxLength } from 'class-validator';
 import { CategoryEntity } from '../../products/entities/category.entity';
 import { ShopsEntity } from './shops.entity';
 import { LikeEntity } from './likes.entity';
 import { OrderDetailsEntity } from 'src/orders/entities/order-detail.entity';
 import { QnasEntity } from './qnas.entity';
+import { ProductImageEntity } from 'src/products/entities/product-image.entity';
 
 @Entity({ name: 'products' })
 export class ProductsEntity {
@@ -24,26 +27,36 @@ export class ProductsEntity {
   public product_name: string;
 
   //-- 상품 설명 --//
-  @Column({ nullable: false })
+  @Column({ nullable: false, type: 'text' })
   @IsString()
   public product_desc: string;
+
+  //-- 상품 원산지 --//
+  @Column({ nullable: false })
+  @IsString()
+  public product_domestic: string;
 
   //-- 상품 가격 --//
   @Column({ nullable: false })
   @IsNumber()
   public product_price: number;
 
-  //-- 상품 썸네일 --//
-  @Column({ nullable: true })
-  @IsOptional()
-  @IsString()
-  public product_thumbnail?: string;
+  //-- 스토어 아이디 --//
+  @Column({ nullable: false })
+  @IsNumber()
+  public shop_id: number;
 
-  @ManyToOne(() => ShopsEntity, (shop) => shop.products)
+  @ManyToOne(() => ShopsEntity, (shop) => shop.products, {
+    onDelete: 'CASCADE',
+  })
+  // @JoinColumn({ name: 'shop_id', referencedColumnName: 'id' })
   public shop: ShopsEntity;
 
-  @ManyToOne(() => CategoryEntity, (category) => category.products)
-  public category: CategoryEntity;
+  @CreateDateColumn({ type: 'timestamp' })
+  created_at: string;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updated_at: string;
 
   @OneToMany(() => LikeEntity, (like) => like.product)
   public likes: LikeEntity[];
@@ -53,4 +66,10 @@ export class ProductsEntity {
 
   @OneToMany(() => QnasEntity, (qna) => qna.product)
   public qna: QnasEntity[];
+
+  @OneToMany(() => ProductImageEntity, (product_image) => product_image.product)
+  public product_image: ProductImageEntity[];
+
+  @ManyToOne(() => CategoryEntity, (category) => category.products)
+  public category: CategoryEntity;
 }

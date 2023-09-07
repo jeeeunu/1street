@@ -1,38 +1,72 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { OrdersEntity } from '../common/entities/orders.entity';
+import { OrderStatus, OrdersEntity } from '../common/entities/orders.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
-import { OrderCreateDto, OrderStatusDto } from './dtos';
+import { Order2CreateDto, OrderCreateDto, OrderStatusDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from 'src/users/interfaces';
-import { UserService } from 'src/users/users.service';
+import { UsersService } from 'src/users/users.service';
 import { OrderDetailsEntity } from './entities/order-detail.entity';
+import { CartsService } from 'src/carts/carts.service';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectRepository(OrdersEntity)
     private orderRepository: Repository<OrdersEntity>,
-    private userService: UserService,
+    private usersService: UsersService,
     @InjectRepository(OrderDetailsEntity)
     private orderDetailRepository: Repository<OrderDetailsEntity>,
+    private cartsService: CartsService,
   ) {}
-  //-- 주문 작성 --//
-  async postOrder(
-    data: OrderCreateDto,
-    authUser: RequestUserInterface,
+  //-- 장바구니 주문 작성 --//
+  async createOrder(
+    data: Order2CreateDto,
+    user_id: number,
   ): Promise<ResultableInterface> {
-    const user = await this.userService.findOne(authUser.user_id);
-
-    const orderContent = await this.orderRepository.save({
-      user: { id: user.id },
+    const carts = await this.cartsService.getCart(user_id);
+    if (!carts || carts.length === 0) {
+      throw new NotFoundException('장바구니가 비어있습니다.');
+    }
+    // 여기서 주문 생성 로직을 구현
+    // carts 기반으로 주문 생성, 주문 정보를 저장 등을 수행
+    const order = await this.orderRepository.save({
+      user: { id: user_id },
       order_receiver: data.order_receiver,
       order_phone: data.order_phone,
       order_email: data.order_email,
       order_address: data.order_address,
       order_payment_amount: data.order_payment_amount,
     });
-    console.log(orderContent.id);
+
+    // 장바구니 항목을 주문 상세로 이동
+    const orderDetails: DeepPartial<OrderDetailsEntity>[] = carts.map(
+      (carts) => ({
+        product: { id: carts.product_id },
+        order_quantity: carts.quantity,
+        order: { id: order.id },
+      }),
+    );
+    await this.orderDetailRepository.save(orderDetails);
+    // 주문 생성 성공 시, 장바구니 비우기
+    await this.cartsService.clearCart(user_id);
+
+    return { status: true, message: '주문이 생성되었습니다.' };
+  }
+
+  //-- 주문 작성 --//
+  async postOrder(
+    data: OrderCreateDto,
+    user_id: number,
+  ): Promise<ResultableInterface> {
+    const orderContent = await this.orderRepository.save({
+      user: { id: user_id },
+      order_receiver: data.order_receiver,
+      order_phone: data.order_phone,
+      order_email: data.order_email,
+      order_address: data.order_address,
+      order_payment_amount: data.order_payment_amount,
+    });
     const orderDetails: DeepPartial<OrderDetailsEntity>[] =
       data.order_details.map((detail) => ({
         product: { id: detail.product_id },
@@ -43,20 +77,28 @@ export class OrdersService {
     return { status: true, message: '주문이 완료되었습니다.' };
   }
   //-- 주문 확인 --//
-  async getOrders(): Promise<OrdersEntity[]> {
-    return await this.orderRepository.find();
+  async getOrders(user_id: number): Promise<OrdersEntity[]> {
+    return await this.orderRepository.find({
+      where: { user: { id: user_id } },
+    });
   }
 
   //-- 주문 상세 확인 --//
-  async getDetailOrder(order_id: number): Promise<any> {
+  async getDetailOrder(user_id: number, order_id: number): Promise<any> {
     const order = await this.orderRepository.findOne({
       where: { id: order_id },
-      relations: ['order_details', 'order_details.product'],
+      relations: [
+        'order_details',
+        'order_details.product',
+        'user',
+        'order_details.product.product_image',
+      ],
     });
     if (!order) {
       throw new NotFoundException('주문을 찾을 수 없습니다.');
+    } else if (order.user.id !== user_id) {
+      throw new NotFoundException('권한이 없습니다.');
     }
-    console.log(order);
     return order;
   }
 
@@ -75,10 +117,10 @@ export class OrdersService {
     if (order.user.id !== user_id) {
       throw new NotFoundException('권한이 없습니다.');
     }
-    if (order.order_status === '0') {
+    if (order.order_status === 'OrderCancel') {
       throw new NotFoundException('이미 취소된 주문 입니다.');
     }
-    order.order_status = '0';
+    order.order_status = OrderStatus.OrderCancel;
     await this.orderRepository.save(order);
     return { status: true, message: '주문이 취소되었습니다.' };
   }
@@ -89,12 +131,10 @@ export class OrdersService {
     order_detail_id: number,
     user_id: number,
   ): Promise<ResultableInterface> {
-    console.log(order_detail_id);
     const order = await this.orderRepository.findOne({
       where: { id: order_id },
       relations: ['user', 'order_details', 'order_details.product'],
     });
-    console.log(order);
     if (!order) {
       throw new NotFoundException('주문이 존재하지 않습니다.');
     }
@@ -106,7 +146,7 @@ export class OrdersService {
     });
 
     if (order.order_details.length <= 1) {
-      order.order_status = '0';
+      order.order_status = OrderStatus.OrderCancel;
       await this.orderRepository.save(order);
     }
     if (!orderDetail) {
@@ -130,13 +170,22 @@ export class OrdersService {
     if (!order) {
       throw new NotFoundException('주문이 존재하지 않습니다.');
     }
-    if (order.order_status === '0') {
+    if (order.order_status === 'OrderCancel') {
       throw new NotFoundException('이미 취소된 주문입니다.');
     }
     if (authUser.isAdmin === false) {
       throw new NotFoundException('판매자가 아닙니다.');
     }
-    order.order_status = data.order_status;
+    if (data.order_status === OrderStatus.OrderConfirm) {
+      order.order_status = data.order_status;
+    } else if (data.order_status === OrderStatus.OrderShipping) {
+      order.order_status = data.order_status;
+    } else if (data.order_status === OrderStatus.OrderShipping) {
+      order.order_status = data.order_status;
+    } else if (data.order_status === OrderStatus.OrderCancel) {
+      order.order_status = data.order_status;
+    }
+
     await this.orderRepository.save(order);
     return { status: true, message: '주문상태가 수정되었습니다.' };
   }
@@ -166,4 +215,16 @@ export class OrdersService {
   //   // orderProducts = data.order_details;
   //   return { status: true, message: '주문이 수정되었습니다.' };
   // }
+
+  //-- 주문 상세 아이디로 검색하기 --//
+  async getDetailOrderById(orderDetailId: number): Promise<any> {
+    const orderDetail = await this.orderDetailRepository.findOne({
+      where: { id: orderDetailId },
+      relations: ['order', 'product', 'product.product_image'],
+    });
+    if (!orderDetail) {
+      throw new NotFoundException('주문을 찾을 수 없습니다.');
+    }
+    return orderDetail;
+  }
 }

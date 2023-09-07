@@ -24,7 +24,7 @@ export class ShopsController {
   //-- 스토어 상세보기 --//
   @Get(':id')
   async findShop(@Param('id') id: number): Promise<ShopsEntity> {
-    return await this.shopsService.find(id);
+    return await this.shopsService.findOne(id);
   }
 
   //-- 스토어 생성 --//
@@ -34,7 +34,6 @@ export class ShopsController {
     @Body() shopData: ShopCreateDto,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    //TODO:: 유저 아이디 받아오기
     return await this.shopsService.create(shopData, authUser);
   }
 
@@ -49,12 +48,11 @@ export class ShopsController {
   }
 
   //-- 스토어 삭제 --//
-  @Delete(':id')
+  @Delete()
   @UseGuards(AuthGuard)
   async deleteShop(
-    @Param('id') shopId: number,
     @AuthUser() authUser: RequestUserInterface,
   ): Promise<ResultableInterface> {
-    return await this.shopsService.delete(shopId, authUser);
+    return await this.shopsService.delete(authUser);
   }
 }

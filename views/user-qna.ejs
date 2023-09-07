@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+  <body>
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
+
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+  <!-- Contact Page Section Begin -->
+  <section class="contact-page spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="contact-title">
+                    <h2>문의하기</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- 상품 이미지 -->
+                <img src="상품 이미지 URL" alt="상품 이미지">
+            </div>
+            <div class="col-lg-6">
+                <!-- 상품 이름 -->
+                <h3>상품 이름</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <!-- 문의 제목 입력 폼 -->
+                <form action="/qnas" method="POST">
+                    <div class="form-group">
+                        <label for="qna_name">문의 제목</label>
+                        <input type="text" id="qna_name" name="qna_name" required>
+                    </div>
+                    <!-- 문의 내용 입력 폼 -->
+                    <div class="form-group">
+                        <label for="qna_content">문의 내용</label>
+                        <textarea id="qna_content" name="qna_content" rows="5" required></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <!-- 취소하기와 등록하기 버튼 -->
+                <div class="buttons">
+                    <button type="button" class="cancel">취소하기</button>
+                    <button type="submit">등록하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  </section>
+  <!-- Contact Page Section End -->
+  <!-- JavaScript 처리 -->
+  <script>
+    // 현재 페이지 URL에서 product_id 추출
+    const currentUrl = window.location.href;
+    const productIdMatch = currentUrl.match(/\/user-qna\/(\d+)/);
+    const productId = productIdMatch ? productIdMatch[1] : null;
+    
+    // 폼 데이터에 product_id 추가
+    const form = document.querySelector('form');
+    if (form) {
+      const productIdInput = document.createElement('input');
+      productIdInput.type = 'hidden';
+      productIdInput.name = 'product_id';
+      productIdInput.value = productId;
+      form.appendChild(productIdInput);
+    }
+    
+    // 취소하기 버튼 클릭 시 페이지 리다이렉트
+    const cancelButton = document.querySelector('.cancel');
+    if (cancelButton) {
+      cancelButton.addEventListener('click', () => {
+        // product-detail 페이지로 리다이렉트
+        window.location.href = `/product-detail/${productId}`;
+      });
+    }
+  </script>
+  <!-- include : footer -->
+  <%- include('includes/footer') %>
+</body>
+</html>

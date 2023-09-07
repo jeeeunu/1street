@@ -9,12 +9,15 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dtos';
 import { UsersEntity } from '../common/entities/users.entity';
+import { ShopsEntity } from 'src/common/entities';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UsersEntity)
     private usersRepository: Repository<UsersEntity>,
+    @InjectRepository(ShopsEntity)
+    private shopsEntity: Repository<ShopsEntity>,
     private jwtService: JwtService,
   ) {}
 
@@ -38,6 +41,10 @@ export class AuthService {
     if (!isPasswordMatching)
       throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
 
+    const shop = await this.shopsEntity.findOne({
+      where: { user_id: user.id },
+    });
+
     // JWT 토큰에 포함될 payload
     const payload = {
       user_id: user.id,
@@ -45,6 +52,7 @@ export class AuthService {
       profile_image: user.profile_image,
       user_name: user.name,
       isAdmin: user.seller_flag,
+      shop_id: shop ? shop.id : null,
     };
 
     const access_token = await this.jwtService.signAsync(payload);
@@ -52,7 +60,7 @@ export class AuthService {
   }
 
   //-- google --//
-  async googleLogin(req): Promise<string> {
+  async googleLogin(req): Promise<any> {
     // console.log(req.user); // google에서 제공하는 userinfo 값
 
     if (!req.user) throw new NotFoundException('구글 아이디 정보가 없습니다.');
@@ -72,17 +80,17 @@ export class AuthService {
       newUser.provider = 'google';
       await this.usersRepository.save(newUser);
       return;
+    } else {
+      // JWT 토큰에 포함될 payload
+      const payload = {
+        user_id: user.id,
+        user_name: req.user.lastName,
+        email: req.user.email,
+      };
+
+      const accessToken = await this.jwtService.signAsync(payload);
+
+      return accessToken;
     }
-
-    // JWT 토큰에 포함될 payload
-    const payload = {
-      user_id: user.id,
-      user_name: req.user.lastName,
-      email: req.user.email,
-    };
-
-    const access_token = await this.jwtService.signAsync(payload);
-
-    return access_token;
   }
 }

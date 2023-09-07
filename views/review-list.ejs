@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+
+  <body>
+    <!-- include : top-button -->
+    <%- include('includes/top-button') %>
+
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
+
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+    <!-- include : hero-normal -->
+    <%- include('includes/hero') %>
+
+    <!-- 내정보 (일반) -->
+    <main class="mypage container create-review">
+      <h2 class="title">마이페이지</h2>
+      <div class="row">
+        <aside class="col-lg-3">
+          <div class="proflie-info-container">
+            <div class="primary-img-wrap">
+              <img src="<%- user.profile_image %> " alt="" />
+            </div>
+            <div class="text-wrap">
+              <div class="name-wrap">
+                <span><%- authUser.user_name %> 님</span>
+                <a href="/my-page-user-edit"> >내 정보 수정</a>
+              </div>
+              <div>
+                <span>충전금액: </span>
+                <span><%- user.point %>원</span>
+              </div>
+              <div>
+                <span>포인트: </span>
+                <span><%- user.point %>원</span>
+              </div>
+              <div>
+                <span>잔여 쿠폰: </span>
+                <span>2개</span>
+              </div>
+            </div>
+            <hr />
+            <div class="provider-text">
+              <% if (user.provider === "google") { %>
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
+                style="width: 15px; height: 15px; margin-right: 7px"
+                alt=""
+              />구글 로그인 <% } %>
+            </div>
+            <button
+              type="button"
+              class="gray-text btn-user-delete"
+              onclick="deleteUser()"
+            >
+              회원 탈퇴
+            </button>
+          </div>
+        </aside>
+
+        <section class="col-lg-9 list-container">
+          <div class="title-wrap">
+            <h3>리뷰 작성 내역</h3>
+          </div>
+          <div class="order-list-table">
+            <ul class="t-head">
+              <li class="td">작성 날짜</li>
+              <li class="td">주문 정보</li>
+              <li class="td" style="flex: 1">리뷰 내용</li>
+              <li class="td">수정</li>
+            </ul>
+            <ul id="reviewDatContainer" class="t-body">
+              <!-- 리뷰내용 추가됨 -->
+            </ul>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      //-- 리뷰 전체보기 api --//
+      let data = [];
+      let cursor = null;
+      let hasMoreData = true;
+
+      const limit = 4;
+      let isLoadingData = false; // 데이터 로딩 중인지 여부
+
+      let lastScrollY = 0;
+
+      const fetchData = async () => {
+        if (!hasMoreData || isLoadingData) {
+          return;
+        }
+
+        isLoadingData = true; // 데이터 로딩 중임을 표시
+
+        const url = cursor
+          ? `/reviews?limit=${limit}&cursor=${cursor}`
+          : `/reviews?limit=${limit}`;
+
+        try {
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+            },
+          });
+
+          const newData = await response.json();
+
+          if (response.ok) {
+            data = data.concat(newData);
+
+            const fragment = document.createDocumentFragment(); // Fragment 생성
+
+            console.log(newData);
+            newData.forEach((item) => {
+              const productItem = document.createElement('div');
+              productItem.className = 'tr';
+
+              const reviewRating = item.review_rating;
+              const starRating = '⭐ '.repeat(reviewRating);
+
+              const dateString = item.order_detail.order.created_at;
+              const date = new Date(dateString);
+              const dateValue = date.toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              });
+
+              productItem.innerHTML = `
+              <div class="td">
+                <p class="date-text">2023.01.01</p>
+              </div>
+              <div class="td">
+                <div class="order-info-wrap">
+                  <div class="img-wrap">
+                    <img
+                      src="${item.order_detail.product.product_image[0].url}"
+                      alt=""
+                    />
+                  </div>
+                  <div class="text-wrap" style="flex-direction: column;">
+                    <a href="/product-detail/${item.order_detail.product.id}"> 
+                      <span>주문일 : ${dateValue}</span>
+                      <span class="product-title" style="font-size: 18px">주문 품목 : ${item.order_detail.product.product_name}</span>
+                      <span>구매 개수 : ${item.order_detail.order_quantity} 개</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="td" style="flex-direction: column; flex: 1;">
+                <span>${starRating}</span>
+                <span>${item.review_content}</span>
+              </div>
+              <div class="td d-flex-column">
+                <a href="/my-page/edit-review/${item.order_detail.id}" class="btn-primary-s">수정하기</a>
+                <button type="button" class="btn-primary-s" onClick="deleteReview(${item.order_detail.id})">삭제하기</button>
+              </div>
+              `;
+
+              fragment.appendChild(productItem); // Fragment에 추가
+            });
+
+            const reviewDatContainer = document.querySelector(
+              '#reviewDatContainer',
+            );
+            reviewDatContainer.appendChild(fragment); // Fragment를 실제 DOM에 추가
+
+            if (newData.length === 0) {
+              reviewDatContainer.innerHTML = `<p class="gray-text" style="padding: 30px 0; font-size: 14px; text-align: center;">작성한 리뷰가 없습니다.</p>`;
+            }
+            cursor = newData[newData.length - 1]?.id;
+
+            if (newData.length < limit) {
+              hasMoreData = false;
+            }
+          } else {
+            alert(newData.message);
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('데이터를 가져오는 데 실패했습니다.');
+        }
+
+        isLoadingData = false; // 데이터 로딩 완료 표시
+      };
+
+      fetchData();
+
+      window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > lastScrollY) {
+          const windowHeight = window.innerHeight;
+          const documentHeight = document.body.scrollHeight;
+
+          if (currentScrollY + windowHeight >= documentHeight - 10) {
+            fetchData();
+          }
+        }
+
+        lastScrollY = currentScrollY;
+      });
+
+      //-- 리뷰 삭제 api --//
+      const deleteReview = async (orderDetailId) => {
+        const firstConfirm = window.confirm('리뷰를 삭제 하시겠습니까?');
+
+        if (firstConfirm) {
+          try {
+            const response = await fetch(`/reviews/${orderDetailId}`, {
+              method: 'DELETE',
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              alert(data.message);
+              window.location.href = '/my-page/review-list';
+            } else {
+              alert(data.message);
+              console.error('리뷰 삭제중 오류가 발생했습니다.');
+              window.location.href = '/my-page/review-list';
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            alert('오류가 발생했습니다.');
+          }
+        }
+      };
+    </script>
+  </body>
+</html>

@@ -13,8 +13,59 @@
     <!-- include : header -->
     <%- include('includes/header') %>
 
+    <!-- 라이브 방 만들기 모달 -->
+    <div
+      class="modal fade"
+      id="liveRoomModal"
+      tabindex="-1"
+      aria-labelledby="liveRoomModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="liveRoomModalLabel">
+              라이브 방송
+            </h2>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="liveTitle" class="form-label">방송 제목</label>
+              <input
+                type="text"
+                class="form-control"
+                id="liveTitle"
+                placeholder="방송제목을 입력해주세요"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              취소
+            </button>
+            <button type="button" class="btn btn-primary liveStartBtn">
+              라이브 시작
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- include : hero -->
     <%- include('includes/hero') %>
+
+    <!-- include : viewed-products -->
+    <%- include('includes/viewed-products') %>
 
     <!-- Categories Section Begin -->
     <section class="categories">
@@ -48,219 +99,184 @@
     <!-- Categories Section End -->
 
     <!-- Banner Begin -->
-    <div class="banner">
+    <!-- <div class="banner">
       <div class="container">
+        <h4 style="margin-bottom: 20px; font-weight: 700">Event</h4>
         <div class="row">
           <div class="col-lg-6 col-md-6 col-sm-6">
             <div class="banner__pic">
-              <img src="img/banner/banner-1.jpg" alt="" />
+              <img
+                src="https://img.freepik.com/premium-psd/food-banner-template-set_3870-591.jpg?w=740"
+                alt=""
+              />
             </div>
           </div>
           <div class="col-lg-6 col-md-6 col-sm-6">
             <div class="banner__pic">
-              <img src="img/banner/banner-2.jpg" alt="" />
+              <img
+                src="https://image.wconcept.co.kr/images/img/event/20200219_theordinary/pc/main_top.jpg"
+                alt=""
+              />
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- Banner End -->
+    <div class="container">
+      <div style="vertical-align: top">
+        <h3
+          style="
+            margin-bottom: 20px;
+            font-weight: 700;
+            display: inline;
+            margin-right: 2rem;
+          "
+        >
+          라이브 방송
+        </h3>
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#liveRoomModal"
+          style="font-size: 2rem; margin-bottom: 15px"
+        >
+          방 만들기 (판매자 전용)
+        </button>
+      </div>
 
+      <ul id="liveList" class="mt-4 d-flex flex-wrap">
+        <li class="liveListBox">라이브 방송 썸네일</li>
+        <li class="liveListBox">라이브 방송 썸네일</li>
+      </ul>
+    </div>
     <!-- Latest Product Section Begin -->
     <section class="latest-product spad">
       <div class="container">
         <div class="row">
           <div class="col-lg-4 col-md-6">
             <div class="latest-product__text">
-              <h4>Latest Products</h4>
+              <h4>신상품</h4>
               <div class="latest-product__slider owl-carousel">
                 <div class="latest-prdouct__slider__item">
-                  <a href="#" class="latest-product__item">
+                  <% latestProducts.slice(0, 3).forEach(product => { %>
+                  <a
+                    href="/product-detail/<%= product.id %>"
+                    class="latest-product__item"
+                  >
                     <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-1.jpg" alt="" />
+                      <img src="<%= product.product_image[0].url %>" alt="" />
                     </div>
                     <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
+                      <h6><%= product.product_name %></h6>
+                      <span
+                        ><%= product.product_price.toLocaleString() %>원</span
+                      >
                     </div>
                   </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-2.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-3.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
+                  <% }); %>
                 </div>
                 <div class="latest-prdouct__slider__item">
+                  <% latestProducts.slice(3, 6).forEach(product => { %>
                   <a href="#" class="latest-product__item">
                     <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-1.jpg" alt="" />
+                      <img src="<%= product.product_image[0].url %>" alt="" />
                     </div>
                     <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
+                      <h6><%= product.product_name %></h6>
+                      <span
+                        ><%= product.product_price.toLocaleString() %>원</span
+                      >
                     </div>
                   </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-2.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-3.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
+                  <% }); %>
                 </div>
               </div>
             </div>
           </div>
           <div class="col-lg-4 col-md-6">
             <div class="latest-product__text">
-              <h4>Top Rated Products</h4>
+              <h4>인기 상품</h4>
               <div class="latest-product__slider owl-carousel">
                 <div class="latest-prdouct__slider__item">
-                  <a href="#" class="latest-product__item">
+                  <% findPopularProducts.slice(0, 3).forEach(product => { %>
+                  <a
+                    href="/product-detail/<%= product.id %>"
+                    class="latest-product__item"
+                  >
                     <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-1.jpg" alt="" />
+                      <img src="<%= product.product_image[0].url %>" alt="" />
                     </div>
                     <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
+                      <h6><%= product.product_name %></h6>
+                      <span
+                        ><%= product.product_price.toLocaleString() %>원</span
+                      >
                     </div>
                   </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-2.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-3.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
+                  <% }); %>
                 </div>
                 <div class="latest-prdouct__slider__item">
-                  <a href="#" class="latest-product__item">
+                  <% findPopularProducts.slice(3, 6).forEach(product => { %>
+                  <a
+                    href="/product-detail/<%= product.id %>"
+                    class="latest-product__item"
+                  >
                     <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-1.jpg" alt="" />
+                      <img src="<%= product.product_image[0].url %>" alt="" />
                     </div>
                     <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
+                      <h6><%= product.product_name %></h6>
+                      <span
+                        ><%= product.product_price.toLocaleString() %>원</span
+                      >
                     </div>
                   </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-2.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-3.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
+                  <% }); %>
                 </div>
               </div>
             </div>
           </div>
           <div class="col-lg-4 col-md-6">
             <div class="latest-product__text">
-              <h4>Review Products</h4>
+              <h4>평점 높은 상품</h4>
               <div class="latest-product__slider owl-carousel">
                 <div class="latest-prdouct__slider__item">
-                  <a href="#" class="latest-product__item">
+                  <% findHighlyRatedProducts.slice(0, 3).forEach(product => { %>
+                  <a
+                    href="/product-detail/<%= product.id %>"
+                    class="latest-product__item"
+                  >
                     <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-1.jpg" alt="" />
+                      <img src="<%= product.product_image[0].url %>" alt="" />
                     </div>
                     <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
+                      <h6><%= product.product_name %></h6>
+                      <span
+                        ><%= product.product_price.toLocaleString() %>원</span
+                      >
                     </div>
                   </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-2.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-3.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
+                  <% }); %>
                 </div>
                 <div class="latest-prdouct__slider__item">
-                  <a href="#" class="latest-product__item">
+                  <% findHighlyRatedProducts.slice(3, 6).forEach(product => { %>
+                  <a
+                    href="/product-detail/<%= product.id %>"
+                    class="latest-product__item"
+                  >
                     <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-1.jpg" alt="" />
+                      <img src="<%= product.product_image[0].url %>" alt="" />
                     </div>
                     <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
+                      <h6><%= product.product_name %></h6>
+                      <span
+                        ><%= product.product_price.toLocaleString() %>원</span
+                      >
                     </div>
                   </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-2.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
-                  <a href="#" class="latest-product__item">
-                    <div class="latest-product__item__pic">
-                      <img src="img/latest-product/lp-3.jpg" alt="" />
-                    </div>
-                    <div class="latest-product__item__text">
-                      <h6>Crab Pool Security</h6>
-                      <span>$30.00</span>
-                    </div>
-                  </a>
+                  <% }); %>
                 </div>
               </div>
             </div>
@@ -271,226 +287,174 @@
     <!-- Latest Product Section End -->
 
     <!-- Featured Section Begin -->
-    <section class="featured spad">
+    <section class="featured spad product-list-container">
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
             <div class="section-title">
-              <h2>Featured Product</h2>
-            </div>
-            <div class="featured__controls">
-              <ul>
-                <li class="active" data-filter="*">All</li>
-                <li data-filter=".oranges">Oranges</li>
-                <li data-filter=".fresh-meat">Fresh Meat</li>
-                <li data-filter=".vegetables">Vegetables</li>
-                <li data-filter=".fastfood">Fastfood</li>
-              </ul>
+              <h2>전체 상품</h2>
             </div>
           </div>
         </div>
-        <div class="row featured__filter">
-          <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
-            <div class="featured__item">
-              <div
-                class="featured__item__pic set-bg"
-                data-setbg="img/featured/feature-1.jpg"
-              >
-                <ul class="featured__item__pic__hover">
-                  <li>
-                    <a href="#"><i class="fa fa-heart"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-retweet"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-shopping-cart"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-eye"></i></a>
-                  </li>
-                </ul>
-              </div>
-              <div class="featured__item__text">
-                <h6><a href="/product-detail">Crab Pool Security</a></h6>
-                <h5>$30.00</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 mix vegetables fastfood">
-            <div class="featured__item">
-              <div
-                class="featured__item__pic set-bg"
-                data-setbg="img/featured/feature-2.jpg"
-              >
-                <ul class="featured__item__pic__hover">
-                  <li>
-                    <a href="#"><i class="fa fa-heart"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-retweet"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-shopping-cart"></i></a>
-                  </li>
-                </ul>
-              </div>
-              <div class="featured__item__text">
-                <h6><a href="/product-detail">Crab Pool Security</a></h6>
-                <h5>$30.00</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 mix vegetables fresh-meat">
-            <div class="featured__item">
-              <div
-                class="featured__item__pic set-bg"
-                data-setbg="img/featured/feature-3.jpg"
-              >
-                <ul class="featured__item__pic__hover">
-                  <li>
-                    <a href="#"><i class="fa fa-heart"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-retweet"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-shopping-cart"></i></a>
-                  </li>
-                </ul>
-              </div>
-              <div class="featured__item__text">
-                <h6><a href="/product-detail">Crab Pool Security</a></h6>
-                <h5>$30.00</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 mix fastfood oranges">
-            <div class="featured__item">
-              <div
-                class="featured__item__pic set-bg"
-                data-setbg="img/featured/feature-4.jpg"
-              >
-                <ul class="featured__item__pic__hover">
-                  <li>
-                    <a href="#"><i class="fa fa-heart"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-retweet"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-shopping-cart"></i></a>
-                  </li>
-                </ul>
-              </div>
-              <div class="featured__item__text">
-                <h6><a href="/product-detail">Crab Pool Security</a></h6>
-                <h5>$30.00</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 mix fresh-meat vegetables">
-            <div class="featured__item">
-              <div
-                class="featured__item__pic set-bg"
-                data-setbg="img/featured/feature-5.jpg"
-              >
-                <ul class="featured__item__pic__hover">
-                  <li>
-                    <a href="#"><i class="fa fa-heart"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-retweet"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-shopping-cart"></i></a>
-                  </li>
-                </ul>
-              </div>
-              <div class="featured__item__text">
-                <h6><a href="/product-detail">Crab Pool Security</a></h6>
-                <h5>$30.00</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 mix oranges fastfood">
-            <div class="featured__item">
-              <div
-                class="featured__item__pic set-bg"
-                data-setbg="img/featured/feature-6.jpg"
-              >
-                <ul class="featured__item__pic__hover">
-                  <li>
-                    <a href="#"><i class="fa fa-heart"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-retweet"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-shopping-cart"></i></a>
-                  </li>
-                </ul>
-              </div>
-              <div class="featured__item__text">
-                <h6><a href="/product-detail">Crab Pool Security</a></h6>
-                <h5>$30.00</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 mix fresh-meat vegetables">
-            <div class="featured__item">
-              <div
-                class="featured__item__pic set-bg"
-                data-setbg="img/featured/feature-7.jpg"
-              >
-                <ul class="featured__item__pic__hover">
-                  <li>
-                    <a href="#"><i class="fa fa-heart"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-retweet"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-shopping-cart"></i></a>
-                  </li>
-                </ul>
-              </div>
-              <div class="featured__item__text">
-                <h6><a href="/product-detail">Crab Pool Security</a></h6>
-                <h5>$30.00</h5>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-4 col-sm-6 mix fastfood vegetables">
-            <div class="featured__item">
-              <div
-                class="featured__item__pic set-bg"
-                data-setbg="img/featured/feature-8.jpg"
-              >
-                <ul class="featured__item__pic__hover">
-                  <li>
-                    <a href="#"><i class="fa fa-heart"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-retweet"></i></a>
-                  </li>
-                  <li>
-                    <a href="#"><i class="fa fa-shopping-cart"></i></a>
-                  </li>
-                </ul>
-              </div>
-              <div class="featured__item__text">
-                <h6><a href="/product-detail">Crab Pool Security</a></h6>
-                <h5>$30.00</h5>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div id="allProductsContainer" class="row featured__filter"></div>
       </div>
     </section>
     <!-- Featured Section End -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+      integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      //-- 상품 전체보기 api --//
+      let data = [];
+      let cursor = null;
+      let hasMoreData = true;
 
-    <!-- include : footer -->
-    <%- include('includes/footer') %>
+      const limit = 8;
+      let isLoadingData = false; // 데이터 로딩 중인지 여부
+
+      let lastScrollY = 0;
+
+      const fetchData = async () => {
+        if (!hasMoreData || isLoadingData) {
+          return;
+        }
+
+        isLoadingData = true; // 데이터 로딩 중임을 표시
+
+        const url = cursor
+          ? `/products?limit=${limit}&cursor=${cursor}`
+          : `/products?limit=${limit}`;
+
+        try {
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+            },
+          });
+
+          const newData = await response.json();
+
+          if (response.ok) {
+            data = data.concat(newData);
+
+            const fragment = document.createDocumentFragment(); // Fragment 생성
+
+            console.log(newData);
+            newData.forEach((item) => {
+              const productItem = document.createElement('div');
+              productItem.className =
+                'col-lg-3 col-md-4 col-sm-6 mix category product-item';
+              productItem.setAttribute('data-item-id', item.id);
+
+              productItem.innerHTML = `
+                <div class="featured__item">
+                  <div class="featured__item__pic set-bg">
+                    <img src="${item.product_image[0].url}">
+                    <ul class="featured__item__pic__hover">
+                      <li>
+                        <button type="button" class="btn-like">❤️</button>
+                      </li>
+                      <li>
+                        <a href="#"><i class="fa fa-shopping-cart"></i></a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="featured__item__text">
+                    <h6><a href="product-detail/${item.id}">${
+                item.product_name
+              }</a></h6>
+                    <h5>${item.product_price.toLocaleString()}원</h5>
+                  </div>
+                </div>
+              `;
+
+              fragment.appendChild(productItem); // Fragment에 추가
+            });
+
+            const allProductsContainer = document.querySelector(
+              '#allProductsContainer',
+            );
+            allProductsContainer.appendChild(fragment); // Fragment를 실제 DOM에 추가
+
+            cursor = newData[newData.length - 1]?.id;
+            console.log(cursor);
+
+            if (newData.length < limit) {
+              hasMoreData = false;
+            }
+          } else {
+            alert(newData.message);
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('데이터를 가져오는 데 실패했습니다.');
+        }
+
+        isLoadingData = false; // 데이터 로딩 완료 표시
+      };
+
+      fetchData();
+
+      window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > lastScrollY) {
+          const windowHeight = window.innerHeight;
+          const documentHeight = document.body.scrollHeight;
+
+          if (currentScrollY + windowHeight >= documentHeight - 10) {
+            fetchData();
+          }
+        }
+
+        lastScrollY = currentScrollY;
+      });
+
+      //-- 라이브 방송 목록 보여주기 --//
+      const title = document.querySelector('#liveTitle');
+      const liveList = document.querySelector('#liveList');
+      const socket = io('');
+
+      //- 라이브 창으로 이동 -//
+      document
+        .querySelector('.liveStartBtn')
+        .addEventListener('click', async () => {
+          window.open(`/live?title=${title.value}`);
+        });
+
+      //- 라이브 목록 보여주기 -//
+      socket.on('roomChange', (data) => {
+        liveList.innerHTML = '';
+        for (let i in data) {
+          const liveTitle = i;
+          const liveCount = data[i];
+          const li = document.createElement('li');
+          li.innerText = `${liveTitle} (${liveCount}명)`;
+          li.setAttribute('data-title', liveTitle);
+          li.setAttribute('class', 'liveItem liveListBox');
+          liveList.append(li);
+        }
+
+        //- 라이브 창 열기 -//
+        document.querySelectorAll('.liveItem').forEach((item) => {
+          item.addEventListener('click', (e) => {
+            const title = e.target.getAttribute('data-title');
+            window.open(`/live?title=${title}`);
+          });
+        });
+      });
+
+      socket.on('disconnect', function () {
+        console.log('Disconnected');
+      });
+    </script>
   </body>
 </html>

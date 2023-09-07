@@ -86,7 +86,7 @@
           <div class="col-lg-3 col-md-6 col-sm-6">
             <div class="footer__about">
               <div class="footer__about__logo">
-                <a href="/"><img src="img/logo.png" alt="" /></a>
+                <a href="/"><img src="/img/logo.png" alt="" /></a>
               </div>
               <ul>
                 <li>Address: 60-49 Road 11378 New York</li>
@@ -152,7 +152,7 @@
                 </p>
               </div>
               <div class="footer__copyright__payment">
-                <img src="img/payment-item.png" alt="" />
+                <img src="/img/payment-item.png" alt="" />
               </div>
             </div>
           </div>
@@ -180,8 +180,12 @@
           }
 
           const formData = new FormData();
-          formData.append('files', profileImageInput.files[0]);
-          formData.append('password', passwordInput.value);
+          if (profileImageInput.files[0] !== undefined) {
+            formData.append('files', profileImageInput.files[0]);
+          }
+          if (passwordInput.value !== '') {
+            formData.append('password', passwordInput.value);
+          }
           formData.append('name', nameInput.value);
           formData.append('phone_number', phoneNumberInput.value);
           formData.append('address', addressInput.value);

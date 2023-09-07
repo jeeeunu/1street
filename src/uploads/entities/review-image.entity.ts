@@ -1,7 +1,9 @@
+import { ReviewsEntity } from 'src/common/entities';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,12 +16,6 @@ export class ReviewImageEntity {
   @Column()
   review_id: number;
 
-  @Column()
-  e_tag: string;
-
-  @Column()
-  original_name: string;
-
   @Column({ comment: 's3 업로드된 localtion url' })
   url: string;
 
@@ -28,4 +24,7 @@ export class ReviewImageEntity {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(() => ReviewsEntity, (review) => review.review_image)
+  public review: ReviewsEntity;
 }

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+
+  <body>
+    <!-- include : top-button -->
+    <%- include('includes/top-button') %>
+
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
+
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+    <!-- 내정보 (일반) -->
+    <main class="mypage container mypage-info create-product-container">
+      <h2 class="title">관리자 페이지</h2>
+      <div class="row">
+        <!-- include : aside -->
+        <%- include('includes/my-page-aside') %>
+
+        <section class="col-lg-9">
+          <section>
+            <h2 class="section-title">상품 수정</h2>
+            <p class="create-title">*상품의 카테고리를 선택해주세요.</p>
+            <div class="radios">
+              <% categories.forEach(category => { %>
+              <div class="radio-wrap">
+                <label>
+                  <input type="radio" name="category" value="<%=
+                  category.category_number %>" <%= product.category.id ===
+                  category.category_number ? 'checked' : '' %> />
+                  <span><%= category.category_name %></span>
+                </label>
+              </div>
+              <% }); %>
+            </div>
+            <div class="input-container">
+              <div class="content-box">
+                <h2 class="create-title">*상품정보를 등록해주세요</h2>
+                <div class="input-box">
+                  <label class="label required">상품명: </label>
+                  <input
+                    type="text"
+                    id="productName"
+                    name=""
+                    value="<%- product.product_name %>"
+                  />
+                </div>
+                <div class="input-box">
+                  <label class="label required">판매가: </label>
+                  <input
+                    type="number"
+                    id="productPrice"
+                    name=""
+                    value="<%- product.product_price %>"
+                  />
+                </div>
+                <div class="input-box">
+                  <label class="required label">원산지: </label>
+                  <input
+                    type="text"
+                    id="productDomestic"
+                    name=""
+                    value="<%- product.product_domestic %>"
+                  />
+                </div>
+                <div class="basic-input-box">
+                  <div class="d-flex">
+                    <label class="label required">썸네일: </label>
+                    <div class="edit-img-container">
+                      <div class="edit-img-wrap">
+                        <% if (product.product_image[0]) { %>
+                        <img
+                          data-id="<%- product.product_image[0].id %>"
+                          src="<%- product.product_image[0].url %>"
+                          class="thumbnail"
+                          alt=""
+                        />
+                        <button
+                          type="button"
+                          class="btn-delete-img"
+                          onclick="deleteProduct()"
+                        >
+                          삭제하기
+                        </button>
+                        <% } %>
+                      </div>
+                      <% if (!product.product_image[0]) { %>
+                      <input
+                        type="file"
+                        class="profile-input"
+                        name="files"
+                        style="display: block; margin-top: 5px"
+                        onchange="setThumbnail(event)"
+                      />
+                      <% } %>
+                    </div>
+                    <div class="edit-img-container">
+                      <div class="edit-img-wrap">
+                        <% if (product.product_image[1]) { %>
+                        <img
+                          data-id="<%- product.product_image[1].id %>"
+                          src="<%- product.product_image[1].url %>"
+                          class="thumbnail"
+                          alt=""
+                        />
+                        <button type="button" class="btn-delete-img">
+                          삭제하기
+                        </button>
+                        <% } %>
+                      </div>
+                      <% if (!product.product_image[1]) { %>
+                      <input
+                        type="file"
+                        class="profile-input"
+                        name="files"
+                        style="display: block; margin-top: 5px"
+                        onchange="setThumbnail(event)"
+                      />
+                      <% } %>
+                    </div>
+                    <div class="edit-img-container">
+                      <div class="edit-img-wrap">
+                        <% if (product.product_image[2]) { %>
+                        <img
+                          src="<%- product.product_image[2].url %>"
+                          data-id="<%- product.product_image[2].id %>"
+                          class="thumbnail"
+                          alt=""
+                        />
+                        <button type="button" class="btn-delete-img">
+                          삭제하기
+                        </button>
+                        <% } %>
+                      </div>
+                      <% if (!product.product_image[2]) { %>
+                      <input
+                        type="file"
+                        class="profile-input"
+                        name="files"
+                        style="display: block; margin-top: 5px"
+                        onchange="setThumbnail(event)"
+                      />
+                      <% } %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <textarea id="myTextarea"><%- product.product_desc %></textarea>
+              <button
+                type="button"
+                class="btn-primary-m"
+                onclick="createProduct()"
+              >
+                상품등록 하기
+              </button>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <!-- include : footer -->
+    <%- include('includes/footer') %>
+
+    <script>
+      let productDescValue = '';
+      const escapeHtml = (text) => {
+        const element = document.createElement('div');
+        element.innerText = text;
+        return element.innerHTML;
+      };
+      tinymce.init({
+        selector: '#myTextarea',
+        plugins: 'image paste',
+        images_file_types: 'jpg,svg,webp',
+        height: 650,
+        setup: function (editor) {
+          editor.on('input', function () {
+            const productDesc = editor.getContent();
+            // productDescValue = escapeHtml(productDesc);
+            productDescValue = productDesc;
+          });
+        },
+      });
+
+      const deletedImagesId = [];
+
+      document.querySelectorAll('.btn-delete-img').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          if (confirm('해당 이미지를 삭제하시겠습니까?')) {
+            const imgWrap = btn.closest('.edit-img-container');
+            const img = imgWrap.querySelector('img');
+            const imgId = img.getAttribute('data-id');
+            deletedImagesId.push(imgId);
+            imgWrap.style.display = 'none';
+
+            const newImageContainer = document.createElement('div');
+            newImageContainer.classList.add('edit-img-container');
+            newImageContainer.innerHTML = `
+              <div class="edit-img-wrap">
+              </div>
+              <input type="file" class="profile-input" name="files" style="display: block; margin-top: 5px" onchange="setThumbnail(event)">
+            `;
+            document
+              .querySelector('.basic-input-box .d-flex')
+              .appendChild(newImageContainer);
+          }
+        });
+      });
+      //-- 상품수정 api --//
+      const createProduct = async () => {
+        try {
+          const formData = new FormData();
+          const radios = document.getElementsByName('category');
+          let category;
+          for (const radio of radios) {
+            if (radio.checked) {
+              category = radio.value;
+            }
+          }
+          const productName = document.querySelector('#productName');
+          const productPrice = document.querySelector('#productPrice');
+          const productDomestic = document.querySelector('#productDomestic');
+          formData.append('category_id', category);
+          formData.append('product_name', productName.value);
+          formData.append('product_domestic', productDomestic.value);
+          if (productDescValue.trim() !== '') {
+            formData.append('product_desc', productDescValue);
+          }
+          formData.append('product_price', productPrice.value);
+          console.log(deletedImagesId);
+          formData.append('delete_imgs', deletedImagesId);
+          let productImgfiles = [];
+          console.log(document.querySelectorAll('.profile-input'));
+          document.querySelectorAll('.profile-input').forEach((file) => {
+            if (file.files[0] !== undefined) {
+              formData.append('files', file.files[0]);
+            }
+          });
+
+          const response = await fetch('/products/<%- product.id %>', {
+            method: 'PUT',
+            headers: { Accept: 'application/json' },
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            alert(data.message);
+            window.location.href = '/';
+          } else {
+            console.log(data.message);
+            if (Array.isArray(data.message)) {
+              data.message.forEach((message) => {
+                alert(message.messages);
+              });
+            } else {
+              alert(data.message);
+            }
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('오류가 발생했습니다.');
+        }
+      };
+    </script>
+  </body>
+</html>

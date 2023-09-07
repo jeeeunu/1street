@@ -6,6 +6,7 @@
   <body>
     <!-- include : preloder -->
     <%- include('includes/preloder') %> error-message-div
+
     <!-- include : header -->
     <%- include('includes/header') %>
 
@@ -13,6 +14,8 @@
     <main class="hero container sign-form">
       <form>
         <legend class="tit-page">회원가입</legend>
+        <!-- include : terms -->
+        <%- include('includes/terms') %>
         <div class="radios">
           <div class="radio-wrap">
             <label>
@@ -83,7 +86,7 @@
           <div class="col-lg-3 col-md-6 col-sm-6">
             <div class="footer__about">
               <div class="footer__about__logo">
-                <a href="/"><img src="img/logo.png" alt="" /></a>
+                <a href="/"><img src="/img/logo.png" alt="" /></a>
               </div>
               <ul>
                 <li>Address: 60-49 Road 11378 New York</li>
@@ -149,7 +152,7 @@
                 </p>
               </div>
               <div class="footer__copyright__payment">
-                <img src="img/payment-item.png" alt="" />
+                <img src="/img/payment-item.png" alt="" />
               </div>
             </div>
           </div>

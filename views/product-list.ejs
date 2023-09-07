@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <!-- include : head -->
+  <%- include('includes/head') %>
+
+  <body>
+    <!-- include : preloder -->
+    <%- include('includes/preloder') %>
+
+    <!-- include : top-button -->
+    <%- include('includes/top-button') %>
+
+    <!-- include : header -->
+    <%- include('includes/header') %>
+
+    <!-- include : hero -->
+    <%- include('includes/hero') %>
+
+    <!-- include : viewed-products -->
+    <%- include('includes/viewed-products') %>
+
+    <main class="product-list-page">
+      <!-- 검색 정보 -->
+      <section class="search-info-container">
+        <div class="container">
+          <h2 class="search-info-title">
+            <span id="searchKeyword">'<%= searchContent %>'</span>에 대한
+            검색결과
+          </h2>
+          <div class="search-list-wrap">
+            <span>연관 검색어:</span>
+            <ul class="search-keyword-list">
+              <li>바나나 우유</li>
+              <li>바나나 과일</li>
+              <li>프리미엄 바나나</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Section Begin -->
+      <section class="product-list-container featured spad">
+        <div class="container">
+          <div class="btn-search-list">
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=sales` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=sales') ? 'active' : '' %>"
+            >
+              판매량순
+            </a>
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=desc` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=desc') ? 'active' : '' %>"
+            >
+              최신순
+            </a>
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=lowPrice` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=lowPrice') ? 'active' : '' %>"
+            >
+              낮은 가격순
+            </a>
+            <a
+              href="<%= `${thisPath.split('&sort=')[0]}&sort=highPrice` %>"
+              class="btn-serach-item <%= thisPath.includes('sort=highPrice') ? 'active' : '' %>"
+            >
+              높은 가격순
+            </a>
+          </div>
+          <div id="allProductsContainer" class="row featured__filter"></div>
+        </div>
+      </section>
+      <!-- Featured Section End -->
+    </main>
+    <script>
+      //-- 상품 전체보기 api --//
+      let data = [];
+      let cursor = null;
+      let hasMoreData = true;
+      const searchKeyword = document.querySelector('#searchKeyword');
+
+      const limit = 8;
+      let isLoadingData = false; // 데이터 로딩 중인지 여부
+
+      let lastScrollY = 0;
+
+      const fetchData = async () => {
+        if (!hasMoreData || isLoadingData) {
+          return;
+        }
+
+        isLoadingData = true; // 데이터 로딩 중임을 표시
+
+        const searchKeyword =
+          document.querySelector('#searchKeyword').textContent;
+        const keyword = searchKeyword.replace(/'/g, '');
+
+        const currentUrl = window.location.href;
+        const apiUrl = currentUrl.replace('products-list', 'products/search');
+
+        const queryParameters = cursor
+          ? `&limit=${limit}&cursor=${cursor}`
+          : `&limit=${limit}`;
+
+        const url = apiUrl + queryParameters;
+
+        if (url !== currentUrl) {
+        }
+        try {
+          console.log(url);
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+            },
+          });
+
+          const newData = await response.json();
+
+          if (response.ok) {
+            data = data.concat(newData);
+
+            const fragment = document.createDocumentFragment(); // Fragment 생성
+
+            // const allProductsContainer = document.querySelector(
+            //   '#allProductsContainer',
+            //);
+            if (newData.length > 0) {
+              newData.forEach((item) => {
+                const productItem = document.createElement('div');
+                productItem.className =
+                  'col-lg-3 col-md-4 col-sm-6 mix category product-item';
+                productItem.setAttribute('data-item-id', item.id);
+
+                productItem.innerHTML = `
+                  <div class="featured__item">
+                    <div class="featured__item__pic set-bg">
+                      <img src="${item.product_image[0].url}">
+                      <ul class="featured__item__pic__hover">
+                        <li>
+                          <button type="button" class="btn-like">❤️</button>
+                        </li>
+                        <li>
+                          <a href="#"><i class="fa fa-shopping-cart"></i></a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="featured__item__text">
+                      <h6><a href="product-detail/${item.id}">${
+                  item.product_name
+                }</a></h6>
+                      <h5>${item.product_price.toLocaleString()}원</h5>
+                    </div>
+                  </div>
+                `;
+
+                fragment.appendChild(productItem); // Fragment에 추가
+              });
+              const allProductsContainer = document.querySelector(
+                '#allProductsContainer',
+              );
+
+              allProductsContainer.appendChild(fragment); // Fragment를 실제 DOM에 추가
+              cursor = newData[newData.length - 1]?.id;
+
+              if (newData.length < limit) {
+                hasMoreData = false;
+              }
+            } else {
+              // 데이터 없을 시에
+              allProductsContainer.innerHTML = `
+                 <p style="width: 100%; padding: 50px; text-align: center;">등록된 상품이 없습니다.</p>
+               `;
+            }
+          } else {
+            alert(newData.message);
+            window.location.href = '/';
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('데이터를 가져오는 데 실패했습니다.');
+        }
+
+        isLoadingData = false; // 데이터 로딩 완료 표시
+      };
+
+      fetchData();
+
+      window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > lastScrollY) {
+          const windowHeight = window.innerHeight;
+          const documentHeight = document.body.scrollHeight;
+
+          if (currentScrollY + windowHeight >= documentHeight - 10) {
+            fetchData();
+          }
+        }
+
+        lastScrollY = currentScrollY;
+      });
+    </script>
+  </body>
+</html>
