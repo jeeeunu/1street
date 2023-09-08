@@ -9,7 +9,6 @@ import { CreateQnasDto } from './dtos/create-qna.dto';
 import { UsersService } from 'src/users/users.service';
 import { ProductsEntity } from 'src/common/entities';
 import { QnaAnswerEntity } from './entities/qna-answer.entity';
-import { CreateQnaAnswerDto } from './dtos/create-qna-answer.dto';
 
 @Injectable()
 export class QnasService {
