@@ -136,6 +136,8 @@ export class AppController {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
 
+    if (!authUser) return response.redirect('/');
+
     response.render('my-page-user-edit', {
       isIndexPath,
       isSearchPath,
@@ -154,6 +156,8 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
+
+    if (!authUser) return response.redirect('/');
 
     if (authUser && authUser !== null && authUser.isAdmin === true) {
       return response.redirect('admin-my-page');
