@@ -90,6 +90,7 @@
                       <% if (!product.product_image[0]) { %>
                       <input
                         type="file"
+                        accept=".jpg, .jpeg, .png"
                         class="profile-input"
                         name="files"
                         style="display: block; margin-top: 5px"
@@ -114,6 +115,7 @@
                       <% if (!product.product_image[1]) { %>
                       <input
                         type="file"
+                        accept=".jpg, .jpeg, .png"
                         class="profile-input"
                         name="files"
                         style="display: block; margin-top: 5px"
@@ -138,6 +140,7 @@
                       <% if (!product.product_image[2]) { %>
                       <input
                         type="file"
+                        accept=".jpg, .jpeg, .png"
                         class="profile-input"
                         name="files"
                         style="display: block; margin-top: 5px"
@@ -202,7 +205,7 @@
             newImageContainer.innerHTML = `
               <div class="edit-img-wrap">
               </div>
-              <input type="file" class="profile-input" name="files" style="display: block; margin-top: 5px" onchange="setThumbnail(event)">
+              <input type="file" accept=".jpg, .jpeg, .png" class="profile-input" name="files" style="display: block; margin-top: 5px" onchange="setThumbnail(event)">
             `;
             document
               .querySelector('.basic-input-box .d-flex')
