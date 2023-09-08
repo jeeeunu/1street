@@ -8,6 +8,8 @@ import { Repository } from 'typeorm';
 import { CreateQnasDto } from './dtos/create-qna.dto';
 import { UsersService } from 'src/users/users.service';
 import { ProductsEntity } from 'src/common/entities';
+import { QnaAnswerEntity } from './entities/qna-answer.entity';
+import { CreateQnaAnswerDto } from './dtos/create-qna-answer.dto';
 
 @Injectable()
 export class QnasService {
@@ -17,6 +19,8 @@ export class QnasService {
     private usersService: UsersService,
     @InjectRepository(ProductsEntity)
     private productRepository: Repository<ProductsEntity>,
+    @InjectRepository(QnaAnswerEntity)
+    private qnaAnswerRepository: Repository<QnaAnswerEntity>,
   ) {}
 
   //-- QNA 만들기 --//
@@ -139,5 +143,82 @@ export class QnasService {
   async delete(id: number): Promise<ResultableInterface> {
     await this.qnaRepository.delete({ id });
     return { status: true, message: '질문을 성공적으로 삭제했습니다' };
+  }
+
+  // -- 관리자의 QNA 질문에 대한 답변 작성 --//
+
+  async createQnaAnswer(
+    qnaId: number,
+    answerContent: string,
+  ): Promise<QnaAnswerEntity> {
+    const qnaAnswer = new QnaAnswerEntity();
+    qnaAnswer.qna_id = qnaId;
+    qnaAnswer.answer_content = answerContent;
+
+    return await this.qnaAnswerRepository.save(qnaAnswer);
+  }
+
+  // QnaAnswer 조회 (qna_id로)
+  async getQnaAnswer(qnaId: number): Promise<QnaAnswerEntity[]> {
+    return await this.qnaAnswerRepository.find({
+      where: { qna_id: qnaId },
+    });
+  }
+
+  // QnaAnswer 조회 (answerId로)
+  async getQnaAnswerById(answerId: number): Promise<QnaAnswerEntity> {
+    const qnaAnswer = await this.qnaAnswerRepository.findOne({
+      where: { id: answerId },
+    });
+    if (!qnaAnswer) {
+      throw new NotFoundException('해당 QNA 답변을 찾을 수 없습니다.');
+    }
+    return qnaAnswer;
+  }
+
+  // QnaAnswer 수정
+  async updateQnaAnswer(
+    answerId: number,
+    answerContent: string,
+  ): Promise<ResultableInterface> {
+    try {
+      const qnaAnswer = await this.qnaAnswerRepository.findOne({
+        where: { id: answerId },
+      });
+      if (!qnaAnswer) {
+        return { status: false, message: 'QNA 답변을 찾을 수 없습니다.' };
+      }
+
+      qnaAnswer.answer_content = answerContent;
+      await this.qnaAnswerRepository.save(qnaAnswer);
+
+      return { status: true, message: 'QNA 답변이 수정되었습니다.' };
+    } catch (error) {
+      return {
+        status: false,
+        message: 'QNA 답변 수정 중 오류가 발생했습니다.',
+      };
+    }
+  }
+
+  // QnaAnswer 삭제
+  async deleteQnaAnswer(answerId: number): Promise<ResultableInterface> {
+    try {
+      const qnaAnswer = await this.qnaAnswerRepository.findOne({
+        where: { id: answerId },
+      });
+      if (!qnaAnswer) {
+        return { status: false, message: 'QNA 답변을 찾을 수 없습니다.' };
+      }
+
+      await this.qnaAnswerRepository.remove(qnaAnswer);
+
+      return { status: true, message: 'QNA 답변이 삭제되었습니다.' };
+    } catch (error) {
+      return {
+        status: false,
+        message: 'QNA 답변 삭제 중 오류가 발생했습니다.',
+      };
+    }
   }
 }
