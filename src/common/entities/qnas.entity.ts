@@ -1,14 +1,15 @@
-import { IsNotEmpty, IsString } from 'class-validator';
 import { UsersEntity } from 'src/common/entities/users.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ProductsEntity } from './products.entity';
+import { QnaAnswerEntity } from 'src/qnas/entities/qna-answer.entity';
 
 @Entity({ name: 'qnas' })
 export class QnasEntity {
@@ -39,4 +40,7 @@ export class QnasEntity {
 
   @ManyToOne(() => ProductsEntity, (product) => product.qna)
   public product: ProductsEntity;
+
+  @OneToMany(() => QnaAnswerEntity, (qna_answer) => qna_answer.qna)
+  public qna_answer: QnaAnswerEntity;
 }
