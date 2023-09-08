@@ -90,6 +90,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //- candidate 보내기 -//
   @SubscribeMessage('ice')
   ice(@MessageBody() data, @ConnectedSocket() socket: Socket) {
-    socket.to(data.user).emit('answer', data.candidate);
+    console.log('아이스 받기', data);
+    if (data.user !== null) {
+      this.server.of('/').to(data.user).emit('ice', data.candidate);
+    } else {
+      this.server.of('/').to(this.roomManager).emit('ice', data.candidate);
+    }
   }
 }

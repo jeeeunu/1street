@@ -69,14 +69,15 @@
       let stream;
       let isMuted = false;
       let isCameraOff = false;
-      let roomUser = [];
-
+      //지금 들어온 유저 기억 해두기??
+      let roomUsers = [];
       window.onload = async () => {
         await joinRoom();
       };
 
       const joinRoom = async () => {
         await getMedia();
+
         makeConnection();
         socket.emit('join_room', title);
       };
@@ -187,86 +188,115 @@
 
       //- 방장: offer전송 -//
       socket.on('welcome', async (id) => {
-        roomUser.push(id);
-        console.log('roomUser', roomUser);
         if (socket.id === roomManager) {
-          console.log('welcome 누군가 들어옴!', id);
+          console.log('welcome!', id);
+          roomUsers.push(id);
+          console.log('roomUsers', roomUsers);
           const offer = await peerConnection.createOffer();
-          peerConnection.setLocalDescription(offer);
-          console.log('방장이 프론트에서 offer보냄', roomManager);
+          peerConnection.setLocalDescription(new RTCSessionDescription(offer));
+          console.log('send offer roomManager -> ', offer, peerConnection);
           socket.emit('offer', { offer, title, id });
         }
       });
 
       //- offer -> answer -//
       socket.on('offer', async (offer) => {
-        console.log('offer 누가 받은 것임..?', socket.id);
-        await peerConnection.setRemoteDescription(offer);
+        console.log('offer receive', socket.id, offer);
+        await peerConnection.setRemoteDescription(
+          new RTCSessionDescription(offer),
+        );
         const answer = await peerConnection.createAnswer();
-        await peerConnection.setLocalDescription(answer);
+        await peerConnection.setLocalDescription(
+          new RTCSessionDescription(answer),
+        );
+        console.log('send answer', answer, peerConnection);
         socket.emit('answer', { answer, title });
       });
 
       //- answer 받기 -//
       socket.on('answer', async (answer) => {
-        if (roomManager === socket.id) {
-          console.log(peerConnection, 'answer 받음', roomManager, socket.id);
-          if (peerConnection.signalingState === 'have-local-offer') {
-            try {
-              await peerConnection.setRemoteDescription(answer);
-            } catch (error) {
-              console.error('SDP 파싱 오류', error);
-            }
-          } else {
-            console.log('have-local-offer 상태가 아님');
-          }
-        }
+        await peerConnection.setRemoteDescription(
+          new RTCSessionDescription(answer),
+        );
+        console.log('receive answer', answer, peerConnection, roomUsers);
       });
 
       //- peer 연결 -//
       const makeConnection = () => {
+        console.log('peer connect');
         peerConnection = new RTCPeerConnection({
           iceServers: [
             {
-              urls: [
-                'stun:stun.l.google.com:19302',
-                'stun:stun1.l.google.com:19302',
-                'stun:stun2.l.google.com:19302',
-                'stun:stun3.l.google.com:19302',
-                'stun:stun4.l.google.com:19302',
-              ],
+              urls: 'stun:stun.l.google.com:19302',
+            },
+            {
+              urls: 'stun:stun1.l.google.com:19302',
             },
           ],
+          iceCandidatePoolSize: 10,
         });
+        // urls: [
+        //         'stun:stun.l.google.com:19302',
+        //         'stun:stun1.l.google.com:19302',
+        //         'stun:stun2.l.google.com:19302',
+        //         'stun:stun3.l.google.com:19302',
+        //         'stun:stun4.l.google.com:19302',
+        //       ],
+
+        //icecandidate 이게 두번째 사람부터 발동을 안 함
+        //새로운 후보 공유(?) 네트워크 후보?
+        //peerConnection 상태가 connected일때
+        //후보자들을 모두 끝냈을때 (내용물은 없음)
+        console.log('peerConnection', peerConnection);
         peerConnection.addEventListener('icecandidate', handleIce);
         peerConnection.addEventListener('track', handleTrack);
-        stream
-          .getTracks()
-          .forEach((track) => peerConnection.addTrack(track, stream));
+        peerConnection.addEventListener('icecandidateerror', (event) => {
+          console.log(event);
+        });
+
+        if (roomManager === socket.id || roomManager === null) {
+          stream
+            .getTracks()
+            .forEach((track) => peerConnection.addTrack(track, stream));
+        }
       };
 
+      //방장이 모든 사람에게 ice보내기
+      //방장이 두번쨰 사람에게 ice를 안 보냄
       const handleIce = (ice) => {
-        console.log('roomUser', roomUser);
-        roomUser.forEach((user) => {
+        console.log('ice event');
+        if (roomManager === socket.id) {
+          const user = roomUsers[roomUsers.length - 1];
+          console.log('ice -> user', user, ice);
           socket.emit('ice', { candidate: ice.candidate, title, user });
-        });
+        } else {
+          console.log('ice -> roomManager', ice);
+          const user = null;
+          socket.emit('ice', { candidate: ice.candidate, title, user });
+        }
       };
+
+      socket.on('ice', (ice) => {
+        if (ice) {
+          console.log('receive ice', ice);
+          peerConnection.addIceCandidate(new RTCIceCandidate(ice));
+        } else {
+          console.log('No ice');
+        }
+      });
 
       //- stream 연결 -//
       const handleTrack = (data) => {
-        console.log(peerConnection);
+        console.log('handleTrack', data);
         if (socket.id !== roomManager) {
           liveVideo.srcObject = data.streams[0];
         }
       };
 
-      socket.on('ice', (ice) => {
-        peerConnection.addIceCandidate(ice);
-      });
-
-      //- 연결 끊김 -//
       socket.on('disconnectRoom', (id) => {
-        roomUser = roomUser.filter((user) => user !== id);
+        roomUsers = roomUsers.filter((user) => {
+          return user !== id;
+        });
       });
     </script>
   </body>
