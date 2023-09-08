@@ -125,7 +125,8 @@ export class UsersService {
       }
     }
 
-    updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    if (updateUserDto.password)
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
 
     Object.assign(existingUser, updateUserDto);
     await this.usersEntity.save(existingUser);
