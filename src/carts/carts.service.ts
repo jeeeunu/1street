@@ -32,9 +32,9 @@ export class CartsService {
       (item) => item.product_id === product_id,
     );
 
-    // if (existingItem) {
-    //   throw new Error('이미 장바구니에 있는 상품입니다.');
-    // }
+    if (existingItem) {
+      throw new NotFoundException('이미 장바구니에 있는 상품입니다.');
+    }
     // 새로운 물품 추가
     const newItem = { product_id, quantity };
     const updatedCart = [...previousCart, newItem];

@@ -18,7 +18,7 @@ export class LikesController {
   //-- 좋아요 보기 --//
   @Get()
   @UseGuards(AuthGuard)
-  async getLikes(@AuthUser() authUser: RequestUserInterface) {
+  async findLikes(@AuthUser() authUser: RequestUserInterface) {
     return await this.likesService.findAllLikes(authUser);
   }
 

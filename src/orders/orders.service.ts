@@ -5,7 +5,7 @@ import { DeepPartial, Repository } from 'typeorm';
 import { Order2CreateDto, OrderCreateDto, OrderStatusDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from 'src/users/interfaces';
-import { UserService } from 'src/users/users.service';
+import { UsersService } from 'src/users/users.service';
 import { OrderDetailsEntity } from './entities/order-detail.entity';
 import { CartsService } from 'src/carts/carts.service';
 
@@ -14,7 +14,7 @@ export class OrdersService {
   constructor(
     @InjectRepository(OrdersEntity)
     private orderRepository: Repository<OrdersEntity>,
-    private userService: UserService,
+    private usersService: UsersService,
     @InjectRepository(OrderDetailsEntity)
     private orderDetailRepository: Repository<OrderDetailsEntity>,
     private cartsService: CartsService,

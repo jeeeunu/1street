@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { ProductsEntity, ReviewsEntity, ShopsEntity } from '../common/entities';
 import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
@@ -23,13 +23,10 @@ export class ProductsService {
     private productImageRepository: Repository<ProductImageEntity>,
     @InjectRepository(CategoryEntity)
     private categoryRepository: Repository<CategoryEntity>,
-    @InjectRepository(ShopsEntity)
-    private shopRepository: Repository<ShopsEntity>,
-    @InjectRepository(OrderDetailsEntity)
-    private orderDetailsEntity: Repository<OrderDetailsEntity>,
     @InjectRepository(ReviewsEntity)
     private reviewsEntity: Repository<ReviewsEntity>,
     private uploadsService: UploadsService,
+    private dataSource: DataSource,
   ) {}
 
   //-- 상품 등록 --//
@@ -38,41 +35,70 @@ export class ProductsService {
     authUser: RequestUserInterface,
     files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
-    const categoryEntity = await this.categoryRepository.findOne({
-      where: {
-        id: data.category_id,
-      },
-    });
-    const createProduct = await this.productRepository.save({
-      shop_id: authUser.shop_id,
-      product_name: data.product_name,
-      product_desc: data.product_desc,
-      product_price: data.product_price,
-      product_domestic: data.product_domestic,
-      category: categoryEntity,
-    });
+    // 트랜잭션
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    if (files.length > 0) {
-      const imageDetails = await this.uploadsService.createProductImages(files);
-      console.log('이미지 파일 저장');
+    try {
+      const categoryEntity = await this.categoryRepository.findOne({
+        where: {
+          id: data.category_id,
+        },
+      });
+      const createProduct = await this.productRepository.save({
+        shop_id: authUser.shop_id,
+        product_name: data.product_name,
+        product_desc: data.product_desc,
+        product_price: data.product_price,
+        product_domestic: data.product_domestic,
+        category: categoryEntity,
+      });
 
-      for (const imageDetail of imageDetails) {
-        const uploadFile = new ProductImageEntity();
-        uploadFile.url = imageDetail;
-        uploadFile.product = createProduct;
+      if (files.length > 0) {
+        const imageDetails = await this.uploadsService.createProductImages(
+          files,
+        );
+        console.log('이미지 파일 저장');
 
-        await this.productImageRepository.save(uploadFile);
+        for (const imageDetail of imageDetails) {
+          const uploadFile = new ProductImageEntity();
+          uploadFile.url = imageDetail;
+          uploadFile.product = createProduct;
+
+          await this.productImageRepository.save(uploadFile);
+        }
+      } else {
+        throw new NotFoundException(
+          '한개 이상의 썸네일 이미지를 포함해야 합니다.',
+        );
       }
-    } else {
-      throw new NotFoundException(
-        '한개 이상의 썸네일 이미지를 포함해야 합니다.',
-      );
-    }
 
-    return { status: true, message: '상품을 성공적으로 등록했습니다' };
+      await queryRunner.commitTransaction();
+      return { status: true, message: '상품을 성공적으로 등록했습니다' };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
-  //-- 신상품 --//
+  //-- 상품 전체보기(무한 스크롤) --//
+  async findAll(limit: number, cursor: number): Promise<ProductsEntity[]> {
+    const query = await this.productRepository
+      .createQueryBuilder('product')
+      .orderBy('product.id', 'DESC')
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .take(limit || 8);
+
+    if (cursor) {
+      await query.where('product.id < :cursor', { cursor });
+    }
+
+    return await query.getMany();
+  }
+
+  //-- 상품 조회 : 신상품 --//
   async findLatestProducts(): Promise<ProductsEntity[]> {
     const products = await this.productRepository.find({
       relations: ['product_image'],
@@ -83,29 +109,42 @@ export class ProductsService {
     return products;
   }
 
-  //-- 인기 상품 --//
+  //-- 상품 조회 : 인기 상품 --//
   async findPopularProducts(): Promise<any> {
-    const orderDetail = await this.orderDetailsEntity
-      .createQueryBuilder('order_detail')
-      .select('order_detail.product_id', 'product_id')
-      .addSelect('COUNT(order_detail.product_id)', 'count')
-      .groupBy('order_detail.product_id')
-      .orderBy('count', 'DESC')
-      .limit(6)
-      .getRawMany();
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoin(
+        (subQuery) =>
+          subQuery
+            .select([
+              'order_detail.product_id',
+              'SUM(order_detail.order_quantity) as total_sales',
+            ])
+            .from(OrderDetailsEntity, 'order_detail')
+            .groupBy('order_detail.product_id'),
+        'order_detail',
+        'order_detail.product_id = product.id',
+      )
+      .select([
+        'product.id',
+        'product.product_name',
+        'product.product_desc',
+        'product.product_domestic',
+        'product.product_price',
+        'product.shop_id',
+        'product.created_at',
+        'product.updated_at',
+        'product.category_id',
+        'IFNULL(total_sales, 0) as total_sales',
+      ])
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .orderBy('total_sales', 'DESC')
+      .getMany();
 
-    const productIds = orderDetail.map((item) => item.product_id);
-
-    const products = await this.productRepository.find({
-      where: {
-        id: In(productIds),
-      },
-      relations: ['product_image'],
-    });
     return products;
   }
 
-  //-- 평점이 높은 상품 --//
+  //-- 상품 조회 : 평점 높은 상품 --//
   async findHighlyRatedProducts(): Promise<any> {
     const productsRank = await this.productRepository
       .createQueryBuilder('product')
@@ -118,7 +157,7 @@ export class ProductsService {
       .groupBy('product.id')
       .having('averageRating IS NOT NULL')
       .orderBy('averageRating', 'DESC')
-      .limit(6)
+      .limit(8)
       .getRawMany();
 
     const productIds = productsRank.map((item) => item.product_id);
@@ -139,35 +178,13 @@ export class ProductsService {
     return products;
   }
 
-  //-- 상품 전체보기(무한 스크롤) --//
-  async findAll(limit: number, cursor: number): Promise<ProductsEntity[]> {
-    const query = await this.productRepository
-      .createQueryBuilder('product')
-      .orderBy('product.id', 'DESC')
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .take(limit || 8);
-
-    if (cursor) {
-      await query.where('product.id < :cursor', { cursor });
-    }
-
-    return await query.getMany();
-  }
-
-  //-- 상품 검색 (검색어)--//
+  //-- 상품 검색 : 키워드 --//
   async findByKeyword(
     limit: number,
     cursor: number,
     keyword: string,
     categoryId: number,
-    sort:
-      | 'asc'
-      | 'desc'
-      | 'rank'
-      | 'lowPrice'
-      | 'highPrice'
-      | 'sales'
-      | 'latest',
+    sort: 'asc' | 'desc' | 'lowPrice' | 'highPrice' | 'sales' | 'latest',
   ): Promise<ProductsEntity[]> {
     let query;
 
@@ -176,9 +193,8 @@ export class ProductsService {
       console.log('카테고리 검색');
       query = await this.productRepository
         .createQueryBuilder('product')
-        .leftJoinAndSelect('product.category', 'category')
-        .leftJoinAndSelect('product.product_image', 'product_image')
-        .where('category.id = :categoryId', { categoryId });
+        .where('category.id = :categoryId', { categoryId })
+        .limit(8);
     }
 
     // 키워드 검색
@@ -189,17 +205,40 @@ export class ProductsService {
         .where('product.product_name LIKE :keyword', {
           keyword: `%${keyword}%`,
         })
-        .leftJoinAndSelect('product.product_image', 'product_image')
-        .leftJoinAndSelect('product.order_detail', 'order_detail');
+        .limit(8);
     }
 
     if (query) {
-      query.take(limit || 10);
+      query.take(limit || 8);
 
-      // TODO :: 랭킹
-      if (sort === 'rank') {
-        console.log('랭킹 순으로 정렬');
-        query.orderBy('product.product_price', 'ASC');
+      if (sort === 'sales') {
+        console.log('판매량순으로 정렬/반환');
+        query
+          .leftJoin(
+            (subQuery) =>
+              subQuery
+                .select([
+                  'order_detail.product_id',
+                  'SUM(order_detail.order_quantity) as total_sales',
+                ])
+                .from(OrderDetailsEntity, 'order_detail')
+                .groupBy('order_detail.product_id'),
+            'order_detail',
+            'order_detail.product_id = product.id',
+          )
+          .select([
+            'product.id',
+            'product.product_name',
+            'product.product_desc',
+            'product.product_domestic',
+            'product.product_price',
+            'product.shop_id',
+            'product.created_at',
+            'product.updated_at',
+            'IFNULL(total_sales, 0) as total_sales',
+          ])
+          .orderBy('total_sales', 'DESC')
+          .take(limit || 8);
       }
 
       if (sort === 'lowPrice') {
@@ -212,11 +251,6 @@ export class ProductsService {
         query.orderBy('product.product_price', 'DESC');
       }
 
-      if (sort === 'sales') {
-        console.log('판매량순으로 정렬');
-        query.orderBy('product.order_detail', 'DESC');
-      }
-
       if (sort === 'desc') {
         console.log('최신순으로 정렬');
         query.orderBy('product.created_at', 'DESC');
@@ -226,7 +260,10 @@ export class ProductsService {
         query.andWhere('product.id > :cursor', { cursor });
       }
 
-      return await query.getMany();
+      return await query
+        .leftJoinAndSelect('product.category', 'category')
+        .leftJoinAndSelect('product.product_image', 'product_image')
+        .getMany();
     } else {
       throw new NotFoundException('검색어를 입력해주세요');
     }
@@ -248,6 +285,20 @@ export class ProductsService {
 
     if (!product) throw new NotFoundException('해당 상품이 존재하지 않습니다.');
     return product;
+  }
+
+  //-- 상품 조회 : admin-등록된 상품 보기 --//
+  async findRegisteredAll(shopId: number): Promise<ProductsEntity[]> {
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.product_image', 'product_image')
+      .leftJoinAndSelect('product.category', 'category')
+      .where('product.shop_id = :shopId', { shopId })
+      .orderBy('product.created_at', 'DESC')
+      .addOrderBy('product_image.id', 'ASC')
+      .getMany();
+
+    return products;
   }
 
   //-- 상품별 평점 평균값 구하기 --//
@@ -274,20 +325,6 @@ export class ProductsService {
 
     console.log(averageRating);
     return averageRating;
-  }
-
-  //-- admin : 등록된 상품 보기 --//
-  async findRegisteredAll(shopId: number): Promise<ProductsEntity[]> {
-    const products = await this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.product_image', 'product_image')
-      .leftJoinAndSelect('product.category', 'category')
-      .where('product.shop_id = :shopId', { shopId })
-      .orderBy('product.created_at', 'DESC')
-      .addOrderBy('product_image.id', 'ASC')
-      .getMany();
-
-    return products;
   }
 
   //-- 상품 수정 --//

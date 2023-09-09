@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class UploadsService {
@@ -36,6 +37,13 @@ export class UploadsService {
     const uploadPromises: Promise<void>[] = files.map(async (file) => {
       const uniqueId = uuidv4();
       key = `uploads-profile/${uniqueId}`;
+
+      const resizedImageBuffer = await sharp(file.buffer)
+        .resize(200, 200)
+        .toBuffer();
+
+      file.buffer = resizedImageBuffer;
+
       await this.uploadPromise(file, key);
     });
 
@@ -44,18 +52,26 @@ export class UploadsService {
   }
 
   //-- 이미지 수정 : 유저 프로필 --//
-  async editProfileImage(
+  async updateProfileImage(
     url: string,
     files: Express.Multer.File[],
   ): Promise<string> {
     const baseUrl = 'https://1street.s3.ap-northeast-2.amazonaws.com/';
     const fileKey = url.replace(baseUrl, '');
+    console.log(fileKey);
     await this.deleteFile(fileKey);
 
     let key: string;
     const uploadPromises: Promise<void>[] = files.map(async (file) => {
       const uniqueId = uuidv4();
       key = `uploads-profile/${uniqueId}`;
+
+      const resizedImageBuffer = await sharp(file.buffer)
+        .resize(200, 200)
+        .toBuffer();
+
+      file.buffer = resizedImageBuffer;
+
       await this.uploadPromise(file, key);
     });
 
@@ -76,6 +92,13 @@ export class UploadsService {
     const uploadPromises: Promise<string>[] = files.map(async (file) => {
       const uniqueId = uuidv4();
       const key = `uploads-product/${uniqueId}`;
+
+      const resizedImageBuffer = await sharp(file.buffer)
+        .resize(400, 400)
+        .toBuffer();
+
+      file.buffer = resizedImageBuffer;
+
       await this.uploadPromise(file, key);
       return `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`;
     });
@@ -89,6 +112,13 @@ export class UploadsService {
     const uploadPromises: Promise<string>[] = files.map(async (file) => {
       const uniqueId = uuidv4();
       const key = `uploads-reviews/${uniqueId}`;
+
+      const resizedImageBuffer = await sharp(file.buffer)
+        .resize(200, 200)
+        .toBuffer();
+
+      file.buffer = resizedImageBuffer;
+
       await this.uploadPromise(file, key);
       return `https://1street.s3.ap-northeast-2.amazonaws.com/${key}`;
     });

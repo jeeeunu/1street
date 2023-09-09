@@ -1,5 +1,5 @@
 import { IsString, IsOptional, IsNumber } from 'class-validator';
-export class EditReviewsDto {
+export class UpdateReviewsDto {
   @IsOptional()
   @IsNumber()
   readonly review_rating: number;
