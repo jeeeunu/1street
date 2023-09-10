@@ -168,6 +168,51 @@ export class AppController {
     });
   }
 
+  //-- 주문 상세 페이지 --//
+  @Get('my-page-order/:order_id')
+  async myPageOrder(
+    @Param('order_id') order_id: number,
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
+    const order = await this.ordersService.getDetailOrder(
+      authUser.user_id,
+      order_id,
+    );
+    response.render('my-page-order', {
+      isIndexPath,
+      isSearchPath,
+      user,
+      authUser,
+      categories,
+      order,
+    });
+  }
+
+  //-- 판매자 주문 상세 페이지 --//
+  @Get('admin-my-page-order/:order_id')
+  async adminMyPageOrder(
+    @Param('order_id') order_id: number,
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { user, shop } = await this.adminPageData(authUser, response);
+    const order = await this.ordersService.getDetailOrder(
+      authUser.user_id,
+      order_id,
+    );
+    response.render('admin-my-page-order', {
+      user,
+      shop,
+      authUser,
+      order,
+    });
+  }
+
   //-- 좋아요 --//
   @Get('like')
   async like(
@@ -198,6 +243,7 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
+    const myCarts = await this.cartsService.findAllCarts(authUser);
 
     response.render('cart', {
       isIndexPath,
@@ -205,6 +251,7 @@ export class AppController {
       user,
       authUser,
       categories,
+      myCarts,
     });
   }
 

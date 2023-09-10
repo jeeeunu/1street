@@ -8,6 +8,7 @@ import { RequestUserInterface } from 'src/users/interfaces';
 import { UsersService } from 'src/users/users.service';
 import { OrderDetailsEntity } from './entities/order-detail.entity';
 import { CartsService } from 'src/carts/carts.service';
+import { ProductsEntity, ShopsEntity } from 'src/common/entities';
 
 @Injectable()
 export class OrdersService {
@@ -18,6 +19,10 @@ export class OrdersService {
     @InjectRepository(OrderDetailsEntity)
     private orderDetailRepository: Repository<OrderDetailsEntity>,
     private cartsService: CartsService,
+    @InjectRepository(ShopsEntity)
+    private shopRepository: Repository<ShopsEntity>,
+    @InjectRepository(ProductsEntity)
+    private productRepository: Repository<ProductsEntity>,
   ) {}
   //-- 장바구니 주문 작성 --//
   async createOrder(
@@ -28,7 +33,6 @@ export class OrdersService {
     if (!carts || carts.length === 0) {
       throw new NotFoundException('장바구니가 비어있습니다.');
     }
-    // 여기서 주문 생성 로직을 구현
     // carts 기반으로 주문 생성, 주문 정보를 저장 등을 수행
     const order = await this.orderRepository.save({
       user: { id: user_id },
@@ -80,6 +84,7 @@ export class OrdersService {
   async getOrders(user_id: number): Promise<OrdersEntity[]> {
     return await this.orderRepository.find({
       where: { user: { id: user_id } },
+      order: { created_at: 'DESC' },
     });
   }
 
@@ -94,6 +99,11 @@ export class OrdersService {
         'order_details.product.product_image',
       ],
     });
+    const user = await this.usersService.findUser(user_id);
+    console.log(user);
+    if (user.seller_flag === true) {
+      return order;
+    }
     if (!order) {
       throw new NotFoundException('주문을 찾을 수 없습니다.');
     } else if (order.user.id !== user_id) {
@@ -119,6 +129,14 @@ export class OrdersService {
     }
     if (order.order_status === 'OrderCancel') {
       throw new NotFoundException('이미 취소된 주문 입니다.');
+    }
+    if (
+      order.order_status === 'OrderConfirm' ||
+      'OrderShipping' ||
+      'orderDelivering' ||
+      'DeliveryComplete'
+    ) {
+      throw new NotFoundException('주문을 취소할수 없는 상태입니다.');
     }
     order.order_status = OrderStatus.OrderCancel;
     await this.orderRepository.save(order);
@@ -167,6 +185,7 @@ export class OrdersService {
     const order = await this.orderRepository.findOne({
       where: { id: order_id },
     });
+
     if (!order) {
       throw new NotFoundException('주문이 존재하지 않습니다.');
     }
@@ -180,9 +199,11 @@ export class OrdersService {
       order.order_status = data.order_status;
     } else if (data.order_status === OrderStatus.OrderShipping) {
       order.order_status = data.order_status;
-    } else if (data.order_status === OrderStatus.OrderShipping) {
+    } else if (data.order_status === OrderStatus.orderDelivering) {
       order.order_status = data.order_status;
     } else if (data.order_status === OrderStatus.OrderCancel) {
+      order.order_status = data.order_status;
+    } else if (data.order_status === OrderStatus.OrderPending) {
       order.order_status = data.order_status;
     }
 
@@ -190,31 +211,29 @@ export class OrdersService {
     return { status: true, message: '주문상태가 수정되었습니다.' };
   }
 
-  // //-- 주문 수정하기 --//
-  // async updateOrder(
-  //   order_id: number,
-  //   data: OrderUpdateDto,
-  // ): Promise<ResultableInterface> {
-  //   const order = await this.orderRepository.findOne({
-  //     where: { order_id },
-  //   });
-  //   if (!order) {
-  //     throw new NotFoundException('주문이 존재하지 않습니다.');
-  //   }
-  //   order.order_receiver = data.order_receiver;
-  //   order.order_email = data.order_email;
-  //   order.order_payment_amount = data.order_payment_amount;
-  //   order.order_phone = data.order_phone;
-  //   order.order_address = data.order_address;
-  //   await this.orderRepository.save(order);
-  //   const orderProducts = await this.orderDetailRepository.find({
-  //     where: { order_id },
-  //   });
-  //   console.log(orderProducts);
-  //   console.log(data.order_details);
-  //   // orderProducts = data.order_details;
-  //   return { status: true, message: '주문이 수정되었습니다.' };
-  // }
+  //-- 판매자 주문 확인 --//
+  async sellerGetOrder(user_id: number): Promise<any> {
+    const shop = await this.shopRepository.findOne({
+      where: { user: { id: user_id } },
+    });
+    const products = await this.productRepository.find({
+      where: { shop: { id: shop.id } },
+    });
+    console.log(products);
+    // 각 상품에 대한 주문 목록을 담을 배열을 초기화합니다.
+    const orders = [];
+
+    // 각 상품에 대한 주문을 조회하고 orders 배열에 추가합니다.
+    for (const product of products) {
+      const productOrders = await this.orderDetailRepository.find({
+        where: { product: { id: product.id } },
+        relations: ['product', 'order', 'product.product_image'],
+      });
+      orders.push(...productOrders);
+    }
+
+    return orders;
+  }
 
   //-- 주문 상세 아이디로 검색하기 --//
   async getDetailOrderById(orderDetailId: number): Promise<any> {

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<!-- include : head -->
+<%- include('includes/head') %>
+
+  <body>
+    <!-- include : top-button -->
+    <%- include('includes/top-button') %>
+
+      <!-- include : preloder -->
+      <%- include('includes/preloder') %>
+
+        <!-- include : header -->
+        <%- include('includes/header') %>
+
+          <!-- 내정보 (일반) -->
+          <main class="mypage container mypage-info">
+            <h2 class="title">관리자 페이지</h2>
+            <div class="row">
+              <!-- include : aside -->
+              <%- include('includes/my-page-aside') %>
+
+                <section class="col-lg-9">
+
+
+                  <section class="list-container">
+                    <div class="title-wrap">
+                      <h4>주문 상세 내역
+                        <a id="order-count"> </a>
+                      </h4>
+                    </div>
+
+                    <div class="order-list-table">
+                      <p></p>
+
+                      <ul>
+                        <% order.order_details.forEach((orderDetail)=> { %>
+                          <li class="tr">
+                            <div class="td">
+                              <p>상품명: <%= orderDetail.product.product_name %>
+                              </p>
+                              <div class="td">
+                                <div class="order-info-wrap">
+                                  <div class="img-wrap">
+                                    <img src="<%= orderDetail.product.product_image[0].url %>" alt="" />
+                                  </div>
+                                  <div class="text-wrap">
+                                    <div>
+                                      <span>
+                                        <small>가격:</small>
+                                        <%= orderDetail.product.product_price %> 원
+                                      </span>
+                                      <span>
+                                        <small>갯수:</small>
+                                        <%= orderDetail.order_quantity %>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <% }); %>
+                      </ul>
+                      <p></p>
+                      <div>
+                        <span>
+                          주문 날짜: <%= order.created_at.toISOString().substr(0, 10) %>
+                        </span>
+                      </div>
+                      <div>
+                        <span>
+                          수령인: <%- order.order_receiver %>
+                        </span>
+                      </div>
+                      <div>
+                        <span>
+                          전화번호: <%- order.order_phone %>
+                        </span>
+                      </div>
+                      <div>
+                        <span>
+                          이메일: <%- order.order_email %>
+                        </span>
+                      </div>
+                      <div>
+                        <span>
+                          배송지: <%- order.order_address %>
+                        </span>
+                      </div>
+                      <p></p>
+                      <div>
+                        <span>총 결제 금액: <%- order.order_payment_amount %> 원</span>
+                      </div>
+
+
+                    </div>
+                  </section>
+                </section>
+          </main>
+
+          <!-- include : footer -->
+          <%- include('includes/footer') %>
+
+            <script>
+
+            </script>
+  </body>
+
+</html>
