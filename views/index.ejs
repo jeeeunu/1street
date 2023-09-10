@@ -13,54 +13,6 @@
     <!-- include : header -->
     <%- include('includes/header') %>
 
-    <!-- 라이브 방 만들기 모달 -->
-    <div
-      class="modal fade"
-      id="liveRoomModal"
-      tabindex="-1"
-      aria-labelledby="liveRoomModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="modal-title fs-5" id="liveRoomModalLabel">
-              라이브 방송
-            </h2>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="liveTitle" class="form-label">방송 제목</label>
-              <input
-                type="text"
-                class="form-control"
-                id="liveTitle"
-                placeholder="방송제목을 입력해주세요"
-              />
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              취소
-            </button>
-            <button type="button" class="btn btn-primary liveStartBtn">
-              라이브 시작
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- include : hero -->
     <%- include('includes/hero') %>
 
@@ -135,15 +87,6 @@
         >
           라이브 방송
         </h3>
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#liveRoomModal"
-          style="font-size: 2rem; margin-bottom: 15px"
-        >
-          방 만들기 (판매자 전용)
-        </button>
       </div>
 
       <ul id="liveList" class="mt-4 d-flex flex-wrap">
@@ -422,13 +365,6 @@
       const title = document.querySelector('#liveTitle');
       const liveList = document.querySelector('#liveList');
       const socket = io('');
-
-      //- 라이브 창으로 이동 -//
-      document
-        .querySelector('.liveStartBtn')
-        .addEventListener('click', async () => {
-          window.open(`/live?title=${title.value}`);
-        });
 
       //- 라이브 목록 보여주기 -//
       socket.on('roomChange', (data) => {

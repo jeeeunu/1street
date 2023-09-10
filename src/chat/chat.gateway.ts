@@ -39,19 +39,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   //- 라이브 방 입장 -//
   @SubscribeMessage('join_room')
-  joinRoom(@MessageBody() data, @ConnectedSocket() socket: Socket) {
+  async joinRoom(@MessageBody() roomName, @ConnectedSocket() socket: Socket) {
     console.log('들어온 사람 아이디', socket.id);
-    if (!this.publicRooms().hasOwnProperty(data)) {
-      socket.join(data);
-      this.roomManager = socket.id;
-      console.log('방장 아이디 백엔드:', this.roomManager, data);
-      this.server.of('/').to(data).emit('room_manager', socket.id);
-    } else {
-      console.log('일반 유저', socket.id, data);
-      socket.join(data);
-    }
+    await socket.join(roomName);
     this.server.emit('roomChange', this.publicRooms());
-    socket.to(data).emit('welcome', socket.id);
+    socket.to(roomName).emit('welcome', socket.id);
   }
 
   //- 모든 라이브 목록 -//
@@ -78,23 +70,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //- offer 보내기 -//
   @SubscribeMessage('offer')
   offer(@MessageBody() data, @ConnectedSocket() socket: Socket) {
-    this.server.of('/').to(data.id).emit('offer', data.offer);
+    socket.to(data.socketId).emit('offer', data.offer, socket.id);
   }
 
   //- answer 보내기 -//
   @SubscribeMessage('answer')
   answer(@MessageBody() data, @ConnectedSocket() socket: Socket) {
-    this.server.of('/').to(this.roomManager).emit('answer', data.answer);
+    socket.to(data.socketId).emit('answer', data.answer, socket.id);
   }
 
   //- candidate 보내기 -//
   @SubscribeMessage('ice')
   ice(@MessageBody() data, @ConnectedSocket() socket: Socket) {
-    console.log('아이스 받기', data);
-    if (data.user !== null) {
-      this.server.of('/').to(data.user).emit('ice', data.candidate);
-    } else {
-      this.server.of('/').to(this.roomManager).emit('ice', data.candidate);
-    }
+    socket.to(data.id).emit('ice', data.ice, socket.id);
   }
 }
