@@ -25,6 +25,9 @@ export class ReviewImageEntity {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToOne(() => ReviewsEntity, (review) => review.review_image)
+  @ManyToOne(() => ReviewsEntity, (review) => review.review_image, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   public review: ReviewsEntity;
 }

@@ -17,9 +17,15 @@ export class LikeEntity {
   @IsDate()
   public created_at: Date;
 
-  @ManyToOne(() => UsersEntity, (user) => user.likes)
+  @ManyToOne(() => UsersEntity, (user) => user.likes, {
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+  })
   public user: UsersEntity;
 
-  @ManyToOne(() => ProductsEntity, (product) => product.likes)
+  @ManyToOne(() => ProductsEntity, (product) => product.likes, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   public product: ProductsEntity;
 }

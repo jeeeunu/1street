@@ -19,11 +19,6 @@ export class ReviewsEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  // @Column()
-  // @IsNotEmpty()
-  // @IsString()
-  // public user_id: number;
-
   @Column()
   @IsNotEmpty()
   @IsString()
@@ -45,7 +40,10 @@ export class ReviewsEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: string;
 
-  @ManyToOne(() => UsersEntity, (user) => user.review)
+  @ManyToOne(() => UsersEntity, (user) => user.review, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   public user: UsersEntity;
 
   @OneToMany(() => ReviewImageEntity, (review_image) => review_image.review)
@@ -53,6 +51,7 @@ export class ReviewsEntity {
 
   @OneToOne(() => OrderDetailsEntity, (order_detail) => order_detail.review, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'order_detail_id', referencedColumnName: 'id' })
   public order_detail: OrderDetailsEntity;

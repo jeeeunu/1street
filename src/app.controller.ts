@@ -11,6 +11,7 @@ import { CartsService } from './carts/carts.service';
 import { OrdersService } from './orders/orders.service';
 import { ReviewsService } from './reviews/reviews.service';
 import { QnasService } from './qnas/qnas.service';
+import { rename } from 'fs';
 
 @Controller()
 export class AppController {
@@ -32,9 +33,9 @@ export class AppController {
     const isSearchPath = request.url.startsWith('/product-list');
     const categories = await this.categorysService.findAll();
     if (authUser) {
+      const carts = await this.cartsService.getCart(authUser.user_id);
       const userInfo = await this.usersService.findUserInfo(authUser.user_id);
       const user = userInfo.results;
-      const carts = await this.cartsService.getCart(authUser.user_id);
       return { isIndexPath, isSearchPath, user, categories, carts };
     } else {
       return { isIndexPath, isSearchPath, categories };
@@ -71,6 +72,10 @@ export class AppController {
       await this.productsService.findPopularProducts();
     const findHighlyRatedProducts =
       await this.productsService.findHighlyRatedProducts();
+
+    if (authUser && authUser !== null && authUser.isAdmin === true) {
+      return response.redirect('admin-my-page');
+    }
 
     response.render('index', {
       isIndexPath,
@@ -132,6 +137,8 @@ export class AppController {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
 
+    if (!authUser) return response.redirect('/');
+
     response.render('my-page-user-edit', {
       isIndexPath,
       isSearchPath,
@@ -150,6 +157,8 @@ export class AppController {
   ): Promise<void> {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
+
+    if (!authUser) return response.redirect('/');
 
     if (authUser && authUser !== null && authUser.isAdmin === true) {
       return response.redirect('admin-my-page');
@@ -586,7 +595,17 @@ export class AppController {
     response.render('chat');
   }
   @Get('live')
-  async live(@Res() response: Response, @Query('title') title: string) {
-    response.render('live', { title });
+  async live(
+    @Res() response: Response,
+    @Query('title') title: string,
+    @AuthUser() authUser: RequestUserInterface,
+  ) {
+    let isAdmin;
+    if (!authUser || authUser.isAdmin === false) {
+      isAdmin = false;
+    } else {
+      isAdmin = true;
+    }
+    response.render('live', { title, isAdmin, authUser });
   }
 }

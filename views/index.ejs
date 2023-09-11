@@ -108,10 +108,6 @@
           ">
                     라이브 방송
                   </h3>
-                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#liveRoomModal"
-                    style="font-size: 2rem; margin-bottom: 15px">
-                    방 만들기 (판매자 전용)
-                  </button>
                 </div>
 
                 <ul id="liveList" class="mt-4 d-flex flex-wrap">
@@ -308,13 +304,12 @@
 
                       const fragment = document.createDocumentFragment(); // Fragment 생성
 
-
                       newData.forEach((item) => {
                         const productItem = document.createElement('div');
                         productItem.className =
                           'col-lg-3 col-md-4 col-sm-6 mix category product-item';
                         productItem.setAttribute('data-item-id', item.id);
-                        console.log(item)
+                        console.log(item);
                         productItem.innerHTML = `
                 <div class="featured__item">
                   <div class="featured__item__pic set-bg">
@@ -324,7 +319,8 @@
                         <button type="button" class="btn-like">❤️</button>
                       </li>
                       <li>
-                        <a href="#" class="add-to-cart-link"onclick="addToCart(${item.id})" data-product-id="${item.id}">
+                        <a href="#" class="add-to-cart-link"onclick="addToCart(${item.id
+                          })" data-product-id="${item.id}">
                           <i class="fa fa-shopping-cart"></i>
                         </a>
                       </li>
@@ -383,13 +379,6 @@
                 const title = document.querySelector('#liveTitle');
                 const liveList = document.querySelector('#liveList');
                 const socket = io('');
-
-                //- 라이브 창으로 이동 -//
-                document
-                  .querySelector('.liveStartBtn')
-                  .addEventListener('click', async () => {
-                    window.open(`/live?title=${title.value}`);
-                  });
 
                 //- 라이브 목록 보여주기 -//
                 socket.on('roomChange', (data) => {
