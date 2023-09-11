@@ -13,6 +13,54 @@
     <!-- include : header -->
     <%- include('includes/header') %>
 
+    <!-- 라이브 방 만들기 모달 -->
+    <div
+      class="modal fade"
+      id="liveRoomModal"
+      tabindex="-1"
+      aria-labelledby="liveRoomModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="liveRoomModalLabel">
+              라이브 방송
+            </h2>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="liveTitle" class="form-label">방송 제목</label>
+              <input
+                type="text"
+                class="form-control"
+                id="liveTitle"
+                placeholder="방송제목을 입력해주세요"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              취소
+            </button>
+            <button type="button" class="btn btn-primary liveStartBtn">
+              라이브 시작
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- include : hero -->
     <%- include('includes/hero') %>
 
@@ -89,7 +137,10 @@
         </h3>
       </div>
 
-      <ul id="liveList" class="mt-4 d-flex flex-wrap"></ul>
+      <ul id="liveList" class="mt-4 d-flex flex-wrap">
+        <li class="liveListBox">라이브 방송 썸네일</li>
+        <li class="liveListBox">라이브 방송 썸네일</li>
+      </ul>
     </div>
     <!-- Latest Product Section Begin -->
     <section class="latest-product spad">
@@ -100,7 +151,7 @@
               <h4>신상품</h4>
               <div class="latest-product__slider owl-carousel">
                 <div class="latest-prdouct__slider__item">
-                  <% latestProducts.slice(0, 3).forEach(product => { %>
+                  <% latestProducts.slice(0, 3).forEach(product=> { %>
                   <a
                     href="/product-detail/<%= product.id %>"
                     class="latest-product__item"
@@ -110,24 +161,24 @@
                     </div>
                     <div class="latest-product__item__text">
                       <h6><%= product.product_name %></h6>
-                      <span
-                        ><%= product.product_price.toLocaleString() %>원</span
-                      >
+                      <span>
+                        <%= product.product_price.toLocaleString() %>원
+                      </span>
                     </div>
                   </a>
                   <% }); %>
                 </div>
                 <div class="latest-prdouct__slider__item">
-                  <% latestProducts.slice(3, 6).forEach(product => { %>
+                  <% latestProducts.slice(3, 6).forEach(product=> { %>
                   <a href="#" class="latest-product__item">
                     <div class="latest-product__item__pic">
                       <img src="<%= product.product_image[0].url %>" alt="" />
                     </div>
                     <div class="latest-product__item__text">
                       <h6><%= product.product_name %></h6>
-                      <span
-                        ><%= product.product_price.toLocaleString() %>원</span
-                      >
+                      <span>
+                        <%= product.product_price.toLocaleString() %>원
+                      </span>
                     </div>
                   </a>
                   <% }); %>
@@ -140,7 +191,7 @@
               <h4>인기 상품</h4>
               <div class="latest-product__slider owl-carousel">
                 <div class="latest-prdouct__slider__item">
-                  <% findPopularProducts.slice(0, 3).forEach(product => { %>
+                  <% findPopularProducts.slice(0, 3).forEach(product=> { %>
                   <a
                     href="/product-detail/<%= product.id %>"
                     class="latest-product__item"
@@ -150,15 +201,15 @@
                     </div>
                     <div class="latest-product__item__text">
                       <h6><%= product.product_name %></h6>
-                      <span
-                        ><%= product.product_price.toLocaleString() %>원</span
-                      >
+                      <span>
+                        <%= product.product_price.toLocaleString() %>원
+                      </span>
                     </div>
                   </a>
                   <% }); %>
                 </div>
                 <div class="latest-prdouct__slider__item">
-                  <% findPopularProducts.slice(3, 6).forEach(product => { %>
+                  <% findPopularProducts.slice(3, 6).forEach(product=> { %>
                   <a
                     href="/product-detail/<%= product.id %>"
                     class="latest-product__item"
@@ -168,9 +219,9 @@
                     </div>
                     <div class="latest-product__item__text">
                       <h6><%= product.product_name %></h6>
-                      <span
-                        ><%= product.product_price.toLocaleString() %>원</span
-                      >
+                      <span>
+                        <%= product.product_price.toLocaleString() %>원
+                      </span>
                     </div>
                   </a>
                   <% }); %>
@@ -183,7 +234,7 @@
               <h4>평점 높은 상품</h4>
               <div class="latest-product__slider owl-carousel">
                 <div class="latest-prdouct__slider__item">
-                  <% findHighlyRatedProducts.slice(0, 3).forEach(product => { %>
+                  <% findHighlyRatedProducts.slice(0, 3).forEach(product=> { %>
                   <a
                     href="/product-detail/<%= product.id %>"
                     class="latest-product__item"
@@ -193,15 +244,15 @@
                     </div>
                     <div class="latest-product__item__text">
                       <h6><%= product.product_name %></h6>
-                      <span
-                        ><%= product.product_price.toLocaleString() %>원</span
-                      >
+                      <span>
+                        <%= product.product_price.toLocaleString() %>원
+                      </span>
                     </div>
                   </a>
                   <% }); %>
                 </div>
                 <div class="latest-prdouct__slider__item">
-                  <% findHighlyRatedProducts.slice(3, 6).forEach(product => { %>
+                  <% findHighlyRatedProducts.slice(3, 6).forEach(product=> { %>
                   <a
                     href="/product-detail/<%= product.id %>"
                     class="latest-product__item"
@@ -211,9 +262,9 @@
                     </div>
                     <div class="latest-product__item__text">
                       <h6><%= product.product_name %></h6>
-                      <span
-                        ><%= product.product_price.toLocaleString() %>원</span
-                      >
+                      <span>
+                        <%= product.product_price.toLocaleString() %>원
+                      </span>
                     </div>
                   </a>
                   <% }); %>
@@ -287,13 +338,12 @@
 
             const fragment = document.createDocumentFragment(); // Fragment 생성
 
-            console.log(newData);
             newData.forEach((item) => {
               const productItem = document.createElement('div');
               productItem.className =
                 'col-lg-3 col-md-4 col-sm-6 mix category product-item';
               productItem.setAttribute('data-item-id', item.id);
-
+              console.log(item);
               productItem.innerHTML = `
                 <div class="featured__item">
                   <div class="featured__item__pic set-bg">
@@ -303,7 +353,11 @@
                         <button type="button" class="btn-like">❤️</button>
                       </li>
                       <li>
-                        <a href="#"><i class="fa fa-shopping-cart"></i></a>
+                        <a href="#" class="add-to-cart-link"onclick="addToCart(${
+                          item.id
+                        })" data-product-id="${item.id}">
+                          <i class="fa fa-shopping-cart"></i>
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -325,7 +379,6 @@
             allProductsContainer.appendChild(fragment); // Fragment를 실제 DOM에 추가
 
             cursor = newData[newData.length - 1]?.id;
-            console.log(cursor);
 
             if (newData.length < limit) {
               hasMoreData = false;
