@@ -547,7 +547,17 @@ export class AppController {
     response.render('chat');
   }
   @Get('live')
-  async live(@Res() response: Response, @Query('title') title: string) {
-    response.render('live', { title });
+  async live(
+    @Res() response: Response,
+    @Query('title') title: string,
+    @AuthUser() authUser: RequestUserInterface,
+  ) {
+    let isAdmin;
+    if (!authUser || authUser.isAdmin === false) {
+      isAdmin = false;
+    } else {
+      isAdmin = true;
+    }
+    response.render('live', { title, isAdmin, authUser });
   }
 }
