@@ -6,6 +6,7 @@ import { ProductsEntity } from 'src/common/entities';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductImageEntity } from 'src/products/entities/product-image.entity';
+import { RequestUserInterface } from 'src/users/interfaces';
 
 @Injectable()
 export class CartsService {
@@ -148,5 +149,10 @@ export class CartsService {
       console.error('ERROR:', error);
       throw new Error('장바구니 물품 수량을 업데이트할 수 없습니다.');
     }
+  }
+
+  async findAllCarts(authUser: RequestUserInterface) {
+    const carts = await this.cacheManager.get(`${authUser.user_id}_cart`);
+    return carts;
   }
 }

@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { ProductsEntity, ReviewsEntity, ShopsEntity } from '../common/entities';
 import { ResultableInterface } from '../common/interfaces';
 import { RequestUserInterface } from '../users/interfaces';
@@ -23,13 +23,10 @@ export class ProductsService {
     private productImageRepository: Repository<ProductImageEntity>,
     @InjectRepository(CategoryEntity)
     private categoryRepository: Repository<CategoryEntity>,
-    @InjectRepository(ShopsEntity)
-    private shopRepository: Repository<ShopsEntity>,
-    @InjectRepository(OrderDetailsEntity)
-    private orderDetailsEntity: Repository<OrderDetailsEntity>,
     @InjectRepository(ReviewsEntity)
     private reviewsEntity: Repository<ReviewsEntity>,
     private uploadsService: UploadsService,
+    private dataSource: DataSource,
   ) {}
 
   //-- 상품 등록 --//
@@ -38,38 +35,52 @@ export class ProductsService {
     authUser: RequestUserInterface,
     files: Express.Multer.File[],
   ): Promise<ResultableInterface> {
-    const categoryEntity = await this.categoryRepository.findOne({
-      where: {
-        id: data.category_id,
-      },
-    });
-    const createProduct = await this.productRepository.save({
-      shop_id: authUser.shop_id,
-      product_name: data.product_name,
-      product_desc: data.product_desc,
-      product_price: data.product_price,
-      product_domestic: data.product_domestic,
-      category: categoryEntity,
-    });
+    // 트랜잭션
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    if (files.length > 0) {
-      const imageDetails = await this.uploadsService.createProductImages(files);
-      console.log('이미지 파일 저장');
+    try {
+      const categoryEntity = await this.categoryRepository.findOne({
+        where: {
+          id: data.category_id,
+        },
+      });
+      const createProduct = await this.productRepository.save({
+        shop_id: authUser.shop_id,
+        product_name: data.product_name,
+        product_desc: data.product_desc,
+        product_price: data.product_price,
+        product_domestic: data.product_domestic,
+        category: categoryEntity,
+      });
 
-      for (const imageDetail of imageDetails) {
-        const uploadFile = new ProductImageEntity();
-        uploadFile.url = imageDetail;
-        uploadFile.product = createProduct;
+      if (files.length > 0) {
+        const imageDetails = await this.uploadsService.createProductImages(
+          files,
+        );
+        console.log('이미지 파일 저장');
 
-        await this.productImageRepository.save(uploadFile);
+        for (const imageDetail of imageDetails) {
+          const uploadFile = new ProductImageEntity();
+          uploadFile.url = imageDetail;
+          uploadFile.product = createProduct;
+
+          await this.productImageRepository.save(uploadFile);
+        }
+      } else {
+        throw new NotFoundException(
+          '한개 이상의 썸네일 이미지를 포함해야 합니다.',
+        );
       }
-    } else {
-      throw new NotFoundException(
-        '한개 이상의 썸네일 이미지를 포함해야 합니다.',
-      );
-    }
 
-    return { status: true, message: '상품을 성공적으로 등록했습니다' };
+      await queryRunner.commitTransaction();
+      return { status: true, message: '상품을 성공적으로 등록했습니다' };
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   //-- 상품 전체보기(무한 스크롤) --//

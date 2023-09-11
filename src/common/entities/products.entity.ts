@@ -20,43 +20,37 @@ export class ProductsEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  //-- 상품 이름 --//
   @Column({ nullable: false })
   @IsString()
   @MaxLength(30)
   public product_name: string;
 
-  //-- 상품 설명 --//
   @Column({ nullable: false, type: 'text' })
   @IsString()
   public product_desc: string;
 
-  //-- 상품 원산지 --//
   @Column({ nullable: false })
   @IsString()
   public product_domestic: string;
 
-  //-- 상품 가격 --//
   @Column({ nullable: false })
   @IsNumber()
   public product_price: number;
 
-  //-- 스토어 아이디 --//
   @Column({ nullable: false })
   @IsNumber()
   public shop_id: number;
-
-  @ManyToOne(() => ShopsEntity, (shop) => shop.products, {
-    onDelete: 'CASCADE',
-  })
-  // @JoinColumn({ name: 'shop_id', referencedColumnName: 'id' })
-  public shop: ShopsEntity;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: string;
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: string;
+
+  @ManyToOne(() => ShopsEntity, (shop) => shop.products, {
+    onDelete: 'CASCADE',
+  })
+  public shop: ShopsEntity;
 
   @OneToMany(() => LikeEntity, (like) => like.product)
   public likes: LikeEntity[];

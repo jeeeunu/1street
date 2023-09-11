@@ -31,7 +31,10 @@ export class ShopsEntity {
   @IsNumber()
   public user_id: number;
 
-  @OneToOne(() => UsersEntity, (user) => user.shop, { onDelete: 'CASCADE' })
+  @OneToOne(() => UsersEntity, (user) => user.shop, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   public user: UsersEntity;
 

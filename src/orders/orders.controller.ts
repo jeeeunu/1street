@@ -15,6 +15,7 @@ import { Request } from 'supertest';
 import { Order2CreateDto, OrderCreateDto, OrderStatusDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from 'src/users/interfaces';
+import { OrdersEntity } from 'src/common/entities';
 
 @Controller('orders')
 export class OrdersController {
@@ -38,10 +39,20 @@ export class OrdersController {
   ): Promise<ResultableInterface> {
     return await this.ordersService.postOrder(data, authUser.user_id);
   }
+  // //-- 판매자 주문 확인 --//
+  @Get('/seller/list')
+  @UseGuards(AuthGuard)
+  async sellerGetOrder(
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<any> {
+    return await this.ordersService.sellerGetOrder(authUser.user_id);
+  }
   //-- 주문 확인 --//
   @Get()
   @UseGuards(AuthGuard)
-  async getOrders(@AuthUser() authUser: RequestUserInterface): Promise<any> {
+  async getOrders(
+    @AuthUser() authUser: RequestUserInterface,
+  ): Promise<OrdersEntity[]> {
     return await this.ordersService.getOrders(authUser.user_id);
   }
 
@@ -91,14 +102,4 @@ export class OrdersController {
     const authUser: RequestUserInterface = req['user'];
     return await this.ordersService.sellerOrder(authUser, order_id, data);
   }
-
-  // //-- 주문 수정하기 --//
-  // @Patch('/:order_id')
-  // @UseGuards(AuthGuard)
-  // async updateOrder(
-  //   @Param('order_id') order_id: number,
-  //   @Body() data: OrderUpdateDto,
-  // ): Promise<ResultableInterface> {
-  //   return await this.ordersService.updateOrder(order_id, data);
-  // }
 }
