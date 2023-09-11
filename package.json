@@ -25,7 +25,6 @@
     "migration:revert": "npm run typeorm migration:revert"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.395.0",
     "@nestjs/cache-manager": "^2.1.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.0.0",
