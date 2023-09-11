@@ -277,7 +277,6 @@
                     });
 
                     const data = await response.json();
-                    console.log(data);
 
                     if (response.ok) {
                       alert(data.message);
@@ -311,7 +310,6 @@
                     });
 
                     const data = await response.json();
-                    console.log(data);
 
                     if (response.ok) {
                       alert(data.message);
@@ -376,10 +374,8 @@
                   orderCountElement.textContent = `( ${orders.length} )`;
 
                   for (const order of orders) {
-                    const orderDetails = await fetchOrderDetails(order.id);
-
-                    // 주문 항목을 렌더링하고 이벤트 리스너를 등록
-                    renderOrder(order, orderDetails, orderListContainer);
+                    const orderItem = createOrderItem(order);
+                    orderListContainer.appendChild(orderItem);
                   }
                 } else {
                   console.error('주문 내역을 가져오는 데 실패했습니다.');
@@ -389,110 +385,64 @@
               }
             }
 
-            async function fetchOrderDetails(order_id) {
-              try {
-                const response = await fetch(`/orders/${order_id}`);
-                if (response.ok) {
-                  return await response.json();
-                } else {
-                  console.error('주문 상세 정보를 가져오는 데 실패했습니다.');
-                  return null;
-                }
-              } catch (error) {
-                console.error('ERROR:', error);
-                return null;
-              }
-            }
-
-            // 주문 항목을 렌더링하고 이벤트 리스너를 등록하는 함수
-            function renderOrder(order, orderDetails, orderListContainer) {
+            function createOrderItem(order) {
               const orderItem = document.createElement('li');
               orderItem.classList.add('tr');
 
-              console.log(order)
-              console.log(orderDetails)
+              const product = order.product; // 주문에서 단일 제품 정보를 가져옴
 
-              const productHtml = orderDetails.order_details
-                .map((detail) => {
-                  const productImages = Array.isArray(detail.product.product_image)
-                    ? detail.product.product_image.map(
-                      (image) => `
-        <div class="img-wrap">
-          <img src="${image.url}" alt="" />
-        </div>
-      `,
-                    )
-                    : `
-        <div class="img-wrap">
-          <img src="${detail.product.product_image.url[0]}" alt="" />
-        </div>
-      `;
+              // `product_image`가 정의되어 있는 경우에만 이미지 렌더링
+              const productImages = product.product_image
+                ? (Array.isArray(product.product_image)
+                  ? product.product_image.map((image) => `
+    <div class="img-wrap">
+      <img src="${image.url}" alt="" />
+    </div>
+  `)
+                  : `
+    <div class="img-wrap">
+      <img src="${product.product_image[0].url}" alt="" />
+    </div>
+  `)
+                : '';
 
-                  return `
-      <div class="img-container">
-        ${productImages.join('')}
-      </div>
-    `;
-                })
-                .join('');
+              const orderDate = order.order.created_at.slice(0, 10).replace(/-/g, '.');
+              const orderStatus = order.order.order_status;
+              const orderId = order.order.id;
+              const productNames = product.product_name; // 단일 제품의 이름을 가져옴
 
               orderItem.innerHTML = `
   <div class="td">
-    <p class="date-text">${order.order.created_at
-                  .slice(0, 10)
-                  .replace(/-/g, '.')}</p>
+    <p class="date-text">${orderDate}</p>
   </div>
   <div class="td">
     <div class="order-info-wrap">
-      ${productHtml}
+      ${productImages}
       <div class="text-wrap">
-        <a href="admin-my-page-order/${orderDetails.id}">
-          <span>${order.order.created_at
-                  .slice(0, 10)
-                  .replace(/-/g, '') + order.order.id
-                }</span>
-          ${orderDetails.order_details
-                  .map((detail) => {
-                    if (Array.isArray(detail.product)) {
-                      return `
-                <div class="product-title">
-                  ${detail.product
-                          .map(
-                            (product) => product.product_name,
-                          )
-                          .join(', ')}
-                </div>
-              `;
-                    } else {
-                      return `<div class="product-title">${detail.product.product_name}</div>`;
-                    }
-                  })
-                  .join('')}
+        <a href="admin-my-page-order/${orderId}">
+          <span>${orderDate + orderId}</span>
+          <div class="product-title">${productNames}</div>
         </a>
       </div>
     </div>
   </div>
   <div class="td status-wrap">
-    <span>${order.order.order_status}</span>
+    <span>${orderStatus}</span>
   </div>
   <div class="td">
     <span for="order-status-dropdown"></span>
     <select id="order-status-dropdown">
-      <option value="all">전체</option>
-      <option id="order-id${order.order.id}" value="OrderPending" ${order.order.order_status === 'OrderCancel' ? 'selected' : ''}>주문 취소</option>
-      <option id="order-id${order.order.id}" value="OrderPending" ${order.order.order_status === 'OrderPending' ? 'selected' : ''}>주문 대기</option>
-      <option id="order-id${order.order.id}" value="OrderConfirm" ${order.order.order_status === 'OrderConfirm' ? 'selected' : ''}>주문 확인</option>
-      <option id="order-id${order.order.id}" value="OrderShipping" ${order.order.order_status === 'OrderShipping' ? 'selected' : ''}>배송 준비중</option>
-      <option id="order-id${order.order.id}" value="orderDelivering" ${order.order.order_status === 'orderDelivering' ? 'selected' : ''}>배송 중</option>
-      <option id="order-id${order.order.id}" value="DeliveryComplete" ${order.order.order_status === 'DeliveryComplete' ? 'selected' : ''}>배송 완료</option>
+      <option id="order-id${orderId}" value="OrderCancel" ${orderStatus === 'OrderCancel' ? 'selected' : ''}>주문 취소</option>
+      <option id="order-id${orderId}" value="OrderPending" ${orderStatus === 'OrderPending' ? 'selected' : ''}>주문 대기</option>
+      <option id="order-id${orderId}" value="OrderConfirm" ${orderStatus === 'OrderConfirm' ? 'selected' : ''}>주문 확인</option>
+      <option id="order-id${orderId}" value="OrderShipping" ${orderStatus === 'OrderShipping' ? 'selected' : ''}>배송 준비중</option>
+      <option id="order-id${orderId}" value="orderDelivering" ${orderStatus === 'orderDelivering' ? 'selected' : ''}>배송 중</option>
+      <option id="order-id${orderId}" value="DeliveryComplete" ${orderStatus === 'DeliveryComplete' ? 'selected' : ''}>배송 완료</option>
     </select>
-    <input type="hidden" id="order-id" value="${order.order.id}"> 
+    <input type="hidden" id="order-id" value="${orderId}"> 
     <button class="btn-primary-s change-order-status">상태 변경</button>
   </div>
-</li>
-`;
-
-              orderListContainer.appendChild(orderItem);
+  `;
 
               // 주문 상태 변경 버튼 클릭 이벤트 핸들러 등록
               const changeOrderStatusButton = orderItem.querySelector('.change-order-status');
@@ -501,14 +451,15 @@
               changeOrderStatusButton.addEventListener('click', () => {
                 const selectedStatus = orderStatusDropdown.value;
 
-                if (!order.order.id) {
+                if (!orderId) {
                   console.error('주문 ID를 찾을 수 없습니다.');
                   return;
                 }
 
-                changeOrderStatus(order.order.id, selectedStatus);
+                changeOrderStatus(orderId, selectedStatus);
               });
               countOrderStatus()
+              return orderItem;
             }
 
             // 주문 상태를 집계하는 함수
@@ -556,7 +507,7 @@
                   const data = await response.json();
                   console.log(data.message);
                   alert('주문상태가 수정되었습니다.');
-                  window.location.reload()
+                  window.location.reload();
                   // 성공적으로 주문 상태가 변경된 경우 처리
                 } else {
                   console.log(data.message);
@@ -566,6 +517,7 @@
                 // 오류 처리
               }
             }
+
             // 초기 주문 목록 불러오기
             renderOrderList();
           </script>

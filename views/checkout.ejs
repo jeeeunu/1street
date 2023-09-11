@@ -133,7 +133,7 @@
                         <div class="col-lg-6">
                           <div class="checkout__input">
                             <p>Phone<span>*</span></p>
-                            <input type="text" id="phone" />
+                            <input type="phone" id="phone" />
                           </div>
                         </div>
                         <div class="col-lg-6">
@@ -186,31 +186,6 @@
                         </div>
                         <div class="checkout__order__total">
                           Total <span>$750.99</span>
-                        </div>
-                        <div class="checkout__input__checkbox">
-                          <label for="acc-or">
-                            Create an account?
-                            <input type="checkbox" id="acc-or" />
-                            <span class="checkmark"></span>
-                          </label>
-                        </div>
-                        <p>
-                          Lorem ipsum dolor sit amet, consectetur adip elit, sed do
-                          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                        </p>
-                        <div class="checkout__input__checkbox">
-                          <label for="payment">
-                            Check Payment
-                            <input type="checkbox" id="payment" />
-                            <span class="checkmark"></span>
-                          </label>
-                        </div>
-                        <div class="checkout__input__checkbox">
-                          <label for="paypal">
-                            Paypal
-                            <input type="checkbox" id="paypal" />
-                            <span class="checkmark"></span>
-                          </label>
                         </div>
                         <button type="submit" class="site-btn" id="place_order">PLACE
                           ORDER</button>
@@ -309,6 +284,7 @@
           <!-- jQuery -->
           <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
           <!-- iamport.payment.js -->
+          <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
           <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.8.js"></script>
           <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -326,15 +302,27 @@
 
 
           <script>
-            document.getElementById('place_order').addEventListener('click', async function postOrder() {
-              const name = document.getElementById('name').value;
-              const address = document.getElementById('address').value;
-              const phone = document.getElementById('phone').value;
-              const email = document.getElementById('email').value;
+            const nameInput = document.getElementById('name');
+            const addressInput = document.getElementById('address');
+            const phoneInput = document.getElementById('phone');
+            const emailInput = document.getElementById('email');
+            const placeOrderButton = document.getElementById('place_order');
+            const checkoutOrder = document.querySelector('.checkout__order');
 
-              // TODO :: 임시 결제 처리
+            // 이벤트 리스너 등록
+            placeOrderButton.addEventListener('click', postOrder);
+            document.addEventListener('DOMContentLoaded', initializeCheckout);
+
+            async function postOrder(event) {
+              event.preventDefault();
+
+              const name = nameInput.value;
+              const address = addressInput.value;
+              const phone = phoneInput.value;
+              const email = emailInput.value;
+
+              // 장바구니 데이터 불러오기
               const cartData = await fetchCartData();
-              const checkoutOrder = document.querySelector('.checkout__order');
               const productList = cartData;
               const subtotal = calculateSubtotal(productList);
 
@@ -344,6 +332,7 @@
               }
 
               try {
+                // 주문 생성
                 const response = await fetch('/orders/carts', {
                   method: 'POST',
                   headers: {
@@ -358,10 +347,10 @@
                   }),
                 });
                 const data = await response.json();
+
                 if (response.ok) {
                   console.log(data.message);
-                  alert('주문이 등록되었습니다.');
-                  window.location.href = '/';
+                  await requestPay(data.id); // 주문 아이디를 직접 넘겨줍니다.
                 } else {
                   console.log(data.message);
                   alert(data.message);
@@ -369,13 +358,12 @@
               } catch (err) {
                 console.error('Error:', err);
               }
-            });
+            }
 
-            document.addEventListener('DOMContentLoaded', async () => {
+            async function initializeCheckout() {
               try {
                 // 페이지 로딩 시 장바구니 데이터 불러오기
                 const cartData = await fetchCartData();
-                const checkoutOrder = document.querySelector('.checkout__order');
                 const productList = cartData;
                 const subtotal = calculateSubtotal(productList);
 
@@ -402,27 +390,19 @@
                 const subtotalElement = document.querySelector('.checkout__order__subtotal span');
                 subtotalElement.textContent = `₩${subtotal}`;
 
-                // Total 업데이트 (예시로 subtotal 값 그대로 사용)
+                // Total 업데이트
                 const totalElement = document.querySelector('.checkout__order__total span');
                 totalElement.textContent = `₩${subtotal}`;
               } catch (error) {
                 console.error('장바구니 데이터를 가져오는 중 오류가 발생했습니다:', error);
               }
-            });
+            }
 
             // 서버에서 장바구니 데이터 가져오기
             async function fetchCartData() {
               try {
-                const response = await fetch('/carts'); // 실제 서버 경로에 맞게 수정해야 합니다.
+                const response = await fetch('/carts');
                 return await response.json();
-
-                const data = await response.json();
-                if (response.ok) {
-                  console.log(data.message);
-                } else {
-                  console.log(data.message);
-                  alert(data.message);
-                }
               } catch (err) {
                 console.error('Error:', err);
               }
@@ -434,35 +414,88 @@
             }
 
             //-- 결제 기능 --//
-            var IMP = window.IMP; // 생략가능
-            IMP.init('imp18070708'); // <-- 본인 가맹점 식별코드 삽입
 
-            function requestPay() {
+            async function requestPay(orderId) {
+              const name = nameInput.value;
+              const address = addressInput.value;
+              const phone = phoneInput.value;
+              const email = emailInput.value;
+
+              const cartData = await fetchCartData();
+              const checkoutOrder = document.querySelector('.checkout__order');
+              const productList = cartData;
+              const subtotal = calculateSubtotal(productList);
+
+              const IMP = window.IMP; // 생략가능
+              IMP.init('imp18070708'); // <-- 본인 가맹점 식별코드 삽입
+
               IMP.request_pay({
-                pg: "INIpayTest",
+                pg: "kakaopay",
                 pay_method: "card",
                 merchant_uid: 'merchant_' + new Date().getTime(),
-                name: '결제테스트',
-                amount: 14000,
-                buyer_email: 'iamport@siot.do',
-                buyer_name: '구매자',
-                buyer_tel: '010-1234-5678',
-                buyer_addr: '서울특별시 강남구 삼성동',
-                buyer_postcode: '123-456'
+                name: '쇼핑몰 테스트 결제',
+                amount: subtotal,
+                buyer_email: email,
+                buyer_name: name,
+                buyer_tel: phone,
+                buyer_addr: address,
+                custom_data: orderId,
               },
-                function (rsp) {
+                async function (rsp) {
                   console.log(rsp);
                   if (rsp.success) {
-                    const msg = '결제가 완료되었습니다.';
-                    alert(msg);
-                    location.href = "결제 완료 후 이동할 페이지 url"
+                    try {
+                      const response = await fetch('/payments', {
+                        headers: { 'Content-Type': 'application/json' },
+                        method: 'POST',
+                        body: JSON.stringify({
+                          imp_uid: rsp.imp_uid,
+                          amount: rsp.paid_amount,
+                          merchant_uid: rsp.merchant_uid,
+                          order_id: rsp.custom_data
+                        }),
+                      });
+
+                      const data = await response.json();
+                      if (response.ok) {
+                        console.log(data.message)
+                        alert('결제가 완료되었습니다.');
+                        location.href = "/my-page"
+                      }
+
+                    } catch (error) {
+                      console.error(error.message);
+                      alert('오류가 발생했습니다.');
+                    }
                   } else {
-                    const msg = '결제에 실패하였습니다.';
-                    msg += '에러내용 : ' + rsp.error_msg;
-                    alert(msg);
+                    alert('결제에 실패하였습니다.');
                   }
                 });
             }
+
+            // 전화번호 입력 필드에서 텍스트가 입력될 때마다 실행되는 함수
+            function formatPhoneNumber(e) {
+              const input = e.target;
+              const value = input.value.replace(/\D/g, ''); // 숫자 이외의 문자 제거
+              const formattedValue = format(value); // 전화번호 형식으로 포맷
+
+              input.value = formattedValue;
+            }
+
+            // 숫자를 전화번호 형식으로 포맷하는 함수
+            function format(value) {
+              const formattedValue = [];
+              for (let i = 0; i < value.length; i++) {
+                if (i === 3 || i === 7) {
+                  formattedValue.push('-'); // 4번째와 7번째 문자 뒤에 '-' 추가
+                }
+                formattedValue.push(value[i]);
+              }
+              return formattedValue.join('');
+            }
+
+            // 전화번호 입력 필드의 이벤트 리스너 등록
+            phoneInput.addEventListener('input', formatPhoneNumber);
           </script>
 
   </body>

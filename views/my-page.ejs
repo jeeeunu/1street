@@ -166,7 +166,6 @@
                         });
 
                         const data = await response.json();
-                        console.log(data);
 
                         if (response.ok) {
                           alert(data.message);
@@ -194,11 +193,25 @@
                     const response = await fetch(`/orders`);
                     if (response.ok) {
                       const orders = await response.json();
+
+                      orders.sort((a, b) => {
+                        const dateA = new Date(a.created_at);
+                        const dateB = new Date(b.created_at);
+                        return dateB - dateA;
+                      });
+
                       orderCountElement.textContent = `( ${orders.length} )`;
 
-                      orders.forEach(async (order) => {
-                        const orderDetails = await fetchOrderDetails(order.id); // 주문 상세 정보 가져오기
-                        renderOrder(order, orderDetails); // 주문 정보와 상세 정보를 HTML에 표시
+                      // 모든 주문 상세 정보를 먼저 가져오기
+                      const orderDetailsPromises = orders.map(async (order) => {
+                        return await fetchOrderDetails(order.id);
+                      });
+
+                      const orderDetails = await Promise.all(orderDetailsPromises);
+
+                      // 정렬된 주문 목록을 기반으로 렌더링
+                      orders.forEach((order, index) => {
+                        renderOrder(order, orderDetails[index]);
                       });
                     } else {
                       console.error('주문 내역을 가져오는 데 실패했습니다.');
@@ -227,7 +240,6 @@
                   // 주문 정보와 상세 정보를 이용하여 HTML을 생성하고 orderListContainer에 추가합니다.
                   const orderItem = document.createElement('li');
                   orderItem.classList.add('tr');
-                  console.log(orderDetails);
 
                   // 주문 상태에 따른 버튼 HTML을 동적으로 생성
                   let buttonHtml = '';

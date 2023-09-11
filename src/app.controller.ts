@@ -31,10 +31,10 @@ export class AppController {
     const isIndexPath = request.url === '/';
     const isSearchPath = request.url.startsWith('/product-list');
     const categories = await this.categorysService.findAll();
-    const carts = await this.cartsService.getCart(authUser.user_id);
     if (authUser) {
       const userInfo = await this.usersService.findUserInfo(authUser.user_id);
       const user = userInfo.results;
+      const carts = await this.cartsService.getCart(authUser.user_id);
       return { isIndexPath, isSearchPath, user, categories, carts };
     } else {
       return { isIndexPath, isSearchPath, categories };
