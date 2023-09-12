@@ -15,40 +15,41 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="contact-title">
-                    <h2>문의하기</h2>
+                    <h2 style="margin-top: 30px; margin-bottom: 20px;">문의하기</h2>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-6">
                 <!-- 상품 이미지 -->
-                <img src="상품 이미지 URL" alt="상품 이미지">
-            </div>
-            <div class="col-lg-6">
-                <!-- 상품 이름 -->
-                <h3>상품 이름</h3>
+                <img src="<%= product.product_image[0].url %>" alt="상품 이미지" style="max-width: 30%; max-height: 500px;">
             </div>
         </div>
         <div class="row">
             <div class="col-lg-6">
+                <!-- 상품 이름 -->
+                <h3 style="font-size: 20px; margin-bottom: 10px;">상품명: <%= product.product_name %></h3>
                 <!-- 문의 제목 입력 폼 -->
                 <form action="/qnas" method="POST">
                     <div class="form-group">
-                        <label for="qna_name">문의 제목</label>
+                        <label for="qna_name" style="margin-bottom: 20px;">문의 제목</label>
                         <input type="text" id="qna_name" name="qna_name" required>
                     </div>
-                    <!-- 문의 내용 입력 폼 -->
-                    <div class="form-group">
-                        <label for="qna_content">문의 내용</label>
+                    <div class="col-lg-6">
+                      <!-- 문의 내용 입력 폼 -->
+                      <div class="form-group" style="position: relative;">
+                        <!-- '문의 내용' 텍스트의 위치를 조절하기 위한 스타일 -->
+                        <label for="qna_content" style="position: absolute; top: -20px; left: 0;">문의 내용</label>
                         <textarea id="qna_content" name="qna_content" rows="5" required></textarea>
+                      </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6">
                 <!-- 취소하기와 등록하기 버튼 -->
                 <div class="buttons">
-                    <button type="button" class="cancel">취소하기</button>
-                    <button type="submit">등록하기</button>
+                    <button type="button" class="cancel" style="background-color: #7fad39; color: #ffffff; margin-right: 10px;">취소하기</button>
+                    <button type="submit" style="background-color: #7fad39; color: #ffffff;">등록하기</button>
                 </div>
             </div>
         </div>
@@ -71,6 +72,61 @@
       productIdInput.value = productId;
       form.appendChild(productIdInput);
     }
+
+    // 등록하기 버튼 클릭 시
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.querySelector('form');
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault(); // 기본 폼 제출 동작 방지
+
+          const qnaName = document.getElementById('qna_name').value;
+          const qnaContent = document.getElementById('qna_content').value;
+
+          try {
+            // 현재 페이지 URL에서 product_id 추출
+            const currentUrl = window.location.href;
+            const productIdMatch = currentUrl.match(/\/user-qna\/(\d+)/);
+            const productId = productIdMatch ? productIdMatch[1] : null;
+
+            // 현재 상품 정보를 가져옵니다.
+            const productResponse = await fetch(`/products/${productId}`);
+            const productData = await productResponse.json();
+            
+            // shop_id 추출
+            const shopId = productData.shop.id;
+
+            // POST 요청을 보냅니다.
+            const response = await fetch('/qnas', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                qna_name: qnaName,
+                qna_content: qnaContent,
+                product_id: productId,
+                shop_id: shopId, // 추출한 shop_id 사용
+              }),
+            });
+
+            if (response.ok) {
+              // 서버 응답이 성공인 경우
+              alert('문의가 등록되었습니다.');
+              // 등록 후 리다이렉트할 페이지로 이동 (상품 상세 페이지)
+              window.location.href = `/product-detail/${productId}`;
+            } else {
+              // 서버 응답이 실패인 경우
+              console.error('서버 응답 오류:', response.status, response.statusText);
+              alert('문의 등록에 실패했습니다.');
+            }
+          } catch (error) {
+            console.error('오류 발생:', error);
+            alert('오류가 발생했습니다.');
+          }
+        });
+      }
+    });
     
     // 취소하기 버튼 클릭 시 페이지 리다이렉트
     const cancelButton = document.querySelector('.cancel');

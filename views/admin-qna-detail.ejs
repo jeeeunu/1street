@@ -2,6 +2,14 @@
 <html lang="ko">
   <!-- include : head -->
   <%- include('includes/head') %>
+  <head>
+    <style>
+      /* '문의 사항'과 '문의를 남긴 닉네임' 간의 간격 조정 */
+      .admin-qna-detail__title {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
   <body>
     <!-- include : preloder -->
     <%- include('includes/preloder') %>
@@ -55,74 +63,107 @@
     <%- include('includes/footer') %>
     <!-- JavaScript 처리 -->
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const qnaRows = document.querySelectorAll('.admin-qna__table tbody tr');
+      document.addEventListener('DOMContentLoaded', function () {
+        // 현재 페이지 URL에서 qna_id 추출
+        const qnaId = window.location.pathname.split('/').pop();
 
-        // 문의사항 행 클릭 시 이벤트 처리
-        qnaRows.forEach((row) => {
-          row.addEventListener('click', () => {
-            const userNickname =
-              row.querySelector('td:nth-child(2)').textContent;
-            const questionContent =
-              row.querySelector('td:nth-child(3)').textContent;
+        // qna_id를 사용하여 QNA 정보를 가져오는 GET 요청 보내기
+        fetch(`/qnas/${qnaId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            // QNA 정보를 받아서 해당 정보를 화면에 채우기
+            const userNameElement = document.querySelector(
+              '.admin-qna-detail__user h4',
+            );
+            const questionTitleElement = document.querySelector(
+              '.admin-qna-detail__question h4',
+            );
+            const questionContentElement = document.querySelector(
+              '.admin-qna-detail__question p',
+            );
 
-            // 선택한 문의사항의 유저 닉네임과 질문 내용을 admin-qna-detail 페이지로 전달
-            window.location.href = `/admin/answer?userNickname=${encodeURIComponent(
-              userNickname,
-            )}&questionContent=${encodeURIComponent(questionContent)}`;
-          });
-        });
-      });
+            // 유저 정보를 가져와서 화면에 출력
+            const user = data.user;
+            if (user) {
+              userNameElement.textContent = `문의를 남긴 유저: ${user.name}`;
+            } else {
+              userNameElement.textContent = '문의를 남긴 유저 정보 없음';
+            }
 
-      document.addEventListener('DOMContentLoaded', () => {
-        const cancelButton = document.querySelector(
-          '.admin-qna-detail__buttons button[type="button"]',
-        );
-        const confirmButton = document.querySelector(
-          '.admin-qna-detail__buttons button[type="submit"]',
-        );
-        const answerTextarea = document.getElementById('answer');
+            // QNA 이름과 문의 내용을 화면에 출력
+            questionTitleElement.textContent = `문의 제목: ${data.qna_name}`;
+            questionContentElement.textContent = `문의 내용: ${data.qna_content}`;
 
-        // 취소 버튼 클릭 시 이벤트 처리
-        cancelButton.addEventListener('click', () => {
-          const confirmCancel = confirm('답변 작성을 취소하시겠습니까?');
-          if (confirmCancel) {
-            // 취소 버튼을 누른 경우
-            window.location.reload(); // 페이지 새로고침
-          }
-        });
-
-        // 확인 버튼 클릭 시 이벤트 처리
-        confirmButton.addEventListener('click', async (event) => {
-          event.preventDefault(); // 폼 제출 동작 방지
-
-          // 서버로 답변 내용을 전송하고 처리하는 로직을 구현해야 한다.
-          const answerContent = answerTextarea.value;
-
-          try {
-            // 서버로 데이터 전송을 위한 fetch 요청을 보냅니다. /api/submit-answer -> 서버와의 실제 통신 코드로 대체
-            const response = await fetch('/api/submit-answer', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ answer: answerContent }),
+            // 취소 버튼 클릭 시 페이지 이동
+            const cancelButton = document.querySelector(
+              '.admin-qna-detail__buttons .site-btn:first-child',
+            );
+            cancelButton.addEventListener('click', function () {
+              // 현재 페이지의 shopId를 가져오기 위해 shop 객체 내의 id 프로퍼티를 사용
+              const shopId = data.shop.id;
+              window.location.href = `/admin-qna/${shopId}`;
             });
 
-            if (response.ok) {
-              // 서버로부터 응답이 정상적으로 오면 완료 메시지를 출력하고 페이지를 갱신합니다.
-              alert('답변 작성이 완료되었습니다.');
-              const statusCell = document.querySelector('.status-cell');
-              statusCell.textContent = '답변완료';
-              window.location.href = '/admin-qna'; // admin-qna.ejs 페이지 주소로 이동
-            } else {
-              alert('서버 오류가 발생했습니다. 다시 시도해주세요.');
-            }
-          } catch (error) {
-            console.error('에러 발생:', error);
-            alert('오류가 발생했습니다. 다시 시도해주세요.');
-          }
-        });
+            // 확인 버튼 클릭 시 QnaAnswer를 등록하는 POST 요청 보내기
+            const confirmButton = document.querySelector(
+              '.admin-qna-detail__buttons .site-btn:last-child',
+            );
+            confirmButton.addEventListener('click', function (e) {
+              e.preventDefault(); // 기본 동작(폼 제출)을 중단
+
+              const qnaId = getQnaIdFromURL(); // 현재 페이지의 qnaId 가져오기
+              const answerText = document.querySelector('#answer').value; // 입력한 답변 내용 가져오기
+
+              // CreateQnaAnswerDto 형식에 맞게 데이터 구성
+              const createQnaAnswerDto = {
+                qnaId: qnaId,
+                shop_id: data.shop.id,
+                answerContent: answerText,
+              };
+
+              // POST 요청을 보내 QnaAnswer를 등록
+              fetch(`/qnas/${qnaId}/answer`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(createQnaAnswerDto),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data.status === true) {
+                    const adminQnaDetailContent = document.querySelector(
+                      '.admin-qna-detail__content',
+                    );
+                    // 성공 메시지 추가
+                    const successMessageElement = document.createElement('div');
+                    successMessageElement.textContent = data.message;
+                    successMessageElement.style.color = 'green';
+                    adminQnaDetailContent.appendChild(successMessageElement);
+                  } else {
+                    // 실패 시 오류 메시지 추가
+                    const adminQnaDetailContent = document.querySelector(
+                      '.admin-qna-detail__content',
+                    );
+                    const errorMessageElement = document.createElement('div');
+                    errorMessageElement.textContent = `오류 발생: ${data.message}`;
+                    errorMessageElement.style.color = 'red';
+                    adminQnaDetailContent.appendChild(errorMessageElement);
+                  }
+                });
+            });
+          })
+          .catch((error) => {
+            console.error('QNA 정보를 가져오는 중 오류 발생:', error);
+          });
+
+        // 현재 페이지 URL에서 qnaId 가져오는 함수
+        function getQnaIdFromURL() {
+          const match = window.location.pathname.match(
+            /\/admin-qna-detail\/(\d+)/,
+          );
+          return match ? match[1] : null;
+        }
       });
     </script>
   </body>
