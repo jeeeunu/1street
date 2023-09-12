@@ -25,21 +25,15 @@ export class QnasService {
   //-- QNA 만들기 --//
 
   async create(
-    // id: number, //
     data: CreateQnasDto,
     authUser: RequestUserInterface,
-    // productId: number,
   ): Promise<ResultableInterface> {
     const user = await this.usersService.findUser(authUser.user_id);
-    const { product_id, qna_name, qna_content } = data;
-    // product 존재 여부 확인
-    // const product = await this.productRepository.findOne({ where: { id } }); //
-    // if (!product) {
-    //   return { status: false, message: '해당 상품이 존재하지 않습니다.' };
-    // }
+    const { product_id, shop_id, qna_name, qna_content } = data;
     await this.qnaRepository.insert({
       user: { id: user.id },
       product: { id: product_id }, // 위에서 data 받은 게 있으니 data.product_id 이런식으로 안써도 된다
+      shop: { id: shop_id },
       qna_name,
       qna_content,
     });
@@ -52,6 +46,7 @@ export class QnasService {
     const qna = await this.qnaRepository
       .createQueryBuilder('qna')
       .leftJoinAndSelect('qna.user', 'user')
+      .leftJoinAndSelect('qna.shop', 'shop')
       .where('qna.id = :id', { id: qnaId })
       .getOne();
     if (!qna) {
@@ -87,7 +82,20 @@ export class QnasService {
     if (!qna) {
       throw new NotFoundException('해당 QNA가 존재하지 않습니다.');
     }
+    return qna;
+  }
 
+  // shop_id로 QNA 찾기
+  async getForShop(shopId: number): Promise<QnasEntity[]> {
+    const qna = await this.qnaRepository
+      .createQueryBuilder('qna')
+      .leftJoinAndSelect('qna.shop', 'shop')
+      .leftJoinAndSelect('qna.product', 'product')
+      .where('shop.id = :shopId', { shopId })
+      .getMany();
+    if (!qna) {
+      throw new NotFoundException('해당 QNA가 존재하지 않습니다.');
+    }
     return qna;
   }
 
@@ -100,6 +108,19 @@ export class QnasService {
       return qnaCount;
     } catch (error) {
       console.error('Q&A 데이터 개수 조회 중 오류 발생:', error);
+      return 0;
+    }
+  }
+
+  // QNA 개수 세기 2
+  async countQnaByProduct(productId: number): Promise<number> {
+    try {
+      const qnaCount = await this.qnaRepository.count({
+        where: { id: productId },
+      });
+      return qnaCount;
+    } catch (error) {
+      console.error('Q&A 개수 조회 중 오류 발생:', error);
       return 0;
     }
   }
@@ -148,20 +169,67 @@ export class QnasService {
 
   async createQnaAnswer(
     qnaId: number,
+    shopId: number,
     answerContent: string,
-  ): Promise<QnaAnswerEntity> {
-    const qnaAnswer = new QnaAnswerEntity();
-    qnaAnswer.qna_id = qnaId;
-    qnaAnswer.answer_content = answerContent;
+  ): Promise<ResultableInterface> {
+    try {
+      // 여기에서 필요한 데이터를 가져온다.
+      const qna = await this.qnaRepository.findOne({
+        where: { id: qnaId },
+      });
 
-    return await this.qnaAnswerRepository.save(qnaAnswer);
+      if (!qna) {
+        return {
+          status: false,
+          message: 'QNA를 찾을 수 없습니다.',
+        };
+      }
+
+      // QnaAnswerEntity 객체 생성 및 데이터 할당
+      const qnaAnswer = new QnaAnswerEntity();
+      qnaAnswer.qna = qna;
+      qnaAnswer.shop_id = shopId;
+      qnaAnswer.answer_content = answerContent;
+
+      // QnaAnswer 저장
+      await this.qnaAnswerRepository.save(qnaAnswer);
+
+      return { status: true, message: 'QNA 답변이 등록되었습니다.' };
+    } catch (e) {
+      return {
+        status: false,
+        message: 'QNA 답변 등록 중 오류가 발생했습니다.',
+      };
+    }
   }
+  //   qnaId: number,
+  //   shopId: number,
+  //   answerContent: string,
+  // ): Promise<QnaAnswerEntity> {
+  //   const qnaAnswer = new QnaAnswerEntity();
+  //   qnaAnswer.qna_id = qnaId;
+  //   qnaAnswer.shop_id = shopId;
+  //   qnaAnswer.answer_content = answerContent;
+
+  //   return await this.qnaAnswerRepository.save(qnaAnswer);
+  // }
 
   // QnaAnswer 조회 (qna_id로)
   async getQnaAnswer(qnaId: number): Promise<QnaAnswerEntity[]> {
     return await this.qnaAnswerRepository.find({
       where: { qna_id: qnaId },
     });
+  }
+
+  // QnaAnswer 조회 (shop_id로)
+  async getQnaAnswerByShopId(shopId: number): Promise<QnaAnswerEntity[]> {
+    const qnaAnswers = await this.qnaAnswerRepository.find({
+      where: { shop_id: shopId },
+    });
+    if (!qnaAnswers || qnaAnswers.length === 0) {
+      throw new NotFoundException('해당 QNA 답변을 찾을 수 없습니다.');
+    }
+    return qnaAnswers;
   }
 
   // QnaAnswer 조회 (answerId로)

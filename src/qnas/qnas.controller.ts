@@ -64,17 +64,18 @@ export class QnasController {
   }
 
   // QNA 조회 (shop_id)
-  // shop을 또 어떻게 표현해줘야할까 직접적으로 qna에 심어주자니 너무 넓어지는것 같고
-  // 직접 그렇게 하는것보다
-  // shop -> product -> qna의 관계를 끌어와서 검색할 수 있으면 좋을텐데
-  // product 정보를 불러왔을때 shop_id 정보를 받아올 수 있다.
-  // product를 등록할 때 포함되는 정보에 shop_id가 포함되기 때문에
-  // @Get('shop/:shop_id')
-  // async getQnasForShop(
-  //   @Param('shop_id') shopId: number,
-  // ): Promise<QnasEntity[]> {
-  //   return await this.qnasService.findByShopId(shopId);
-  // }
+  @Get('shop/:shop_id')
+  @UseGuards(AuthGuard)
+  async getForShop(@Param('shop_id') shopId: number): Promise<QnasEntity[]> {
+    return await this.qnasService.getForShop(shopId);
+  }
+
+  // QNA 개수 세기 (product_id)
+  @Get('count/:productId')
+  async getQnaCount(@Param('productId') productId: number): Promise<number> {
+    const qnaCount = await this.qnasService.countQnaByProduct(productId);
+    return qnaCount;
+  }
 
   // QNA 수정
   @Patch(':id')
@@ -93,6 +94,7 @@ export class QnasController {
     return await this.qnasService.delete(id);
   }
 
+  // QnaAnswer 등록
   @Post(':id/answer')
   @UseGuards(AuthGuard)
   async createQnaAnswer(
@@ -100,8 +102,8 @@ export class QnasController {
     @Body() createQnaAnswerDto: CreateQnaAnswerDto,
   ): Promise<ResultableInterface> {
     try {
-      const { answerContent } = createQnaAnswerDto;
-      await this.qnasService.createQnaAnswer(qnaId, answerContent);
+      const { shop_id, answerContent } = createQnaAnswerDto;
+      await this.qnasService.createQnaAnswer(qnaId, shop_id, answerContent);
       return { status: true, message: 'QNA 답변이 등록되었습니다.' };
     } catch (e) {
       return {
@@ -114,7 +116,23 @@ export class QnasController {
   // QnaAnswer 조회 (qna_id로)
   @Get(':id/answers')
   async getQnaAnswers(@Param('id') qnaId: number): Promise<QnaAnswerEntity[]> {
-    return await this.qnasService.getQnaAnswer(qnaId);
+    const qnaAnswers = await this.qnasService.getQnaAnswer(qnaId);
+    const qnaStatus = qnaAnswers.length > 0 ? '답변 완료' : '답변 대기중';
+
+    // 상태를 추가하여 반환
+    return qnaAnswers.map((qnaAnswer) => ({ ...qnaAnswer, status: qnaStatus }));
+  }
+
+  // QnaAnswer 조회 (shop_id로)
+  @Get('answers/shops/:shop_id')
+  async getQnaAnswerByShopId(
+    @Param('shop_id') shopId: number,
+  ): Promise<QnaAnswerEntity[]> {
+    try {
+      return await this.qnasService.getQnaAnswerByShopId(shopId);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 
   // QnaAnswer 조회 (answer_id로)

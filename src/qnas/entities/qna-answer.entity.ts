@@ -1,4 +1,5 @@
 import { IsNumber } from 'class-validator';
+import { ShopsEntity } from 'src/common/entities';
 import { QnasEntity } from 'src/common/entities/qnas.entity';
 import {
   Column,
@@ -21,6 +22,10 @@ export class QnaAnswerEntity {
   @IsNumber()
   public qna_id: number;
 
+  @Column({ nullable: false })
+  @IsNumber()
+  public shop_id: number;
+
   @CreateDateColumn()
   created_at: Date;
 
@@ -29,4 +34,7 @@ export class QnaAnswerEntity {
 
   @ManyToOne(() => QnasEntity, (qna) => qna.qna_answer)
   public qna: QnasEntity;
+
+  @ManyToOne(() => ShopsEntity, (shop) => shop.qna_answer)
+  public shop: ShopsEntity;
 }

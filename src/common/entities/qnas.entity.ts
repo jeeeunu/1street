@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { ProductsEntity } from './products.entity';
 import { QnaAnswerEntity } from 'src/qnas/entities/qna-answer.entity';
+import { ShopsEntity } from './shops.entity';
 
 @Entity({ name: 'qnas' })
 export class QnasEntity {
@@ -43,4 +44,7 @@ export class QnasEntity {
 
   @OneToMany(() => QnaAnswerEntity, (qna_answer) => qna_answer.qna)
   public qna_answer: QnaAnswerEntity;
+
+  @ManyToOne(() => ShopsEntity, (shop) => shop.qna)
+  public shop: ShopsEntity;
 }
