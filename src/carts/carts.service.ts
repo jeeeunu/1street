@@ -75,12 +75,10 @@ export class CartsService {
     if (cart === null) {
       return [];
     }
-    console.log(cart);
     const content: any[] = [];
     for (const item of cart) {
       const product_id = item.product_id;
       const quantity = item.quantity;
-      console.log(product_id);
       const product = await this.productRepository.findOne({
         where: { id: product_id },
       });

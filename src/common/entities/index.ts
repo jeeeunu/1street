@@ -4,3 +4,4 @@ export { OrdersEntity } from './orders.entity';
 export { ReviewsEntity } from './reviews.entity';
 export { ProductsEntity } from './products.entity';
 export { LikeEntity } from './likes.entity';
+export { PaymentsEntity } from './payments.entity';

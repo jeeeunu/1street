@@ -4,10 +4,12 @@ import {
   Entity,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   Timestamp,
 } from 'typeorm';
 import { OrderDetailsEntity } from '../../orders/entities/order-detail.entity';
+import { PaymentsEntity } from './payments.entity';
 
 export enum OrderStatus {
   OrderCancel = 'OrderCancel',
@@ -28,6 +30,10 @@ export class OrdersEntity {
 
   @ManyToOne(() => UsersEntity, (user) => user.orders)
   public user: UsersEntity;
+
+  @OneToMany(() => PaymentsEntity, (payment) => payment.order)
+  payment: PaymentsEntity[];
+
   @Column()
   // @IsOptional()
   public order_receiver: string;

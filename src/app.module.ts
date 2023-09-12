@@ -24,6 +24,7 @@ import { ShopsEntity } from './common/entities';
 import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
 import { CategorysModule } from './categorys/categorys.module';
+import { PaymentsModule } from './payment/payments.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { CategorysModule } from './categorys/categorys.module';
       },
     }),
     CategorysModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleStrategy],
