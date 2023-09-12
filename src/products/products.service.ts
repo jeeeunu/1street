@@ -387,7 +387,7 @@ export class ProductsService {
 
   //-- 상품 삭제 --//
   async delete(id: number): Promise<ResultableInterface> {
-    await this.productRepository.delete({ id });
+    await this.productRepository.softDelete({ id });
     return { status: true, message: '상품을 성공적으로 삭제했습니다' };
   }
 }

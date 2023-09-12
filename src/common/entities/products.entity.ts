@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -46,6 +47,9 @@ export class ProductsEntity {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: string;
+
+  @DeleteDateColumn({ type: 'timestamp' })
+  deleted_at: string;
 
   @ManyToOne(() => ShopsEntity, (shop) => shop.products, {
     onDelete: 'CASCADE',
