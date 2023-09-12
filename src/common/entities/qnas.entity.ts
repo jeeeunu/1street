@@ -36,7 +36,9 @@ export class QnasEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: string;
 
-  @ManyToOne(() => UsersEntity, (user) => user.qna)
+  @ManyToOne(() => UsersEntity, (user) => user.qna, {
+    onDelete: 'CASCADE',
+  })
   public user: UsersEntity;
 
   @ManyToOne(() => ProductsEntity, (product) => product.qna, {
@@ -44,9 +46,13 @@ export class QnasEntity {
   })
   public product: ProductsEntity;
 
-  @OneToMany(() => QnaAnswerEntity, (qna_answer) => qna_answer.qna)
+  @OneToMany(() => QnaAnswerEntity, (qna_answer) => qna_answer.qna, {
+    onDelete: 'CASCADE',
+  })
   public qna_answer: QnaAnswerEntity;
 
-  @ManyToOne(() => ShopsEntity, (shop) => shop.qna)
+  @ManyToOne(() => ShopsEntity, (shop) => shop.qna, {
+    onDelete: 'CASCADE',
+  })
   public shop: ShopsEntity;
 }

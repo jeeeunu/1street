@@ -226,9 +226,9 @@ export class QnasService {
     const qnaAnswers = await this.qnaAnswerRepository.find({
       where: { shop_id: shopId },
     });
-    if (!qnaAnswers || qnaAnswers.length === 0) {
-      throw new NotFoundException('해당 QNA 답변을 찾을 수 없습니다.');
-    }
+    // if (!qnaAnswers || qnaAnswers.length === 0) {
+    //   throw new NotFoundException('해당 QNA 답변을 찾을 수 없습니다.');
+    // }
     return qnaAnswers;
   }
 
