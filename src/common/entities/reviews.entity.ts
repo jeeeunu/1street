@@ -53,6 +53,9 @@ export class ReviewsEntity {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  @JoinColumn({ name: 'order_detail_id', referencedColumnName: 'id' })
+  @JoinColumn({
+    name: 'order_detail_id',
+    referencedColumnName: 'id',
+  })
   public order_detail: OrderDetailsEntity;
 }

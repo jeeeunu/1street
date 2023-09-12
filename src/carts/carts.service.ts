@@ -82,6 +82,9 @@ export class CartsService {
       const product = await this.productRepository.findOne({
         where: { id: product_id },
       });
+      if (product === null) {
+        continue;
+      }
       const product_img = await this.productImageRepository.findOne({
         where: { product_id: product_id },
       });

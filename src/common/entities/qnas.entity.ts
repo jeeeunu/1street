@@ -39,7 +39,9 @@ export class QnasEntity {
   @ManyToOne(() => UsersEntity, (user) => user.qna)
   public user: UsersEntity;
 
-  @ManyToOne(() => ProductsEntity, (product) => product.qna)
+  @ManyToOne(() => ProductsEntity, (product) => product.qna, {
+    onDelete: 'CASCADE',
+  })
   public product: ProductsEntity;
 
   @OneToMany(() => QnaAnswerEntity, (qna_answer) => qna_answer.qna)

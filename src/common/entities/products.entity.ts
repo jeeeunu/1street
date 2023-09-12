@@ -55,10 +55,14 @@ export class ProductsEntity {
   @OneToMany(() => LikeEntity, (like) => like.product)
   public likes: LikeEntity[];
 
-  @OneToMany(() => OrderDetailsEntity, (orderDetails) => orderDetails.product)
+  @OneToMany(() => OrderDetailsEntity, (orderDetails) => orderDetails.product, {
+    onDelete: 'CASCADE',
+  })
   public order_detail: OrderDetailsEntity[];
 
-  @OneToMany(() => QnasEntity, (qna) => qna.product)
+  @OneToMany(() => QnasEntity, (qna) => qna.product, {
+    onDelete: 'CASCADE',
+  })
   public qna: QnasEntity[];
 
   @OneToMany(() => ProductImageEntity, (product_image) => product_image.product)
