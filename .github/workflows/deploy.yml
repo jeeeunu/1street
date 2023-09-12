@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: '18.x'
 
-        # (3) build (Test 제외)
+        # (3) build (Test 제외 )
       - name: Install dependencies
         run: npm install
 
