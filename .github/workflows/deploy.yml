@@ -51,17 +51,17 @@ jobs:
 
         env:
           DB_HOST: ${{ secrets.DB_HOST }}
-          DB_HOST: ${{ secrets.DB_PORT }}
-          DB_HOST: ${{ secrets.DB_USERNAME }}
-          DB_HOST: ${{ secrets.DB_PASSWORD }}
-          DB_HOST: ${{ secrets.DB_DATABASE }}
-          DB_HOST: ${{ secrets.JWT_SECRET_KEY }}
-          DB_HOST: ${{ secrets.GOOGLE_CLIENT_ID }}
-          DB_HOST: ${{ secrets.GOOGLE_SECRET }}
-          DB_HOST: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          DB_HOST: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          DB_HOST: ${{ secrets.REDIS_HOST }}
-          DB_HOST: ${{ secrets.REDIS_PORT }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
 
         # (3) build (Test 제외 )
       - name: Install dependencies
