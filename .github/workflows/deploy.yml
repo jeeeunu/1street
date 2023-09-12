@@ -33,6 +33,36 @@ jobs:
         with:
           node-version: '18.x'
 
+      # Github Repository Secrets를 통해 환경 변수 파일을 생성합니다.
+      - name: Generate Environment Variables File for Production
+        run: |
+          echo "DB_HOST=$DB_HOST" >> .env.production
+          echo "DB_PORT=$DB_PORT" >> .env.production
+          echo "DB_USERNAME=$DB_USERNAME" >> .env.production
+          echo "DB_PASSWORD=$DB_PASSWORD" >> .env.production
+          echo "DB_DATABASE=$DB_DATABASE" >> .env.production
+          echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> .env.production
+          echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> .env.production
+          echo "GOOGLE_SECRET=$GOOGLE_SECRET" >> .env.production
+          echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> .env.production
+          echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> .env.production
+          echo "REDIS_HOST=$REDIS_HOST" >> .env.production
+          echo "REDIS_PORT=$REDIS_PORT" >> .env.production
+
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_HOST: ${{ secrets.DB_PORT }}
+          DB_HOST: ${{ secrets.DB_USERNAME }}
+          DB_HOST: ${{ secrets.DB_PASSWORD }}
+          DB_HOST: ${{ secrets.DB_DATABASE }}
+          DB_HOST: ${{ secrets.JWT_SECRET_KEY }}
+          DB_HOST: ${{ secrets.GOOGLE_CLIENT_ID }}
+          DB_HOST: ${{ secrets.GOOGLE_SECRET }}
+          DB_HOST: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          DB_HOST: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DB_HOST: ${{ secrets.REDIS_HOST }}
+          DB_HOST: ${{ secrets.REDIS_PORT }}
+
         # (3) build (Test 제외 )
       - name: Install dependencies
         run: npm install
