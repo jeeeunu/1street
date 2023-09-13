@@ -819,7 +819,7 @@ fieldset {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 2rem;
+  /* margin-bottom: 2rem; */
   font-size: 1.6rem;
 }
 
