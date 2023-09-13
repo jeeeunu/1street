@@ -1,137 +1,113 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <!-- include : head -->
-  <%- include('includes/head') %>
+<!-- include : head -->
+<%- include('includes/head') %>
 
   <body>
     <!-- include : top-button -->
     <%- include('includes/top-button') %>
 
-    <!-- include : preloder -->
-    <%- include('includes/preloder') %>
+      <!-- include : preloder -->
+      <%- include('includes/preloder') %>
 
-    <!-- include : header -->
-    <%- include('includes/header') %>
+        <!-- include : header -->
+        <%- include('includes/header') %>
 
-    <!-- 라이브 방 만들기 모달 -->
-    <div
-      class="modal fade"
-      id="liveRoomModal"
-      tabindex="-1"
-      aria-labelledby="liveRoomModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="modal-title fs-5" id="liveRoomModalLabel">
-              라이브 방송
-            </h2>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="liveTitle" class="form-label">방송 제목</label>
-              <input
-                type="text"
-                class="form-control"
-                id="liveTitle"
-                placeholder="방송제목을 입력해주세요"
-              />
+          <!-- 라이브 방 만들기 모달 -->
+          <div class="modal fade" id="liveRoomModal" tabindex="-1" aria-labelledby="liveRoomModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h2 class="modal-title fs-5" id="liveRoomModalLabel">
+                    라이브 방송
+                  </h2>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="liveTitle" class="form-label">방송 제목</label>
+                    <input type="text" class="form-control" id="liveTitle" placeholder="방송제목을 입력해주세요" />
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    취소
+                  </button>
+                  <button type="button" class="btn btn-primary liveStartBtn">
+                    라이브 시작
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              취소
-            </button>
-            <button type="button" class="btn btn-primary liveStartBtn">
-              라이브 시작
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- 내정보 (일반) -->
-    <main class="mypage container mypage-info">
-      <h2 class="title">관리자 페이지</h2>
-      <div class="row">
-        <!-- include : aside -->
-        <%- include('includes/my-page-aside') %>
+          <!-- 내정보 (일반) -->
+          <main class="mypage container mypage-info">
+            <h2 class="title">관리자 페이지</h2>
+            <div class="row">
+              <!-- include : aside -->
+              <%- include('includes/my-page-aside') %>
 
-        <!-- shop 존재시 -->
-        <% if (authUser.shop_id !==undefined) { %>
-        <section class="col-lg-9">
-          <section class="status-container">
-            <ul class="status-list">
-              <li class="status-item">
-                <p>접수된 주문</p>
-                <p><a href="" id="order-pending-count"> 건</a></p>
-              </li>
-              <li class="status-item">
-                <p>배송중</p>
-                <p>
-                  <a href="" id="order-delivering-count"> 건</a>
-                </p>
-              </li>
-              <li class="status-item">
-                <p>배송완료</p>
-                <p>
-                  <a href="" id="delivery-complete-count"> 건</a>
-                </p>
-              </li>
-              <li class="status-item">
-                <p>리뷰</p>
-                <p><a href=""> <%= reviews.length %> 건 </a></p>
-              </li>
-            </ul>
-          </section>
-          <section>
-            <ul class="my-page-content-list">
-              <li>
-                <a href="/admin-create-product">상품 등록하기</a>
-              </li>
-              <li>
-                <a href="">1:1 채팅 요청<span class="red-text">(2)</span></a>
-              </li>
-              <li>
-                <a id="qnaLink" href="/admin-qna/<%= authUser.shop_id %>"
-                  >상품 문의사항</a
-                >
-              </li>
-            </ul>
-          </section>
-          <section class="list-container">
-            <div class="title-wrap">
-              <h3>등록된 상품 ( <%= products.length %> )</h3>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#liveRoomModal"
-                style="font-size: 2rem; margin-bottom: 15px"
-              >
-                라이브 방송 시작하기
-              </button>
-            </div>
-            <div class="order-list-table">
-              <ul class="t-head">
-                <li class="td">등록 날짜</li>
-                <li class="td">상품 정보</li>
-                <li class="td">상태</li>
-                <li class="td">편집</li>
-              </ul>
-              <ul class="t-body">
-                <!-- <li class="tr">
+                <!-- shop 존재시 -->
+                <% if (authUser.shop_id !==undefined) { %>
+                  <section class="col-lg-9">
+                    <section class="status-container">
+                      <ul class="status-list">
+                        <li class="status-item">
+                          <p>접수된 주문</p>
+                          <p><a href="" id="order-pending-count"> 건</a></p>
+                        </li>
+                        <li class="status-item">
+                          <p>배송중</p>
+                          <p>
+                            <a href="" id="order-delivering-count"> 건</a>
+                          </p>
+                        </li>
+                        <li class="status-item">
+                          <p>배송완료</p>
+                          <p>
+                            <a href="" id="delivery-complete-count"> 건</a>
+                          </p>
+                        </li>
+                        <li class="status-item">
+                          <p>리뷰</p>
+                          <p><a href="">
+                              <%= reviews.length %> 건
+                            </a></p>
+                        </li>
+                      </ul>
+                    </section>
+                    <section>
+                      <ul class="my-page-content-list">
+                        <li>
+                          <a href="/admin-create-product">상품 등록하기</a>
+                        </li>
+                        <li>
+                          <a href="">1:1 채팅 요청<span class="red-text">(2)</span></a>
+                        </li>
+                        <li>
+                          <a id="qnaLink" href="/admin-qna/<%= authUser.shop_id %>">상품 문의사항</a>
+                        </li>
+                      </ul>
+                    </section>
+                    <section class="list-container">
+                      <div class="title-wrap">
+                        <h3>등록된 상품 ( <%= products.length %> )</h3>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                          data-bs-target="#liveRoomModal" style="font-size: 2rem; margin-bottom: 15px">
+                          라이브 방송 시작하기
+                        </button>
+                      </div>
+                      <div class="order-list-table">
+                        <ul class="t-head">
+                          <li class="td">등록 날짜</li>
+                          <li class="td">상품 정보</li>
+                          <li class="td">상태</li>
+                          <li class="td">편집</li>
+                        </ul>
+                        <ul class="t-body">
+                          <!-- <li class="tr">
                             <div class="td">
                               <p class="date-text">2023.01.01</p>
                             </div>
@@ -158,80 +134,68 @@
                               <button type="button" class="btn-primary-s">배송완료 확인</button>
                             </div>
                           </li> -->
-                <% products.forEach((product)=> { %>
-                <li class="tr">
-                  <div class="td">
-                    <p class="date-text">
-                      <%= product.created_at.toISOString().substr(0, 10) %>
-                    </p>
-                  </div>
-                  <div class="td">
-                    <div class="order-info-wrap">
-                      <div class="img-wrap">
-                        <img src="<%= product.product_image[0].url %>" alt="" />
+                          <% products.forEach((product)=> { %>
+                            <li class="tr">
+                              <div class="td">
+                                <p class="date-text">
+                                  <%= product.created_at.toISOString().substr(0, 10) %>
+                                </p>
+                              </div>
+                              <div class="td">
+                                <div class="order-info-wrap">
+                                  <div class="img-wrap">
+                                    <img src="<%= product.product_image[0].url %>" alt="" />
+                                  </div>
+                                  <div class="text-wrap">
+                                    <div>
+                                      <span><small>id:</small>
+                                        <%= product.id %>
+                                      </span>
+                                      <span><small>카테고리:</small>
+                                        <%= product.category.category_name %>
+                                      </span>
+                                      <span class="product-title"><small>상품명:</small>
+                                        <%= product.product_name %>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="td status-wrap">
+                                <span>판매중</span>
+                              </div>
+                              <div class="td btns">
+                                <a href="/admin-edit-product/<%= product.id
+                    %>" class="btn-primary-s">수정하기</a>
+                                <button type="button" class="btn-primary-s" data-id="<%= product.id
+                    %>" onclick="deleteProduct(event)">
+                                  삭제하기
+                                </button>
+                              </div>
+                            </li>
+                            <% }); %>
+                        </ul>
                       </div>
-                      <div class="text-wrap">
-                        <div>
-                          <span
-                            ><small>id:</small>
-                            <%= product.id %>
-                          </span>
-                          <span
-                            ><small>카테고리:</small>
-                            <%= product.category.category_name %>
-                          </span>
-                          <span class="product-title"
-                            ><small>상품명:</small>
-                            <%= product.product_name %>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="td status-wrap">
-                    <span>판매중</span>
-                  </div>
-                  <div class="td btns">
-                    <a
-                      href="/admin-edit-product/<%= product.id
-                    %>"
-                      class="btn-primary-s"
-                      >수정하기</a
-                    >
-                    <button
-                      type="button"
-                      class="btn-primary-s"
-                      data-id="<%= product.id
-                    %>"
-                      onclick="deleteProduct(event)"
-                    >
-                      삭제하기
-                    </button>
-                  </div>
-                </li>
-                <% }); %>
-              </ul>
-            </div>
-          </section>
-          <% } %>
+                    </section>
+                    <% } %>
 
-          <!-- 주문 -->
-          <section class="list-container">
-            <div class="title-wrap">
-              <h3>
-                최근 주문 내역
-                <a id="order-count"></a>
-              </h3>
-            </div>
-            <div class="order-list-table">
-              <ul class="t-head">
-                <li class="td">날짜</li>
-                <li class="td">주문정보</li>
-                <li class="td">상태</li>
-                <li class="td">편집</li>
-              </ul>
-              <ul class="t-body" id="order-list">
-                <!-- <li class="tr">
+                      <!-- 주문 -->
+                      <section class="list-container">
+                        <div class="title-wrap">
+                          <h3>
+                            최근 주문 내역
+                            <a id="order-count"></a>
+                          </h3>
+                        </div>
+                        <div class="order-list-table">
+                          <ul class="t-head">
+                            <li class="td">날짜</li>
+                            <li class="td">주문정보</li>
+                            <li class="td">상태</li>
+                            <li class="td">편집</li>
+                          </ul>
+                          <ul class="t-body" id="order-list">
+                            <!-- <li class="tr">
                                     <div class="td">
                                       <p class="date-text">2023.01.01</p>
                                     </div>
@@ -256,251 +220,239 @@
                                     </div>
                                     <div class="td">
                                        TODO :: 버튼 각 상황에 맞게 -->
-                <!-- <button type="button" class="btn-primary-s">배송완료 확인</button>
+                            <!-- <button type="button" class="btn-primary-s">배송완료 확인</button>
                               </div>
                               </li> -->
-              </ul>
+                          </ul>
+                        </div>
+                      </section>
+                  </section>
+
+                  <!-- shop 없을시 -->
+                  <% if (authUser.shop_id===undefined) { %>
+                    <section class="col-lg-9">
+                      <section>
+                        <h2 class="section-title">스토어 등록</h2>
+                        <div class="input-container">
+                          <div class="content-box">
+                            <h2 class="create-title">*스토어 정보를 등록해주세요</h2>
+                            <!-- include : terms -->
+                            <%- include('includes/terms') %>
+                              <div class="input-box">
+                                <label class="label required">스토어명: </label>
+                                <input type="text" id="shopName" name="" required="" />
+                              </div>
+                              <div class="input-box">
+                                <label class="required label">스토어 설명: </label>
+                                <input type="text" id="shopDesc" name="" required="" />
+                              </div>
+                          </div>
+                          <button type="button" class="btn-primary-m" onclick="createStore()">
+                            스토어 만들기
+                          </button>
+                        </div>
+                      </section>
+                    </section>
+                    <% } %>
             </div>
-          </section>
-        </section>
+          </main>
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+            crossorigin="anonymous"></script>
+          <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+            integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+            crossorigin="anonymous"></script>
+          <script>
+            //-- 스토어 생성 api --//
+            const createStore = async () => {
+              try {
+                const shopName = document.querySelector('#shopName');
+                const shopDesc = document.querySelector('#shopDesc');
 
-        <!-- shop 없을시 -->
-        <% if (authUser.shop_id===undefined) { %>
-        <section class="col-lg-9">
-          <section>
-            <h2 class="section-title">스토어 등록</h2>
-            <div class="input-container">
-              <div class="content-box">
-                <h2 class="create-title">*스토어 정보를 등록해주세요</h2>
-                <!-- include : terms -->
-                <%- include('includes/terms') %>
-                <div class="input-box">
-                  <label class="label required">스토어명: </label>
-                  <input type="text" id="shopName" name="" required="" />
-                </div>
-                <div class="input-box">
-                  <label class="required label">스토어 설명: </label>
-                  <input type="text" id="shopDesc" name="" required="" />
-                </div>
-              </div>
-              <button
-                type="button"
-                class="btn-primary-m"
-                onclick="createStore()"
-              >
-                스토어 만들기
-              </button>
-            </div>
-          </section>
-        </section>
-        <% } %>
-      </div>
-    </main>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.socket.io/4.3.2/socket.io.min.js"
-      integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
-      crossorigin="anonymous"
-    ></script>
-    <script>
-      //-- 스토어 생성 api --//
-      const createStore = async () => {
-        try {
-          const shopName = document.querySelector('#shopName');
-          const shopDesc = document.querySelector('#shopDesc');
+                const requestData = {
+                  shop_name: shopName.value,
+                  shop_desc: shopDesc.value,
+                };
 
-          const requestData = {
-            shop_name: shopName.value,
-            shop_desc: shopDesc.value,
-          };
+                const response = await fetch('shops', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(requestData),
+                });
 
-          const response = await fetch('shops', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-          });
+                const data = await response.json();
 
-          const data = await response.json();
-
-          if (response.ok) {
-            alert(data.message);
-            window.location.href = '/';
-          } else {
-            console.log(data.message);
-            if (Array.isArray(data.message)) {
-              data.message.forEach((message) => {
-                alert(message.messages);
-              });
-            } else {
-              alert(data.message);
-            }
-            // window.location.href = '/';
-          }
-        } catch (error) {
-          console.error('에러 발생:', error);
-          alert('오류가 발생했습니다.');
-        }
-      };
-      //-- 유저 탈퇴 api --//
-      const deleteUser = async () => {
-        const firstConfirm = window.confirm('회원 탈퇴 하시겠습니까?');
-
-        if (firstConfirm) {
-          const secondConfirm = window.confirm(
-            '다시 되돌릴 수 없습니다. 정말 탈퇴하시겠습니까?',
-          );
-
-          if (secondConfirm) {
-            try {
-              const response = await fetch('users', {
-                method: 'DELETE',
-              });
-
-              const data = await response.json();
-
-              if (response.ok) {
-                alert(data.message);
-                window.location.href = '/';
-              } else {
-                alert(data.message);
-                console.error('회원 탈퇴중 오류가 발생했습니다.');
-                window.location.href = '/';
+                if (response.ok) {
+                  alert(data.message);
+                  window.location.href = '/';
+                } else {
+                  console.log(data.message);
+                  if (Array.isArray(data.message)) {
+                    data.message.forEach((message) => {
+                      alert(message.messages);
+                    });
+                  } else {
+                    alert(data.message);
+                  }
+                  // window.location.href = '/';
+                }
+              } catch (error) {
+                console.error('에러 발생:', error);
+                alert('오류가 발생했습니다.');
               }
-            } catch (error) {
-              console.error('Error:', error);
-              alert('오류가 발생했습니다.');
-            }
-          }
-        }
-      };
+            };
+            //-- 유저 탈퇴 api --//
+            const deleteUser = async () => {
+              const firstConfirm = window.confirm('회원 탈퇴 하시겠습니까?');
 
-      //-- 스토어 삭제 api --//
-      const deleteShop = async () => {
-        const firstConfirm = window.confirm('스토어를 삭제 하시겠습니까?');
+              if (firstConfirm) {
+                const secondConfirm = window.confirm(
+                  '다시 되돌릴 수 없습니다. 정말 탈퇴하시겠습니까?',
+                );
 
-        if (firstConfirm) {
-          const secondConfirm = window.confirm(
-            '다시 되돌릴 수 없습니다. 정말 삭제하시겠습니까?',
-          );
+                if (secondConfirm) {
+                  try {
+                    const response = await fetch('users', {
+                      method: 'DELETE',
+                    });
 
-          if (secondConfirm) {
-            try {
-              const response = await fetch('shops', {
-                method: 'DELETE',
-              });
+                    const data = await response.json();
 
-              const data = await response.json();
-
-              if (response.ok) {
-                alert(data.message);
-                window.location.href = '/';
-              } else {
-                alert(data.message);
-                console.error('스토어 삭제중 오류가 발생했습니다.');
-                window.location.href = '/';
+                    if (response.ok) {
+                      alert(data.message);
+                      window.location.href = '/';
+                    } else {
+                      alert(data.message);
+                      console.error('회원 탈퇴중 오류가 발생했습니다.');
+                      window.location.href = '/';
+                    }
+                  } catch (error) {
+                    console.error('Error:', error);
+                    alert('오류가 발생했습니다.');
+                  }
+                }
               }
-            } catch (error) {
-              console.error('Error:', error);
-              alert('오류가 발생했습니다.');
-            }
-          }
-        }
-      };
-      //-- 상품삭제 api --//
-      const deleteProduct = async (event) => {
-        const firstConfirm = window.confirm('상품 삭제 하시겠습니까?');
-        if (firstConfirm) {
-          const secondConfirm = window.confirm(
-            '다시 되돌릴 수 없습니다. 정말 삭제하시겠습니까?',
-          );
+            };
 
-          if (secondConfirm) {
-            try {
-              const productId = event.target.getAttribute('data-id');
-              const response = await fetch(`products/${productId}`, {
-                method: 'DELETE',
-              });
+            //-- 스토어 삭제 api --//
+            const deleteShop = async () => {
+              const firstConfirm = window.confirm('스토어를 삭제 하시겠습니까?');
 
-              const data = await response.json();
+              if (firstConfirm) {
+                const secondConfirm = window.confirm(
+                  '다시 되돌릴 수 없습니다. 정말 삭제하시겠습니까?',
+                );
 
+                if (secondConfirm) {
+                  try {
+                    const response = await fetch('shops', {
+                      method: 'DELETE',
+                    });
 
-              if (response.ok) {
-                alert(data.message);
-                window.location.href = '/';
-              } else {
-                alert(data.message);
-                console.error('상품삭제중 오류가 발생했습니다.');
-                window.location.href = '/';
+                    const data = await response.json();
+
+                    if (response.ok) {
+                      alert(data.message);
+                      window.location.href = '/';
+                    } else {
+                      alert(data.message);
+                      console.error('스토어 삭제중 오류가 발생했습니다.');
+                      window.location.href = '/';
+                    }
+                  } catch (error) {
+                    console.error('Error:', error);
+                    alert('오류가 발생했습니다.');
+                  }
+                }
               }
-            } catch (error) {
-              console.error('Error:', error);
-              alert('오류가 발생했습니다.');
+            };
+            //-- 상품삭제 api --//
+            const deleteProduct = async (event) => {
+              const firstConfirm = window.confirm('상품 삭제 하시겠습니까?');
+              if (firstConfirm) {
+                const secondConfirm = window.confirm(
+                  '다시 되돌릴 수 없습니다. 정말 삭제하시겠습니까?',
+                );
+
+                if (secondConfirm) {
+                  try {
+                    const productId = event.target.getAttribute('data-id');
+                    const response = await fetch(`products/${productId}`, {
+                      method: 'DELETE',
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                      alert(data.message);
+                      window.location.href = '/';
+                    } else {
+                      alert(data.message);
+                      console.error('상품삭제중 오류가 발생했습니다.');
+                      window.location.href = '/';
+                    }
+                  } catch (error) {
+                    console.error('Error:', error);
+                    alert('오류가 발생했습니다.');
+                  }
+                }
+              }
+            };
+
+            //-- 주문 목록 --//
+            // 주문 목록을 렌더링하는 함수
+            async function renderOrderList() {
+              const orderCountElement = document.getElementById('order-count');
+              const orderListContainer = document.getElementById('order-list');
+
+              try {
+                const response = await fetch(`/orders/seller/list`);
+                if (response.ok) {
+                  const orders = await response.json();
+                  orderCountElement.textContent = `( ${orders.length} )`;
+
+                  for (const order of orders) {
+                    const orderItem = createOrderItem(order);
+                    orderListContainer.appendChild(orderItem);
+                  }
+                } else {
+                  console.error('주문 내역을 가져오는 데 실패했습니다.');
+                }
+              } catch (error) {
+                console.error('ERROR:', error);
+              }
             }
-          }
-        }
-      };
 
-      //-- 주문 목록 --//
-      // 주문 목록을 렌더링하는 함수
-      async function renderOrderList() {
-        const orderCountElement = document.getElementById('order-count');
-        const orderListContainer = document.getElementById('order-list');
+            function createOrderItem(order) {
+              const orderItem = document.createElement('li');
+              orderItem.classList.add('tr');
 
-        try {
-          const response = await fetch(`/orders/seller/list`);
-          if (response.ok) {
-            const orders = await response.json();
-            orderCountElement.textContent = `( ${orders.length} )`;
-
-            for (const order of orders) {
-              const orderItem = createOrderItem(order);
-              orderListContainer.appendChild(orderItem);
-            }
-          } else {
-            console.error('주문 내역을 가져오는 데 실패했습니다.');
-          }
-        } catch (error) {
-          console.error('ERROR:', error);
-        }
-      }
-
-      function createOrderItem(order) {
-        const orderItem = document.createElement('li');
-        orderItem.classList.add('tr');
-
-        const product = order.product; // 주문에서 단일 제품 정보를 가져옴
-
-        // `product_image`가 정의되어 있는 경우에만 이미지 렌더링
-        const productImages = product.product_image
-          ? Array.isArray(product.product_image)
-            ? product.product_image.map(
-                (image) => `
+              const product = order.product; // 주문에서 단일 제품 정보를 가져옴
+              console.log('프로덕트', product)
+              // `product_image`가 정의되어 있는 경우에만 이미지 렌더링
+              const productImages = product.product_image
+                ? `
     <div class="img-wrap">
-      <img src="${image.url}" alt="" />
-    </div>
-  `,
-              )
-            : `
-    <div class="img-wrap">
-      <img src="${product.product_image[0].url}" alt="" />
+      <img src="${Array.isArray(product.product_image) ? product.product_image[0].url : product.product_image.url}" alt="" />
     </div>
   `
-          : '';
+                : '';
 
-        const orderDate = order.order.created_at
-          .slice(0, 10)
-          .replace(/-/g, '.');
-        const orderStatus = order.order.order_status;
-        const orderId = order.order.id;
-        const productNames = product.product_name; // 단일 제품의 이름을 가져옴
+              const orderDate = order.order.created_at
+                .slice(0, 10)
+                .replace(/-/g, '.');
+              const orderStatus = order.order.order_status;
+              const orderId = order.order.id;
+              const productNames = product.product_name; // 단일 제품의 이름을 가져옴
 
-        orderItem.innerHTML = `
+              // 주문 상태를 한글로 변환하여 표시
+              console.log(orderStatus)
+              const orderStatusKorean = getOrderStatusKorean(orderStatus);
+
+
+              orderItem.innerHTML = `
   <div class="td">
     <p class="date-text">${orderDate}</p>
   </div>
@@ -516,129 +468,146 @@
     </div>
   </div>
   <div class="td status-wrap">
-    <span>${orderStatus}</span>
+    <span>${orderStatusKorean}</span>
   </div>
   <div class="td">
     <span for="order-status-dropdown"></span>
     <select id="order-status-dropdown">
-      <option id="order-id${orderId}" value="OrderCancel" ${
-          orderStatus === 'OrderCancel' ? 'selected' : ''
-        }>주문 취소</option>
-      <option id="order-id${orderId}" value="OrderPending" ${
-          orderStatus === 'OrderPending' ? 'selected' : ''
-        }>주문 대기</option>
-      <option id="order-id${orderId}" value="OrderConfirm" ${
-          orderStatus === 'OrderConfirm' ? 'selected' : ''
-        }>주문 확인</option>
-      <option id="order-id${orderId}" value="OrderShipping" ${
-          orderStatus === 'OrderShipping' ? 'selected' : ''
-        }>배송 준비중</option>
-      <option id="order-id${orderId}" value="orderDelivering" ${
-          orderStatus === 'orderDelivering' ? 'selected' : ''
-        }>배송 중</option>
-      <option id="order-id${orderId}" value="DeliveryComplete" ${
-          orderStatus === 'DeliveryComplete' ? 'selected' : ''
-        }>배송 완료</option>
+      <option id="order-id${orderId}" value="OrderCancel" ${orderStatus === 'OrderCancel' ? 'selected' : ''
+                }>주문 취소</option>
+      <option id="order-id${orderId}" value="OrderPending" ${orderStatus === 'OrderPending' ? 'selected' : ''
+                }>주문 대기</option>
+      <option id="order-id${orderId}" value="OrderConfirm" ${orderStatus === 'OrderConfirm' ? 'selected' : ''
+                }>주문 확인</option>
+      <option id="order-id${orderId}" value="OrderShipping" ${orderStatus === 'OrderShipping' ? 'selected' : ''
+                }>배송 준비중</option>
+      <option id="order-id${orderId}" value="orderDelivering" ${orderStatus === 'orderDelivering' ? 'selected' : ''
+                }>배송 중</option>
+      <option id="order-id${orderId}" value="DeliveryComplete" ${orderStatus === 'DeliveryComplete' ? 'selected' : ''
+                }>배송 완료</option>
     </select>
     <input type="hidden" id="order-id" value="${orderId}"> 
     <button class="btn-primary-s change-order-status">상태 변경</button>
   </div>
   `;
 
-        // 주문 상태 변경 버튼 클릭 이벤트 핸들러 등록
-        const changeOrderStatusButton = orderItem.querySelector(
-          '.change-order-status',
-        );
-        const orderStatusDropdown = orderItem.querySelector(
-          '#order-status-dropdown',
-        );
+              // 주문 상태 영문에서 한글로 변환하는 함수
+              function getOrderStatusKorean(orderStatus) {
+                switch (orderStatus) {
+                  case 'OrderCancel':
+                    return '주문 취소';
+                  case 'OrderPending':
+                    return '주문 대기';
+                  case 'OrderConfirm':
+                    return '주문 확인';
+                  case 'OrderShipping':
+                    return '배송 준비중';
+                  case 'orderDelivering':
+                    return '배송 중';
+                  case 'DeliveryComplete':
+                    return '배송 완료';
+                  default:
+                    return '알 수 없음';
+                }
+              }
 
-        changeOrderStatusButton.addEventListener('click', () => {
-          const selectedStatus = orderStatusDropdown.value;
 
-          if (!orderId) {
-            console.error('주문 ID를 찾을 수 없습니다.');
-            return;
-          }
 
-          changeOrderStatus(orderId, selectedStatus);
-        });
-        countOrderStatus();
-        return orderItem;
-      }
+              // // 주문 상태 변경 버튼 클릭 이벤트 핸들러 등록
+              const changeOrderStatusButton = orderItem.querySelector(
+                '.change-order-status',
+              );
+              const orderStatusDropdown = orderItem.querySelector(
+                '#order-status-dropdown',
+              );
 
-      // 주문 상태를 집계하는 함수
-      async function countOrderStatus() {
-        try {
-          const response = await fetch('orders/seller/list');
-          const orders = await response.json();
+              changeOrderStatusButton.addEventListener('click', () => {
+                const selectedStatus = orderStatusDropdown.value;
 
-          // 주문 상태별로 카운트를 초기화
-          let orderPendingCount = 0;
-          let orderDeliveringCount = 0;
-          let deliveryCompleteCount = 0;
-          // 주문 데이터를 순회하면서 상태별로 카운트 증가
-          for (const order of orders) {
-            if (order.order.order_status === 'OrderPending') {
-              orderPendingCount++;
-            } else if (order.order.order_status === 'orderDelivering') {
-              orderDeliveringCount++;
-            } else if (order.order.order_status === 'DeliveryComplete') {
-              deliveryCompleteCount++;
+                if (!orderId) {
+                  console.error('주문 ID를 찾을 수 없습니다.');
+                  return;
+                }
+
+                changeOrderStatus(orderId, selectedStatus);
+              });
+              countOrderStatus();
+              return orderItem;
             }
-            // 다른 주문 상태에 대한 처리도 추가 가능
-          }
 
-          // 각 상태별 카운트를 HTML에 표시
-          document.getElementById(
-            'order-pending-count',
-          ).textContent = `${orderPendingCount} 건`;
-          document.getElementById(
-            'order-delivering-count',
-          ).textContent = `${orderDeliveringCount} 건`;
-          document.getElementById(
-            'delivery-complete-count',
-          ).textContent = `${deliveryCompleteCount} 건`;
-        } catch (error) {
-          console.error('주문 상태를 가져오는 중 오류 발생:', error);
-        }
-      }
+            // 주문 상태를 집계하는 함수
+            async function countOrderStatus() {
+              try {
+                const response = await fetch('orders/seller/list');
+                const orders = await response.json();
 
-      async function changeOrderStatus(orderId, newStatus) {
-        try {
-          const response = await fetch(`/orders/${orderId}/seller`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ order_status: newStatus }),
-          });
+                // 주문 상태별로 카운트를 초기화
+                let orderPendingCount = 0;
+                let orderDeliveringCount = 0;
+                let deliveryCompleteCount = 0;
+                // 주문 데이터를 순회하면서 상태별로 카운트 증가
+                for (const order of orders) {
+                  if (order.order.order_status === 'OrderPending') {
+                    orderPendingCount++;
+                  } else if (order.order.order_status === 'orderDelivering') {
+                    orderDeliveringCount++;
+                  } else if (order.order.order_status === 'DeliveryComplete') {
+                    deliveryCompleteCount++;
+                  }
+                  // 다른 주문 상태에 대한 처리도 추가 가능
+                }
 
-          if (response.ok) {
-            const data = await response.json();
-            console.log(data.message);
-            alert('주문상태가 수정되었습니다.');
-            window.location.reload();
-            // 성공적으로 주문 상태가 변경된 경우 처리
-          } else {
-            console.log(data.message);
-          }
-        } catch (error) {
-          console.error('ERROR:', error);
-          // 오류 처리
-        }
-      }
-      // 초기 주문 목록 불러오기
-      renderOrderList();
+                // 각 상태별 카운트를 HTML에 표시
+                document.getElementById(
+                  'order-pending-count',
+                ).textContent = `${orderPendingCount} 건`;
+                document.getElementById(
+                  'order-delivering-count',
+                ).textContent = `${orderDeliveringCount} 건`;
+                document.getElementById(
+                  'delivery-complete-count',
+                ).textContent = `${deliveryCompleteCount} 건`;
+              } catch (error) {
+                console.error('주문 상태를 가져오는 중 오류 발생:', error);
+              }
+            }
 
-      //- 라이브 창으로 이동 -//
-      const title = document.querySelector('#liveTitle');
+            async function changeOrderStatus(orderId, newStatus) {
+              try {
+                const response = await fetch(`/orders/${orderId}/seller`, {
+                  method: 'PATCH',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ order_status: newStatus }),
+                });
 
-      document
-        .querySelector('.liveStartBtn')
-        .addEventListener('click', async () => {
-          window.open(`/live?title=${title.value}`);
-        });
-    </script>
+                if (response.ok) {
+                  const data = await response.json();
+                  console.log(data.message);
+                  alert('주문상태가 수정되었습니다.');
+                  window.location.reload();
+                  // 성공적으로 주문 상태가 변경된 경우 처리
+                } else {
+                  console.log(data.message);
+                }
+              } catch (error) {
+                console.error('ERROR:', error);
+                // 오류 처리
+              }
+            }
+            // 초기 주문 목록 불러오기
+            renderOrderList();
+
+            //- 라이브 창으로 이동 -//
+            const title = document.querySelector('#liveTitle');
+
+            document
+              .querySelector('.liveStartBtn')
+              .addEventListener('click', async () => {
+                window.open(`/live?title=${title.value}`);
+              });
+          </script>
   </body>
+
 </html>
