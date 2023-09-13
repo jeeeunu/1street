@@ -205,6 +205,8 @@ export class OrdersService {
       order.order_status = data.order_status;
     } else if (data.order_status === OrderStatus.OrderPending) {
       order.order_status = data.order_status;
+    } else if (data.order_status === OrderStatus.DeliveryComplete) {
+      order.order_status = data.order_status;
     }
 
     await this.orderRepository.save(order);

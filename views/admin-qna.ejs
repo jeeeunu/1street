@@ -2,6 +2,48 @@
 <html lang="ko">
   <!-- include : head -->
   <%- include('includes/head') %>
+  <head>
+    <style>
+      /* Q&A 섹션 스타일 수정 */
+      .admin-qna-page {
+        margin-top: 100px; /* 상단 마진을 늘립니다. */
+        padding: 20px; /* 패딩을 추가합니다. */
+      }
+
+      /* 테이블 스타일 수정 */
+      .admin-qna__table table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      .admin-qna__table th,
+      .admin-qna__table td {
+        border: 1px solid #000000; /* 테두리 추가 */
+        padding: 10px;
+        text-align: center;
+      }
+
+      .admin-qna__table th {
+        background-color: #7fad39; /* 테이블 헤더 배경색 */
+        color: #ffffff; /* 테이블 헤더 텍스트 색상 */
+        font-weight: bold;
+      }
+
+      .admin-qna__table td {
+        background-color: #ffffff; /* 테이블 셀 배경색 */
+        color: #000000; /* 테이블 셀 텍스트 색상 */
+      }
+
+      .admin-qna__table tbody tr:nth-child(even) {
+        background-color: #ececec; /* 짝수 행 배경색 (예시) */
+      }
+
+      .admin-qna__table tbody tr:hover {
+        background-color: #ffffcc; /* 호버 상태 배경색 (예시) */
+      }
+    </style>
+  </head>
   <body>
     <!-- include : preloder -->
     <%- include('includes/preloder') %>
@@ -25,38 +67,20 @@
               <table>
                 <thead>
                   <tr>
-                    <th>날짜</th>
+                    <th>작성일</th>
                     <th>상품정보</th>
                     <th>문의 내용</th>
+                    <th>답변 상태</th>
                     <th>확인/신청</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td>2023-08-30</td>
-                    <td>상품 A</td>
-                    <td>상품 A에 대한 문의 내용입니다.</td>
-                    <td>
-                      <a href="/admin/answer?id=1" class="admin-qna__answer-btn"
-                        >답변하기</a
-                      >
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>2023-08-29</td>
-                    <td>상품 B</td>
-                    <td>상품 B에 대한 문의 내용입니다.</td>
-                    <td>
-                      <a href="/admin/answer?id=2" class="admin-qna__answer-btn"
-                        >답변하기</a
-                      >
-                    </td>
-                  </tr>
-                </tbody>
+                <tbody></tbody>
               </table>
             </div>
           </div>
         </div>
+        <!-- 추가: Shop ID를 포함하는 hidden input -->
+        <input type="hidden" id="shopId" value="<%= authUser.shop_id %>" />
       </div>
     </section>
     <!-- Admin Qna Page Section End -->
@@ -66,45 +90,84 @@
 
     <!-- JavaScript 처리 -->
     <script>
-      const qnaEl = document.querySelector('.qna');
+      // QNA 정보를 불러오는 함수
+      async function loadQnaData() {
+        try {
+          const shopIdElement = document.querySelector('#shopId');
+          const shopId = shopIdElement ? shopIdElement.value : null;
 
-      const getQnaData = async () => {
-        // 서버에서 QNA 목록을 가져와서 화면에 표시하는 함수
-        const response = await fetch(`/api/qnas/${qnaId}`); // QNA를 가져오는 API 엔드포인트
-        const { data } = await response.json();
-        // console.log(data);
-        if (data.length === 0) return;
-        // data 배열을 순회하며 QNA 정보를 화면에 표시하는 HTML 생성
-        const temp = data.map((qna) => {
-          // 상품 정보 항목을 어떻게 끌어와야 되는건지? 일단 써두긴 했지만
-          return `
-                <li class="qna-container" data-id=${qna.qnaId}>
-                    <p class="qna-date">날짜 : ${new Date(
-                      qna.createdAt,
-                    ).toLocaleString()}</p>
-                    <p class="qna-productName">상품정보 : ${qna.productName}</p>
-                    <p class="qna-content">문의 내용 : ${qna.content}</p>
-                    <button class="admin-qna__answer-btn">답변하기</button>
-                </li>
-                `;
-        });
+          if (shopId === null || shopId === '') {
+            throw new Error('Shop ID를 찾을 수 없습니다.');
+          }
 
-        const joinTemp = temp.join('');
-        qnaEl.innerHTML = joinTemp;
-      };
+          const response = await fetch(`/qnas/shop/${shopId}`);
+          if (!response.ok) {
+            throw new Error('QNA 정보를 불러오는데 실패했습니다.');
+          }
+          const data = await response.json();
 
-      getQnaData(); // 초기 데이터 로드
+          // QNA 데이터를 테이블에 추가
+          const tableBody = document.querySelector('.admin-qna__table tbody');
+          data.forEach(async (qna) => {
+            const row = document.createElement('tr');
 
-      document.addEventListener('click', (event) => {
-        const target = event.target;
+            // 답변 상태를 판별하여 표시
+            let status = '답변 대기중';
 
-        if (target.classList.contains('admin-qna__answer-btn')) {
-          const qnaId = target
-            .closest('.qna-container')
-            .getAttribute('data-id');
-          window.location.href = `/admin/answer?id=${qnaId}`; // 구체적인 주소 파악해서 수정
+            try {
+              const answerResponse = await fetch(`/qnas/${qna.id}/answers`);
+              if (answerResponse.ok) {
+                const answerData = await answerResponse.json();
+                if (answerData.length > 0) {
+                  status = '답변 완료';
+                }
+              } else {
+                console.error('답변 정보를 불러오는데 실패했습니다.');
+              }
+            } catch (error) {
+              console.error(
+                '답변 정보를 불러오는 동안 오류가 발생했습니다.',
+                error,
+              );
+            }
+
+            // 날짜 및 시간 형식 변경
+            const createdDate = new Date(qna.created_at);
+            const formattedDate = createdDate.toLocaleString('ko-KR', {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+            });
+
+            row.innerHTML = `
+                    <td>${formattedDate}</td>
+                    <td>${qna.product.product_name}</td>
+                    <td>${qna.qna_name}, ${qna.qna_content}</td>
+                    <td>${status}</td>
+                  `;
+
+            // 추가: 답변하기 버튼
+            const answerButton = document.createElement('button');
+            answerButton.innerText = '답변하기';
+            answerButton.addEventListener('click', () => {
+              window.location.href = `/admin-qna-detail/${qna.id}`;
+            });
+
+            // 추가: 버튼을 "확인/신청" 열에 추가
+            const buttonCell = document.createElement('td');
+            buttonCell.appendChild(answerButton);
+            row.appendChild(buttonCell);
+            tableBody.appendChild(row);
+          });
+        } catch (error) {
+          console.error(error.message);
         }
-      });
+      }
+
+      // 페이지 로드 시 QNA 정보 불러오기
+      window.addEventListener('load', loadQnaData);
     </script>
   </body>
 </html>

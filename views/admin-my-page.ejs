@@ -103,6 +103,11 @@
               <li>
                 <a href="">1:1 채팅 요청<span class="red-text">(2)</span></a>
               </li>
+              <li>
+                <a id="qnaLink" href="/admin-qna/<%= authUser.shop_id %>"
+                  >상품 문의사항</a
+                >
+              </li>
             </ul>
           </section>
           <section class="list-container">
@@ -208,6 +213,7 @@
               </ul>
             </div>
           </section>
+          <% } %>
 
           <!-- 주문 -->
           <section class="list-container">
@@ -226,37 +232,36 @@
               </ul>
               <ul class="t-body" id="order-list">
                 <!-- <li class="tr">
-                                  <div class="td">
-                                    <p class="date-text">2023.01.01</p>
-                                  </div>
-                                  <div class="td">
-                                    <div class="order-info-wrap">
-                                      <div class="img-wrap">
-                                        <img
-                                          src="https://i.namu.wiki/i/slmFMXb1Fchs2zN0ZGOzqfuPDvhRS-H9eBp7Gp613-DNKi6i6Ct7eFkTUpauqv5HAYR97mrNqrvvcCDEyBdL_g.webp"
-                                          alt="" />
-                                      </div>
-                                      <div class="text-wrap">
-                                        <a href="">
-                                          <span>20228284895894</span>
-                                          <span class="product-title">텔레비전</span>
-                                          <span>옵션1/2/3</span>
-                                        </a>
+                                    <div class="td">
+                                      <p class="date-text">2023.01.01</p>
+                                    </div>
+                                    <div class="td">
+                                      <div class="order-info-wrap">
+                                        <div class="img-wrap">
+                                          <img
+                                            src="https://i.namu.wiki/i/slmFMXb1Fchs2zN0ZGOzqfuPDvhRS-H9eBp7Gp613-DNKi6i6Ct7eFkTUpauqv5HAYR97mrNqrvvcCDEyBdL_g.webp"
+                                            alt="" />
+                                        </div>
+                                        <div class="text-wrap">
+                                          <a href="">
+                                            <span>20228284895894</span>
+                                            <span class="product-title">텔레비전</span>
+                                            <span>옵션1/2/3</span>
+                                          </a>
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                  <div class="td status-wrap">
-                                    <span>배송완료</span>
-                                  </div>
-                                  <div class="td">
-                                     TODO :: 버튼 각 상황에 맞게 -->
+                                    <div class="td status-wrap">
+                                      <span>배송완료</span>
+                                    </div>
+                                    <div class="td">
+                                       TODO :: 버튼 각 상황에 맞게 -->
                 <!-- <button type="button" class="btn-primary-s">배송완료 확인</button>
-                            </div>
-                            </li> -->
+                              </div>
+                              </li> -->
               </ul>
             </div>
           </section>
-          <% } %>
         </section>
 
         <!-- shop 없을시 -->
@@ -423,6 +428,7 @@
               });
 
               const data = await response.json();
+
 
               if (response.ok) {
                 alert(data.message);

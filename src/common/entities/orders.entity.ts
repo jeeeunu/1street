@@ -25,7 +25,9 @@ export class OrdersEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @OneToMany(() => OrderDetailsEntity, (orderDetail) => orderDetail.order)
+  @OneToMany(() => OrderDetailsEntity, (orderDetail) => orderDetail.order, {
+    onDelete: 'CASCADE',
+  })
   public order_details: OrderDetailsEntity[];
 
   @ManyToOne(() => UsersEntity, (user) => user.orders)

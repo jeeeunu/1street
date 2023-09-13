@@ -10,6 +10,10 @@ export class CreateQnasDto {
   readonly product_id: number;
 
   @IsNotEmpty()
+  @IsNumber()
+  readonly shop_id: number;
+
+  @IsNotEmpty()
   @IsString()
   readonly qna_name: string;
 
