@@ -252,4 +252,22 @@ export class OrdersService {
     }
     return orderDetail;
   }
+
+  async deleteOrder(
+    user_id: number,
+    order_id: number,
+  ): Promise<ResultableInterface> {
+    const order = await this.orderRepository.findOne({
+      where: { id: order_id },
+      relations: ['user'],
+    });
+    if (!order) {
+      throw new NotFoundException('주문이 존재하지 않습니다.');
+    }
+    if (order.user.id !== user_id) {
+      throw new NotFoundException('권한이 없습니다.');
+    }
+    await this.orderRepository.delete({ id: order_id });
+    return { status: true, message: '주문이 삭제되었습니다.' };
+  }
 }

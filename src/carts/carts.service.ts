@@ -113,7 +113,7 @@ export class CartsService {
   //-- 장바구니 물품 수량 변경 --//
   async updateCartItem(
     user_id: number,
-    product_id: string,
+    product_id: number,
     newQuantity: number,
   ): Promise<ResultableInterface> {
     const cartKey = `${user_id}_cart`;

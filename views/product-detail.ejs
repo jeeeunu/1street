@@ -123,7 +123,7 @@
                           </li>
                           <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab" aria-selected="false">상품문의
-                              </a>
+                              (2)</a>
                           </li>
                         </ul>
                         <div class="tab-content">
@@ -155,24 +155,24 @@
                                               </p>
                                             </div>
                                             <% if (review.review_image) { %>
-                                            <ul class="review-img-list">
+                                              <ul class="review-img-list">
                                                 <% review.review_image.forEach((reviewImage)=> { %>
                                                   <li class="review-img-item">
                                                     <img src="<%= reviewImage.url %>" alt="" />
                                                   </li>
                                                   <% }) %>
-                                            </ul>
-                                            <% } %>
-                                            <p class="comment-rating">
-                                              <%= '⭐ ' .repeat(review.review_rating) %>
-                                            </p>
-                                            <p class="comment-txt">
-                                              <%= review.review_content %>
-                                            </p>
-                                            <div class="comment-date content-right">
-                                              <p>작성일 : <%= review.created_at.toISOString().substr(0, 10) %>
-                                              </p>
-                                            </div>
+                                              </ul>
+                                              <% } %>
+                                                <p class="comment-rating">
+                                                  <%= '⭐ ' .repeat(review.review_rating) %>
+                                                </p>
+                                                <p class="comment-txt">
+                                                  <%= review.review_content %>
+                                                </p>
+                                                <div class="comment-date content-right">
+                                                  <p>작성일 : <%= review.created_at.toISOString().substr(0, 10) %>
+                                                  </p>
+                                                </div>
                                           </li>
                                           <% }); %>
                                       </ul>
@@ -180,97 +180,11 @@
                               </div>
                             </div>
                           </div>
-                          <!-- 상품문의 -->
-                          <div class="tab-pane" id="tabs-2" role="tabpanel">
-                            <style>
-                              /* 추가한 CSS 스타일 */
-                              .product-qna {
-                                display: flex;
-                                flex-direction: row;
-                                justify-content: space-between;
-                                align-items: center;
-                                margin-bottom: 10px;
-                              }
-                              
-                              .qna-header {
-                                flex: 1;
-                                display: flex;
-                                flex-direction: column;
-                                align-items: center;
-                              }
-                          
-                              .qna-label {
-                                font-weight: bold;
-                              }
-                            </style>
-                            <div class="product__details__tab__desc">
-                              <!-- 상품문의 내용 -->
-                              <% if (productQnAs && productQnAs.length > 0) { %>
-                                <% productQnAs.forEach((qna, index) => { %>
-                                  <div class="product-qna" data-qna-id="<%= qna.id %>">
-                                    <div class="qna-header">
-                                      <div class="qna-label">작성일</div>
-                                      <span class="qna-created"><%= qna.created_at.toISOString().substr(0, 10) %></span>
-                                    </div>
-                                    <div class="qna-header">
-                                      <div class="qna-label">제목</div>
-                                      <span class="qna-name"><%= qna.qna_name %></span>
-                                    </div>
-                                    <div class="qna-header">
-                                      <div class="qna-label">내용</div>
-                                      <span class="qna-content"><%= qna.qna_content %></span>
-                                    </div>
-                                    <!-- 답변 표시 -->
-                                    <div class="qna-header">
-                                      <div class="qna-label">답변</div>
-                                      <span class="qna-answer"></span>
-                                    </div>
-                                  </div>
-                                  <script>
-                                    // 클라이언트 측 스크립트에서 서버에서 전달된 qna 데이터를 사용
-                                    const qna = JSON.parse('<%- JSON.stringify(qna) %>'); // JSON 문자열을 파싱하여 JavaScript 객체로 변환
-                                    const qnaElement = document.querySelector(`[data-qna-id="${qna.id}"]`);
-                                    const qnaAnswerElement = qnaElement.querySelector('.qna-answer');
-                                  
-                                    async function getQnaAnswer() {
-                                      try {
-                                        const qnaId = qna.id;
-                                        const response = await fetch(`/qnas/${qnaId}/answers`);
-                                        if (response.ok) {
-                                          const qnaAnswerData = await response.json();
-                                          if (qnaAnswerData.length > 0) {
-                                            const answerContent = qnaAnswerData[0].answer_content;
-                                            // 답변을 화면에 표시
-                                            qnaAnswerElement.innerHTML = answerContent;
-                                          } else {
-                                            // 답변이 없을 경우 메시지 표시
-                                            qnaAnswerElement.innerHTML = '답변이 아직 작성되지 않았습니다.';
-                                          }
-                                        } else {
-                                          console.error('답변 데이터를 불러오는데 실패했습니다.');
-                                        }
-                                      } catch (error) {
-                                        console.error('데이터를 불러오는 동안 오류가 발생했습니다.', error);
-                                      }
-                                    }
-                                  
-                                    // 페이지 로드 시 답변 가져오기
-                                    window.addEventListener('load', getQnaAnswer);
-                                  </script>
-                                                          <% }); %>
-                                                        <% } else { %>
-                                                          <p>상품문의가 없습니다.</p>
-                                                        <% } %>
-                                                        <!-- 추가적인 상품문의 아이템들을 필요한 만큼 반복해서 추가하세요 -->
-                                                      </div>
-                                                      <!-- 문의 등록하기 버튼 (우측 하단 고정) -->
-                                                      <button class="btn btn-primary btn-sm float-right ml-2" id="addQuestionButton" style="background-color: #7fad39; color: #ffffff; font-weight: bold; font-size: 14px;">문의 등록하기</button>
-                                                    </div>      
                         </div>
                       </div>
                     </div>
-                  </div> 
-                </div> 
+                  </div>
+                </div>
               </section>
               <!-- Product Details Section End -->
 
@@ -427,11 +341,8 @@
                   //-- 장바구니 추가 --//
                   document.getElementById('addCartBtn').addEventListener('click', async function addCarts() {
                     const product = document.getElementById('btnLike')
-                    console.log(product)
                     const productId = product.getAttribute('data-item-id');
-                    console.log(productId)
                     const quantity = document.getElementById('quantity_num').value;
-                    console.log(quantity)
                     try {
                       const response = await fetch(`/carts`, {
                         method: 'POST',
@@ -453,17 +364,6 @@
                       console.error('Error:', err);
                     }
                   });
-
-                  const addQuestionButton = document.querySelector('#addQuestionButton');
-                  if (addQuestionButton) {
-                    addQuestionButton.addEventListener('click', () => {
-                      // 현재 페이지의 URL에서 product_id 값을 가져옴
-                      const productId = window.location.href.match(/\/product-detail\/(\d+)/)[1];
-                      
-                      // 생성한 주소로 이동
-                      window.location.href = `/user-qna/${productId}`;
-                    });
-                  }
                 </script>
   </body>
 
