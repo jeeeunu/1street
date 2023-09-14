@@ -657,16 +657,16 @@
         }
         // 초기 주문 목록 불러오기
         renderOrderList();
-
-        //- 라이브 창으로 이동 -//
-        const title = document.querySelector('#liveTitle');
-
-        document
-          .querySelector('.liveStartBtn')
-          .addEventListener('click', async () => {
-            window.open(`/live?title=${title.value}`);
-          });
       }
+
+      //- 라이브 창으로 이동 -//
+      const title = document.querySelector('#liveTitle');
+
+      document
+        .querySelector('.liveStartBtn')
+        .addEventListener('click', async () => {
+          window.open(`/live?title=${title.value}`);
+        });
     </script>
   </body>
 </html>
