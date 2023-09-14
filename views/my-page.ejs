@@ -340,7 +340,7 @@
       }
 
       // 사용자의 user_id 가져오기
-      const userId = getUserId();
+      const userId = '<%= authUser.user_id %>';
       const qnaLink = document.getElementById('qnaLink');
       qnaLink.addEventListener('click', (event) => {
         event.preventDefault(); // 기본 링크 동작 방지
@@ -349,7 +349,13 @@
 
       // Q&A 데이터를 가져오는 API 호출
       fetch(`/qnas/user/${userId}`)
-        .then((response) => response.json())
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Q&A 데이터를 가져오는데 실패했습니다.');
+          }
+        })
         .then((qnaData) => {
           // qnaData를 이용하여 Q&A 개수 계산
           const qnaCount = qnaData.length;
@@ -362,6 +368,12 @@
         })
         .catch((error) => {
           console.error('Q&A 데이터를 가져오는 중 오류 발생: ', error);
+
+          // 에러가 발생하면 qnaCount를 0으로 설정
+          const qnaCountElement = document.querySelector('#qnaCount');
+          if (qnaCountElement) {
+            qnaCountElement.textContent = '0건';
+          }
         });
     </script>
   </body>

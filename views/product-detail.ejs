@@ -183,24 +183,25 @@
                           <!-- 상품문의 -->
                           <div class="tab-pane" id="tabs-2" role="tabpanel">
                             <style>
-                              /* 추가한 CSS 스타일 */
                               .product-qna {
                                 display: flex;
                                 flex-direction: row;
-                                justify-content: space-between;
-                                align-items: center;
-                                margin-bottom: 10px;
+                                border: 1px solid #ccc;
+                                padding: 3px;
                               }
-                              
                               .qna-header {
                                 flex: 1;
                                 display: flex;
                                 flex-direction: column;
                                 align-items: center;
+                                border-right: 1px solid #ccc; 
+                                padding: 3px;
                               }
-                          
                               .qna-label {
                                 font-weight: bold;
+                              }
+                              #addQuestionButton {
+                                margin-top: 10px;
                               }
                             </style>
                             <div class="product__details__tab__desc">
@@ -257,15 +258,14 @@
                                     // 페이지 로드 시 답변 가져오기
                                     window.addEventListener('load', getQnaAnswer);
                                   </script>
-                                                          <% }); %>
-                                                        <% } else { %>
-                                                          <p>상품문의가 없습니다.</p>
-                                                        <% } %>
-                                                        <!-- 추가적인 상품문의 아이템들을 필요한 만큼 반복해서 추가하세요 -->
-                                                      </div>
-                                                      <!-- 문의 등록하기 버튼 (우측 하단 고정) -->
-                                                      <button class="btn btn-primary btn-sm float-right ml-2" id="addQuestionButton" style="background-color: #7fad39; color: #ffffff; font-weight: bold; font-size: 14px;">문의 등록하기</button>
-                                                    </div>      
+                                <% }); %>
+                              <% } else { %>
+                                <p>상품문의가 없습니다.</p>
+                              <% } %>
+                            </div>
+                            <!-- 문의 등록하기 버튼 (우측 하단 고정) -->
+                            <button class="btn btn-primary btn-sm float-right ml-2" id="addQuestionButton" style="background-color: #7fad39; color: #ffffff; font-weight: bold; font-size: 14px;">문의 등록하기</button>
+                          </div>      
                         </div>
                       </div>
                     </div>
