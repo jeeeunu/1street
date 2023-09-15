@@ -1,131 +1,115 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <!-- include : head -->
-  <%- include('includes/head') %>
+<!-- include : head -->
+<%- include('includes/head') %>
 
   <body>
     <!-- include : preloder -->
     <%- include('includes/preloder') %>
 
-    <!-- include : top-button -->
-    <%- include('includes/top-button') %>
+      <!-- include : top-button -->
+      <%- include('includes/top-button') %>
 
-    <!-- include : header -->
-    <%- include('includes/header') %>
+        <!-- include : header -->
+        <%- include('includes/header') %>
 
-    <!-- include : hero -->
-    <%- include('includes/hero') %>
+          <!-- include : hero -->
+          <%- include('includes/hero') %>
 
-    <!-- include : viewed-products -->
-    <%- include('includes/viewed-products') %>
+            <!-- include : viewed-products -->
+            <%- include('includes/viewed-products') %>
 
-    <main class="product-list-page">
-      <!-- 검색 정보 -->
-      <section class="search-info-container">
-        <div class="container">
-          <h2 class="search-info-title">
-            <a
-              href="/"
-              id="categoryTitle"
-              data-category-id="<%= pageCategory.id %>"
-              >홈</a
-            >
-            ><span style="font-weight: 400"
-              ><%= pageCategory.category_name %></span
-            >
-          </h2>
-        </div>
-      </section>
+              <main class="product-list-page">
+                <!-- 검색 정보 -->
+                <section class="search-info-container">
+                  <div class="container">
+                    <h2 class="search-info-title">
+                      <a href="/" id="categoryTitle" data-category-id="<%= pageCategory.id %>">홈</a>
+                      ><span style="font-weight: 400">
+                        <%= pageCategory.category_name %>
+                      </span>
+                    </h2>
+                  </div>
+                </section>
 
-      <!-- Featured Section Begin -->
-      <section class="featured spad">
-        <div class="container">
-          <div class="btn-search-list">
-            <a
-              href="<%= `${thisPath.split('&sort=')[0]}&sort=sales` %>"
-              class="btn-serach-item <%= thisPath.includes('sort=sales') ? 'active' : '' %>"
-            >
-              판매량순
-            </a>
-            <a
-              href="<%= `${thisPath.split('&sort=')[0]}&sort=desc` %>"
-              class="btn-serach-item <%= thisPath.includes('sort=desc') ? 'active' : '' %>"
-            >
-              최신순
-            </a>
-            <a
-              href="<%= `${thisPath.split('&sort=')[0]}&sort=lowPrice` %>"
-              class="btn-serach-item <%= thisPath.includes('sort=lowPrice') ? 'active' : '' %>"
-            >
-              낮은 가격순
-            </a>
-            <a
-              href="<%= `${thisPath.split('&sort=')[0]}&sort=highPrice` %>"
-              class="btn-serach-item <%= thisPath.includes('sort=highPrice') ? 'active' : '' %>"
-            >
-              높은 가격순
-            </a>
-          </div>
-          <div
-            id="allProductsContainer"
-            class="row featured__filter product-list-container"
-          ></div>
-        </div>
-      </section>
-      <!-- Featured Section End -->
-    </main>
-    <script>
-      //-- 상품 전체보기 api --//
-      let data = [];
-      let cursor = null;
-      let hasMoreData = true;
-      const searchKeyword = document.querySelector('#categoryTitle');
-      const categoryId = searchKeyword.getAttribute('data-category-id');
+                <!-- Featured Section Begin -->
+                <section class="featured spad">
+                  <div class="container">
+                    <div class="btn-search-list">
+                      <a href="<%= `${thisPath.split('&sort=')[0]}&sort=sales` %>"
+                        class="btn-serach-item <%= thisPath.includes('sort=sales') ? 'active' : '' %>">
+                        판매량순
+                      </a>
+                      <a href="<%= `${thisPath.split('&sort=')[0]}&sort=desc` %>"
+                        class="btn-serach-item <%= thisPath.includes('sort=desc') ? 'active' : '' %>">
+                        최신순
+                      </a>
+                      <a href="<%= `${thisPath.split('&sort=')[0]}&sort=lowPrice` %>"
+                        class="btn-serach-item <%= thisPath.includes('sort=lowPrice') ? 'active' : '' %>">
+                        낮은 가격순
+                      </a>
+                      <a href="<%= `${thisPath.split('&sort=')[0]}&sort=highPrice` %>"
+                        class="btn-serach-item <%= thisPath.includes('sort=highPrice') ? 'active' : '' %>">
+                        높은 가격순
+                      </a>
+                    </div>
+                    <div id="allProductsContainer" class="row featured__filter product-list-container"></div>
+                  </div>
+                </section>
+                <!-- Featured Section End -->
+              </main>
+              <script>
+                //-- 상품 전체보기 api --//
+                let data = [];
+                let cursor = null;
+                let hasMoreData = true;
+                const searchKeyword = document.querySelector('#categoryTitle');
+                const categoryId = searchKeyword.getAttribute('data-category-id');
 
-      const limit = 8;
-      let isLoadingData = false; // 데이터 로딩 중인지 여부
+                const limit = 8;
+                let isLoadingData = false; // 데이터 로딩 중인지 여부
 
-      let lastScrollY = 0;
+                let lastScrollY = 0;
 
-      const fetchData = async () => {
-        if (!hasMoreData || isLoadingData) {
-          return;
-        }
+                const fetchData = async () => {
+                  if (!hasMoreData || isLoadingData) {
+                    return;
+                  }
 
-        isLoadingData = true; // 데이터 로딩 중임을 표시
+                  isLoadingData = true; // 데이터 로딩 중임을 표시
 
-        const currentUrl = window.location.href;
-        const apiUrl = currentUrl.replace('category-list', 'products/search');
+                  const currentUrl = window.location.href;
+                  const apiUrl = currentUrl.replace('category-list', 'products/search');
 
-        const queryParameters = cursor
-          ? `&limit=${limit}&cursor=${cursor}`
-          : `&limit=${limit}`;
+                  const queryParameters = cursor
+                    ? `&limit=${limit}&cursor=${cursor}`
+                    : `&limit=${limit}`;
 
-        const url = apiUrl + queryParameters;
+                  const url = apiUrl + queryParameters;
 
-        try {
-          const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-            },
-          });
+                  try {
+                    const response = await fetch(url, {
+                      method: 'GET',
+                      headers: {
+                        Accept: 'application/json',
+                      },
+                    });
 
-          const newData = await response.json();
+                    const newData = await response.json();
 
-          if (response.ok) {
-            data = data.concat(newData);
+                    if (response.ok) {
+                      data = data.concat(newData);
 
-            const fragment = document.createDocumentFragment(); // Fragment 생성
+                      const fragment = document.createDocumentFragment(); // Fragment 생성
 
-            if (newData.length > 0) {
-              newData.forEach((item) => {
-                const productItem = document.createElement('div');
-                productItem.className =
-                  'col-lg-3 col-md-4 col-sm-6 mix category product-item';
-                productItem.setAttribute('data-item-id', item.id);
+                      if (newData.length > 0) {
+                        newData.forEach((item) => {
+                          const productItem = document.createElement('div');
+                          productItem.className =
+                            'col-lg-3 col-md-4 col-sm-6 mix category product-item';
+                          productItem.setAttribute('data-item-id', item.id);
 
-                productItem.innerHTML = `
+                          productItem.innerHTML = `
                   <div class="featured__item">
                     <div class="featured__item__pic set-bg">
                       <img src="${item.product_image[0].url}">
@@ -134,64 +118,93 @@
                           <button type="button" class="btn-like">❤️</button>
                         </li>
                         <li>
-                          <a href="#"><i class="fa fa-shopping-cart"></i></a>
+                          <a href="#"><i class="fa fa-shopping-cart" onclick="addToCart(${item.product_id})"></i></a>
                         </li>
                       </ul>
                     </div>
                     <div class="featured__item__text">
-                      <h6><a href="product-detail/${item.id}">${
-                  item.product_name
-                }</a></h6>
+                      <h6><a href="product-detail/${item.id}">${item.product_name
+                            }</a></h6>
                       <h5>${item.product_price.toLocaleString()}원</h5>
                     </div>
                   </div>
                 `;
 
-                fragment.appendChild(productItem); // Fragment에 추가
-              });
-              const allProductsContainer = document.querySelector(
-                '#allProductsContainer',
-              );
+                          fragment.appendChild(productItem); // Fragment에 추가
+                        });
+                        const allProductsContainer = document.querySelector(
+                          '#allProductsContainer',
+                        );
 
-              allProductsContainer.appendChild(fragment); // Fragment를 실제 DOM에 추가
-              cursor = newData[newData.length - 1]?.id;
+                        allProductsContainer.appendChild(fragment); // Fragment를 실제 DOM에 추가
+                        cursor = newData[newData.length - 1]?.id;
 
-              if (newData.length < limit) {
-                hasMoreData = false;
-              }
-            } else {
-              // 데이터 없을 시에
-              allProductsContainer.innerHTML = `
+                        if (newData.length < limit) {
+                          hasMoreData = false;
+                        }
+                      } else {
+                        // 데이터 없을 시에
+                        allProductsContainer.innerHTML = `
                 <p style="width: 100%; padding: 50px; text-align: center;">등록된 상품이 없습니다.</p>
               `;
-            }
-          } else {
-            alert(newData.message);
-          }
-        } catch (error) {
-          console.error('에러 발생:', error);
-          alert('데이터를 가져오는 데 실패했습니다.');
-        }
+                      }
+                    } else {
+                      alert(newData.message);
+                    }
+                  } catch (error) {
+                    console.error('에러 발생:', error);
+                    alert('데이터를 가져오는 데 실패했습니다.');
+                  }
 
-        isLoadingData = false; // 데이터 로딩 완료 표시
-      };
+                  isLoadingData = false; // 데이터 로딩 완료 표시
+                };
 
-      fetchData();
+                fetchData();
 
-      window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
+                window.addEventListener('scroll', () => {
+                  const currentScrollY = window.scrollY;
 
-        if (currentScrollY > lastScrollY) {
-          const windowHeight = window.innerHeight;
-          const documentHeight = document.body.scrollHeight;
+                  if (currentScrollY > lastScrollY) {
+                    const windowHeight = window.innerHeight;
+                    const documentHeight = document.body.scrollHeight;
 
-          if (currentScrollY + windowHeight >= documentHeight - 10) {
-            fetchData();
-          }
-        }
+                    if (currentScrollY + windowHeight >= documentHeight - 10) {
+                      fetchData();
+                    }
+                  }
 
-        lastScrollY = currentScrollY;
-      });
-    </script>
+                  lastScrollY = currentScrollY;
+                });
+
+                async function addToCart(productId) {
+                  try {
+                    // 서버로 상품 추가 요청을 보냅니다.
+                    const response = await fetch(`/carts`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        product_id: productId,
+                        quantity: 1, // 여기에서는 기본으로 1개의 상품을 추가합니다. 필요에 따라 수량을 조절할 수 있습니다.
+                      }),
+                    });
+
+                    const data = await response.json();
+
+                    // 서버로부터 응답을 처리합니다.
+                    if (data.status) {
+                      alert('상품이 장바구니에 추가되었습니다.');
+                      window.location.reload();
+                    } else {
+                      alert(data.message);
+                    }
+                  } catch (error) {
+                    console.error('에러 발생:', error);
+                    alert('상품을 장바구니에 추가하는 데 실패했습니다.');
+                  }
+                }
+              </script>
   </body>
+
 </html>
