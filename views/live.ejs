@@ -197,7 +197,6 @@
       //- 카메라 변경 -//
       async function handleCameraChange() {
         if (isAdmin) {
-          console.log('카메라 변ㄱ경');
           await getMedia(camerasSelect.value);
           for (var [key, value] of peerConnections) {
             const videoTrack = myStream.getVideoTracks()[0];
@@ -230,7 +229,6 @@
 
       //- offer 보내기 -//
       socket.on('welcome', async (socketId) => {
-        console.log('welcome');
         makeConnection(socketId);
         const peerConnection = peerConnections.get(socketId);
         const offer = await peerConnection.createOffer();
@@ -240,7 +238,6 @@
 
       //- offer -> answer -//
       socket.on('offer', async (offer, socketId) => {
-        console.log('offer');
         makeConnection(socketId);
         const peerConnection = peerConnections.get(socketId);
         peerConnection.setRemoteDescription(offer);
@@ -251,9 +248,7 @@
 
       //- answer 보내기 -//
       socket.on('answer', (answer, socketId) => {
-        console.log('answer - ', socketId);
         const peerConnection = peerConnections.get(socketId);
-        console.log('answer signalingState - ', peerConnection.signalingState);
         if (
           !peerConnection.remoteDescription &&
           (peerConnection.signalingState === 'have-local-offer' ||
@@ -310,10 +305,8 @@
 
       //- ice 이벤트 -//
       function handleIce(data) {
-        console.log('handleIce - ', data.candidate);
         for (let [key, value] of peerConnections) {
           if (value === data.target) {
-            console.log('handleIce - ', key);
             socket.emit('ice', { ice: data.candidate, id: key });
             break;
           }
@@ -323,7 +316,6 @@
       //- stream 불러오기 -//
       function handleAddStream(stream) {
         const addedVideo = getRemoteStreamVideo(stream);
-        console.log('handleAddStream isAddedVideo - ', addedVideo);
         if (!addedVideo) {
           if (!isAdmin) {
             myFaceVideo.srcObject = stream;

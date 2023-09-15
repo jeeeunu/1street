@@ -101,27 +101,24 @@
                 <a href="/admin-create-product">상품 등록하기</a>
               </li>
               <li>
-                <a href="">1:1 채팅 요청<span class="red-text">(2)</span></a>
-              </li>
-              <li>
                 <a id="qnaLink" href="/admin-qna/<%= authUser.shop_id %>"
                   >상품 문의사항</a
                 >
+              </li>
+              <li>
+                <a
+                  id="liveModalBtn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#liveRoomModal"
+                >
+                  라이브 방송
+                </a>
               </li>
             </ul>
           </section>
           <section class="list-container">
             <div class="title-wrap">
               <h3>등록된 상품 ( <%= products.length %> )</h3>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#liveRoomModal"
-                style="font-size: 2rem; margin-bottom: 15px"
-              >
-                라이브 방송 시작하기
-              </button>
             </div>
             <div class="order-list-table">
               <ul class="t-head">

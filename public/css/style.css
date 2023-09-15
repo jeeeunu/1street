@@ -3598,12 +3598,28 @@ ol {
 
 .liveListBox {
   font-size: 2em;
-  width: 13em;
-  height: 18em;
-  background-color: rgba(138, 155, 155, 0.742);
+  width: 18em;
+  height: 10em;
+  background-color: #7ead397e;
   margin-right: 1em;
   margin-top: 0.3em;
   cursor: pointer;
   text-align: center;
   line-height: 18em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.liveListBox p {
+  font-size: 1.2em;
+  color: #000;
+}
+
+#liveModalBtn {
+  cursor: pointer;
+}
+
+#liveModalBtn:hover {
+  color: #555;
 }

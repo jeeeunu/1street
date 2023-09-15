@@ -40,7 +40,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   //- 라이브 방 입장 -//
   @SubscribeMessage('join_room')
   async joinRoom(@MessageBody() roomName, @ConnectedSocket() socket: Socket) {
-    console.log('들어온 사람 아이디', socket.id);
     await socket.join(roomName);
     this.server.emit('roomChange', this.publicRooms());
     socket.to(roomName).emit('welcome', socket.id);
