@@ -652,6 +652,10 @@
       document
         .querySelector('.liveStartBtn')
         .addEventListener('click', async () => {
+          if (title.value.length < 3 || title.value.length > 30) {
+            alert('방송 제목은 3자 이상 30자 미만이여야합니다');
+            return;
+          }
           window.open(`/live?title=${title.value}`);
         });
     </script>
