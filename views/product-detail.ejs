@@ -419,7 +419,6 @@
 
                   //-- 좋아요 기능 --//
                   document.querySelector('#btnLike').addEventListener('click', () => {
-                    console.log('좋아요');
                     const productId = event.target.getAttribute('data-item-id');
                     createLike(productId);
                   });
@@ -439,11 +438,9 @@
                       });
                       const data = await response.json();
                       if (response.ok) {
-                        console.log(data.message);
                         alert('장바구니에 물품이 추가되었습니다.');
                         window.location.reload();
                       } else {
-                        console.log(data.message);
                         alert(data.message);
                       }
                     } catch (err) {

@@ -1,80 +1,133 @@
 <!DOCTYPE html>
 <html lang="ko">
-<!-- include : head -->
-<%- include('includes/head') %>
+  <!-- include : head -->
+  <%- include('includes/head') %>
 
   <body>
     <!-- include : preloder -->
     <%- include('includes/preloder') %>
 
-      <!-- include : top-button -->
-      <%- include('includes/top-button') %>
+    <!-- include : top-button -->
+    <%- include('includes/top-button') %>
 
-        <!-- include : header -->
-        <%- include('includes/header') %>
+    <!-- include : header -->
+    <%- include('includes/header') %>
 
-          <!-- 라이브 방 만들기 모달 -->
-          <div class="modal fade" id="liveRoomModal" tabindex="-1" aria-labelledby="liveRoomModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h2 class="modal-title fs-5" id="liveRoomModalLabel">
-                    라이브 방송
-                  </h2>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="mb-3">
-                    <label for="liveTitle" class="form-label">방송 제목</label>
-                    <input type="text" class="form-control" id="liveTitle" placeholder="방송제목을 입력해주세요" />
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    취소
-                  </button>
-                  <button type="button" class="btn btn-primary liveStartBtn">
-                    라이브 시작
-                  </button>
-                </div>
-              </div>
+    <!-- 라이브 방 만들기 모달 -->
+    <div
+      class="modal fade"
+      id="liveRoomModal"
+      tabindex="-1"
+      aria-labelledby="liveRoomModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="liveRoomModalLabel">
+              라이브 방송
+            </h2>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="liveTitle" class="form-label">방송 제목</label>
+              <input
+                type="text"
+                class="form-control"
+                id="liveTitle"
+                placeholder="방송제목을 입력해주세요"
+              />
             </div>
           </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              취소
+            </button>
+            <button type="button" class="btn btn-primary liveStartBtn">
+              라이브 시작
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-          <!-- include : hero -->
-          <%- include('includes/hero') %>
+    <!-- include : hero -->
+    <%- include('includes/hero') %>
 
-            <!-- include : viewed-products -->
-            <%- include('includes/viewed-products') %>
+    <!-- include : viewed-products -->
+    <%- include('includes/viewed-products') %>
 
-              <!-- Categories Section Begin -->
-              <section class="categories">
-                <div class="container">
-                  <div class="row">
-                    <div class="section-title">
-                      <h2>Live</h2>
-                    </div>
-                    <ul class="categories__slider owl-carousel">
-                      <!-- TODO :: 슬라이드에는 무조건 5개 이상의 데이터가 있어야 합니다. -->
-                      <li class="col-lg-3">
-                        <div class="categories__item set-bg" data-setbg="img/categories/cat-1.jpg">
-                          <h5><a href="https://m.naver.com">Fresh Fruit</a></h5>
-                        </div>
-                      </li>
-                      <li class="col-lg-3">
-                        <div class="categories__item set-bg" data-setbg="img/categories/cat-2.jpg">
-                          <h5><a href="#">Dried Fruit</a></h5>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
-              <!-- Categories Section End -->
+    <!-- Categories Section Begin -->
+    <section class="categories">
+      <div class="container">
+        <div class="mx-5">
+          <div class="section-title">
+            <h2>진행중인 이벤트</h2>
+          </div>
+          <div
+            id="carouselExampleControls"
+            class="carousel slide"
+            data-bs-ride="carousel"
+          >
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="/img/banner/banner1.jpg" class="d-block w-100" />
+              </div>
+              <div class="carousel-item">
+                <img src="/img/banner/banner2.jpg" class="d-block w-100" />
+              </div>
+              <div class="carousel-item">
+                <img src="/img/banner/banner3.jpg" class="d-block w-100" />
+              </div>
+              <div class="carousel-item">
+                <img src="/img/banner/banner4.jpg" class="d-block w-100" />
+              </div>
+              <div class="carousel-item">
+                <img src="/img/banner/banner5.jpg" class="d-block w-100" />
+              </div>
+            </div>
+            <button
+              class="carousel-control-prev"
+              type="button"
+              data-bs-target="#carouselExampleControls"
+              data-bs-slide="prev"
+            >
+              <span
+                class="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button
+              class="carousel-control-next"
+              type="button"
+              data-bs-target="#carouselExampleControls"
+              data-bs-slide="next"
+            >
+              <span
+                class="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Categories Section End -->
 
-              <!-- Banner Begin -->
-              <!-- <div class="banner">
+    <!-- Banner Begin -->
+    <!-- <div class="banner">
       <div class="container">
         <h4 style="margin-bottom: 20px; font-weight: 700">Event</h4>
         <div class="row">
@@ -97,220 +150,221 @@
         </div>
       </div>
     </div> -->
-              <!-- Banner End -->
-              <div class="container">
-                <div style="vertical-align: top">
-                  <h3 style="
-            margin-bottom: 20px;
-            font-weight: 700;
-            display: inline;
-            margin-right: 2rem;
-          ">
-                    라이브 방송
-                  </h3>
-                </div>
+    <!-- Banner End -->
+    <div class="container">
+      <div style="vertical-align: top" class="section-title">
+        <h2>라이브 방송</h2>
+      </div>
 
-                <ul id="liveList" class="mt-4 d-flex flex-wrap">
-                  <li class="liveListBox">라이브 방송 썸네일</li>
-                  <li class="liveListBox">라이브 방송 썸네일</li>
-                </ul>
+      <ul id="liveList" class="mt-4 d-flex flex-wrap">
+        <li class="liveListBox">라이브 방송 썸네일</li>
+        <li class="liveListBox">라이브 방송 썸네일</li>
+      </ul>
+    </div>
+
+    <!-- Latest Product Section Begin -->
+    <section class="latest-product spad">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <div class="latest-product__text">
+              <h4>신상품</h4>
+              <div class="latest-product__slider owl-carousel">
+                <div class="latest-prdouct__slider__item">
+                  <% latestProducts.slice(0, 3).forEach(product=> { %>
+                  <a
+                    href="/product-detail/<%= product.id %>"
+                    class="latest-product__item"
+                  >
+                    <div class="latest-product__item__pic">
+                      <img src="<%= product.product_image[0].url %>" alt="" />
+                    </div>
+                    <div class="latest-product__item__text">
+                      <h6><%= product.product_name %></h6>
+                      <span>
+                        <%= product.product_price.toLocaleString() %>원
+                      </span>
+                    </div>
+                  </a>
+                  <% }); %>
+                </div>
+                <div class="latest-prdouct__slider__item">
+                  <% latestProducts.slice(3, 6).forEach(product=> { %>
+                  <a href="#" class="latest-product__item">
+                    <div class="latest-product__item__pic">
+                      <img src="<%= product.product_image[0].url %>" alt="" />
+                    </div>
+                    <div class="latest-product__item__text">
+                      <h6><%= product.product_name %></h6>
+                      <span>
+                        <%= product.product_price.toLocaleString() %>원
+                      </span>
+                    </div>
+                  </a>
+                  <% }); %>
+                </div>
               </div>
-              <!-- Latest Product Section Begin -->
-              <section class="latest-product spad">
-                <div class="container">
-                  <div class="row">
-                    <div class="col-lg-4 col-md-6">
-                      <div class="latest-product__text">
-                        <h4>신상품</h4>
-                        <div class="latest-product__slider owl-carousel">
-                          <div class="latest-prdouct__slider__item">
-                            <% latestProducts.slice(0, 3).forEach(product=> { %>
-                              <a href="/product-detail/<%= product.id %>" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                  <img src="<%= product.product_image[0].url %>" alt="" />
-                                </div>
-                                <div class="latest-product__item__text">
-                                  <h6>
-                                    <%= product.product_name %>
-                                  </h6>
-                                  <span>
-                                    <%= product.product_price.toLocaleString() %>원
-                                  </span>
-                                </div>
-                              </a>
-                              <% }); %>
-                          </div>
-                          <div class="latest-prdouct__slider__item">
-                            <% latestProducts.slice(3, 6).forEach(product=> { %>
-                              <a href="#" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                  <img src="<%= product.product_image[0].url %>" alt="" />
-                                </div>
-                                <div class="latest-product__item__text">
-                                  <h6>
-                                    <%= product.product_name %>
-                                  </h6>
-                                  <span>
-                                    <%= product.product_price.toLocaleString() %>원
-                                  </span>
-                                </div>
-                              </a>
-                              <% }); %>
-                          </div>
-                        </div>
-                      </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="latest-product__text">
+              <h4>인기 상품</h4>
+              <div class="latest-product__slider owl-carousel">
+                <div class="latest-prdouct__slider__item">
+                  <% findPopularProducts.slice(0, 3).forEach(product=> { %>
+                  <a
+                    href="/product-detail/<%= product.id %>"
+                    class="latest-product__item"
+                  >
+                    <div class="latest-product__item__pic">
+                      <img src="<%= product.product_image[0].url %>" alt="" />
                     </div>
-                    <div class="col-lg-4 col-md-6">
-                      <div class="latest-product__text">
-                        <h4>인기 상품</h4>
-                        <div class="latest-product__slider owl-carousel">
-                          <div class="latest-prdouct__slider__item">
-                            <% findPopularProducts.slice(0, 3).forEach(product=> { %>
-                              <a href="/product-detail/<%= product.id %>" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                  <img src="<%= product.product_image[0].url %>" alt="" />
-                                </div>
-                                <div class="latest-product__item__text">
-                                  <h6>
-                                    <%= product.product_name %>
-                                  </h6>
-                                  <span>
-                                    <%= product.product_price.toLocaleString() %>원
-                                  </span>
-                                </div>
-                              </a>
-                              <% }); %>
-                          </div>
-                          <div class="latest-prdouct__slider__item">
-                            <% findPopularProducts.slice(3, 6).forEach(product=> { %>
-                              <a href="/product-detail/<%= product.id %>" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                  <img src="<%= product.product_image[0].url %>" alt="" />
-                                </div>
-                                <div class="latest-product__item__text">
-                                  <h6>
-                                    <%= product.product_name %>
-                                  </h6>
-                                  <span>
-                                    <%= product.product_price.toLocaleString() %>원
-                                  </span>
-                                </div>
-                              </a>
-                              <% }); %>
-                          </div>
-                        </div>
-                      </div>
+                    <div class="latest-product__item__text">
+                      <h6><%= product.product_name %></h6>
+                      <span>
+                        <%= product.product_price.toLocaleString() %>원
+                      </span>
                     </div>
-                    <div class="col-lg-4 col-md-6">
-                      <div class="latest-product__text">
-                        <h4>평점 높은 상품</h4>
-                        <div class="latest-product__slider owl-carousel">
-                          <div class="latest-prdouct__slider__item">
-                            <% findHighlyRatedProducts.slice(0, 3).forEach(product=> { %>
-                              <a href="/product-detail/<%= product.id %>" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                  <img src="<%= product.product_image[0].url %>" alt="" />
-                                </div>
-                                <div class="latest-product__item__text">
-                                  <h6>
-                                    <%= product.product_name %>
-                                  </h6>
-                                  <span>
-                                    <%= product.product_price.toLocaleString() %>원
-                                  </span>
-                                </div>
-                              </a>
-                              <% }); %>
-                          </div>
-                          <div class="latest-prdouct__slider__item">
-                            <% findHighlyRatedProducts.slice(3, 6).forEach(product=> { %>
-                              <a href="/product-detail/<%= product.id %>" class="latest-product__item">
-                                <div class="latest-product__item__pic">
-                                  <img src="<%= product.product_image[0].url %>" alt="" />
-                                </div>
-                                <div class="latest-product__item__text">
-                                  <h6>
-                                    <%= product.product_name %>
-                                  </h6>
-                                  <span>
-                                    <%= product.product_price.toLocaleString() %>원
-                                  </span>
-                                </div>
-                              </a>
-                              <% }); %>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  </a>
+                  <% }); %>
                 </div>
-              </section>
-              <!-- Latest Product Section End -->
-
-              <!-- Featured Section Begin -->
-              <section class="featured spad product-list-container">
-                <div class="container">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div class="section-title">
-                        <h2>전체 상품</h2>
-                      </div>
+                <div class="latest-prdouct__slider__item">
+                  <% findPopularProducts.slice(3, 6).forEach(product=> { %>
+                  <a
+                    href="/product-detail/<%= product.id %>"
+                    class="latest-product__item"
+                  >
+                    <div class="latest-product__item__pic">
+                      <img src="<%= product.product_image[0].url %>" alt="" />
                     </div>
-                  </div>
-                  <div id="allProductsContainer" class="row featured__filter"></div>
+                    <div class="latest-product__item__text">
+                      <h6><%= product.product_name %></h6>
+                      <span>
+                        <%= product.product_price.toLocaleString() %>원
+                      </span>
+                    </div>
+                  </a>
+                  <% }); %>
                 </div>
-              </section>
-              <!-- Featured Section End -->
-              <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-                crossorigin="anonymous"></script>
-              <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"
-                integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
-                crossorigin="anonymous"></script>
-              <script>
-                //-- 상품 전체보기 api --//
-                let data = [];
-                let cursor = null;
-                let hasMoreData = true;
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="latest-product__text">
+              <h4>평점 높은 상품</h4>
+              <div class="latest-product__slider owl-carousel">
+                <div class="latest-prdouct__slider__item">
+                  <% findHighlyRatedProducts.slice(0, 3).forEach(product=> { %>
+                  <a
+                    href="/product-detail/<%= product.id %>"
+                    class="latest-product__item"
+                  >
+                    <div class="latest-product__item__pic">
+                      <img src="<%= product.product_image[0].url %>" alt="" />
+                    </div>
+                    <div class="latest-product__item__text">
+                      <h6><%= product.product_name %></h6>
+                      <span>
+                        <%= product.product_price.toLocaleString() %>원
+                      </span>
+                    </div>
+                  </a>
+                  <% }); %>
+                </div>
+                <div class="latest-prdouct__slider__item">
+                  <% findHighlyRatedProducts.slice(3, 6).forEach(product=> { %>
+                  <a
+                    href="/product-detail/<%= product.id %>"
+                    class="latest-product__item"
+                  >
+                    <div class="latest-product__item__pic">
+                      <img src="<%= product.product_image[0].url %>" alt="" />
+                    </div>
+                    <div class="latest-product__item__text">
+                      <h6><%= product.product_name %></h6>
+                      <span>
+                        <%= product.product_price.toLocaleString() %>원
+                      </span>
+                    </div>
+                  </a>
+                  <% }); %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Latest Product Section End -->
 
-                const limit = 8;
-                let isLoadingData = false; // 데이터 로딩 중인지 여부
+    <!-- Featured Section Begin -->
+    <section class="featured spad product-list-container">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="section-title">
+              <h2>전체 상품</h2>
+            </div>
+          </div>
+        </div>
+        <div id="allProductsContainer" class="row featured__filter"></div>
+      </div>
+    </section>
+    <!-- Featured Section End -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+      integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      //-- 상품 전체보기 api --//
+      let data = [];
+      let cursor = null;
+      let hasMoreData = true;
 
-                let lastScrollY = 0;
+      const limit = 8;
+      let isLoadingData = false; // 데이터 로딩 중인지 여부
 
-                const fetchData = async () => {
-                  if (!hasMoreData || isLoadingData) {
-                    return;
-                  }
+      let lastScrollY = 0;
 
-                  isLoadingData = true; // 데이터 로딩 중임을 표시
+      const fetchData = async () => {
+        if (!hasMoreData || isLoadingData) {
+          return;
+        }
 
-                  const url = cursor
-                    ? `/products?limit=${limit}&cursor=${cursor}`
-                    : `/products?limit=${limit}`;
+        isLoadingData = true; // 데이터 로딩 중임을 표시
 
-                  try {
-                    const response = await fetch(url, {
-                      method: 'GET',
-                      headers: {
-                        Accept: 'application/json',
-                      },
-                    });
+        const url = cursor
+          ? `/products?limit=${limit}&cursor=${cursor}`
+          : `/products?limit=${limit}`;
 
-                    const newData = await response.json();
+        try {
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json',
+            },
+          });
 
-                    if (response.ok) {
-                      data = data.concat(newData);
+          const newData = await response.json();
 
-                      const fragment = document.createDocumentFragment(); // Fragment 생성
+          if (response.ok) {
+            data = data.concat(newData);
 
-                      newData.forEach((item) => {
-                        const productItem = document.createElement('div');
-                        productItem.className =
-                          'col-lg-3 col-md-4 col-sm-6 mix category product-item';
-                        productItem.setAttribute('data-item-id', item.id);
-                        console.log(item);
-                        productItem.innerHTML = `
+            const fragment = document.createDocumentFragment(); // Fragment 생성
+
+            newData.forEach((item) => {
+              const productItem = document.createElement('div');
+              productItem.className =
+                'col-lg-3 col-md-4 col-sm-6 mix category product-item';
+              productItem.setAttribute('data-item-id', item.id);
+
+              productItem.innerHTML = `
                 <div class="featured__item">
                   <div class="featured__item__pic set-bg">
                     <img src="${item.product_image[0].url}">
@@ -319,122 +373,132 @@
                         <button type="button" class="btn-like">❤️</button>
                       </li>
                       <li>
-                        <a href="#" class="add-to-cart-link"onclick="addToCart(${item.id
-                          })" data-product-id="${item.id}">
+                        <a href="#" class="add-to-cart-link"onclick="addToCart(${
+                          item.id
+                        })" data-product-id="${item.id}">
                           <i class="fa fa-shopping-cart"></i>
                         </a>
                       </li>
                     </ul>
                   </div>
                   <div class="featured__item__text">
-                    <h6><a href="product-detail/${item.id}">${item.product_name
-                          }</a></h6>
+                    <h6><a href="product-detail/${item.id}">${
+                item.product_name
+              }</a></h6>
                     <h5>${item.product_price.toLocaleString()}원</h5>
                   </div>
                 </div>
               `;
 
-                        fragment.appendChild(productItem); // Fragment에 추가
-                      });
+              fragment.appendChild(productItem); // Fragment에 추가
+            });
 
-                      const allProductsContainer = document.querySelector(
-                        '#allProductsContainer',
-                      );
-                      allProductsContainer.appendChild(fragment); // Fragment를 실제 DOM에 추가
+            const allProductsContainer = document.querySelector(
+              '#allProductsContainer',
+            );
+            allProductsContainer.appendChild(fragment); // Fragment를 실제 DOM에 추가
 
-                      cursor = newData[newData.length - 1]?.id;
+            cursor = newData[newData.length - 1]?.id;
 
-                      if (newData.length < limit) {
-                        hasMoreData = false;
-                      }
-                    } else {
-                      alert(newData.message);
-                    }
-                  } catch (error) {
-                    console.error('에러 발생:', error);
-                    alert('데이터를 가져오는 데 실패했습니다.');
-                  }
+            if (newData.length < limit) {
+              hasMoreData = false;
+            }
+          } else {
+            alert(newData.message);
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('데이터를 가져오는 데 실패했습니다.');
+        }
 
-                  isLoadingData = false; // 데이터 로딩 완료 표시
-                };
+        isLoadingData = false; // 데이터 로딩 완료 표시
+      };
 
-                fetchData();
+      fetchData();
 
-                window.addEventListener('scroll', () => {
-                  const currentScrollY = window.scrollY;
+      window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
 
-                  if (currentScrollY > lastScrollY) {
-                    const windowHeight = window.innerHeight;
-                    const documentHeight = document.body.scrollHeight;
+        if (currentScrollY > lastScrollY) {
+          const windowHeight = window.innerHeight;
+          const documentHeight = document.body.scrollHeight;
 
-                    if (currentScrollY + windowHeight >= documentHeight - 10) {
-                      fetchData();
-                    }
-                  }
+          if (currentScrollY + windowHeight >= documentHeight - 10) {
+            fetchData();
+          }
+        }
 
-                  lastScrollY = currentScrollY;
-                });
+        lastScrollY = currentScrollY;
+      });
 
-                //-- 라이브 방송 목록 보여주기 --//
-                const title = document.querySelector('#liveTitle');
-                const liveList = document.querySelector('#liveList');
-                const socket = io('');
+      //-- 라이브 방송 목록 보여주기 --//
+      const title = document.querySelector('#liveTitle');
+      const liveList = document.querySelector('#liveList');
+      const socket = io('');
 
-                //- 라이브 목록 보여주기 -//
-                socket.on('roomChange', (data) => {
-                  liveList.innerHTML = '';
-                  for (let i in data) {
-                    const liveTitle = i;
-                    const liveCount = data[i];
-                    const li = document.createElement('li');
-                    li.innerText = `${liveTitle} (${liveCount}명)`;
-                    li.setAttribute('data-title', liveTitle);
-                    li.setAttribute('class', 'liveItem liveListBox');
-                    liveList.append(li);
-                  }
+      //- 라이브 목록 보여주기 -//
+      socket.on('roomChange', (data) => {
+        liveList.innerHTML = '';
+        for (let i in data) {
+          let liveTitle = i;
+          const liveCount = data[i];
+          const li = document.createElement('li');
+          const p1 = document.createElement('p');
+          const p2 = document.createElement('p');
+          if (liveTitle.length > 15) {
+            const tempLiveTitle = liveTitle.substring(0, 14);
+            p1.innerText = `${tempLiveTitle}...`;
+          } else {
+            p1.innerText = `${liveTitle}`;
+          }
+          p2.innerText = `(${liveCount}명 시청중)`;
+          li.append(p1);
+          li.append(p2);
+          p1.setAttribute('class', 'liveItem');
+          li.setAttribute('data-title', liveTitle);
+          li.setAttribute('class', 'liveListBox');
+          liveList.append(li);
+        }
 
-                  //- 라이브 창 열기 -//
-                  document.querySelectorAll('.liveItem').forEach((item) => {
-                    item.addEventListener('click', (e) => {
-                      const title = e.target.getAttribute('data-title');
-                      window.open(`/live?title=${title}`);
-                    });
-                  });
-                });
+        //- 라이브 창 열기 -//
+        document.querySelectorAll('.liveListBox').forEach((item) => {
+          item.addEventListener('click', (e) => {
+            const title = item.getAttribute('data-title');
+            window.open(`/live?title=${title}`);
 
-                socket.on('disconnect', function () {
-                  console.log('Disconnected');
-                });
+            return;
+          });
+        });
+      });
 
-                async function addToCart(productId) {
-                  try {
-                    // 서버로 상품 추가 요청을 보냅니다.
-                    const response = await fetch(`/carts`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({
-                        product_id: productId,
-                        quantity: 1, // 여기에서는 기본으로 1개의 상품을 추가합니다. 필요에 따라 수량을 조절할 수 있습니다.
-                      }),
-                    });
+      async function addToCart(productId) {
+        try {
+          // 서버로 상품 추가 요청을 보냅니다.
+          const response = await fetch(`/carts`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              product_id: productId,
+              quantity: 1, // 여기에서는 기본으로 1개의 상품을 추가합니다. 필요에 따라 수량을 조절할 수 있습니다.
+            }),
+          });
 
-                    const data = await response.json();
+          const data = await response.json();
 
-                    // 서버로부터 응답을 처리합니다.
-                    if (data.status) {
-                      alert('상품이 장바구니에 추가되었습니다.');
-                      window.location.reload();
-                    } else {
-                      alert(data.message);
-                    }
-                  } catch (error) {
-                    console.error('에러 발생:', error);
-                    alert('상품을 장바구니에 추가하는 데 실패했습니다.');
-                  }
-                }
-              </script>
+          // 서버로부터 응답을 처리합니다.
+          if (data.status) {
+            alert('상품이 장바구니에 추가되었습니다.');
+            window.location.reload();
+          } else {
+            alert(data.message);
+          }
+        } catch (error) {
+          console.error('에러 발생:', error);
+          alert('상품을 장바구니에 추가하는 데 실패했습니다.');
+        }
+      }
+    </script>
   </body>
-
 </html>
