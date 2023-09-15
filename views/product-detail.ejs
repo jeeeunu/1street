@@ -123,7 +123,7 @@
                           </li>
                           <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab" aria-selected="false">상품문의
-                              </a>
+                              (2)</a>
                           </li>
                         </ul>
                         <div class="tab-content">
@@ -155,24 +155,24 @@
                                               </p>
                                             </div>
                                             <% if (review.review_image) { %>
-                                            <ul class="review-img-list">
+                                              <ul class="review-img-list">
                                                 <% review.review_image.forEach((reviewImage)=> { %>
                                                   <li class="review-img-item">
                                                     <img src="<%= reviewImage.url %>" alt="" />
                                                   </li>
                                                   <% }) %>
-                                            </ul>
-                                            <% } %>
-                                            <p class="comment-rating">
-                                              <%= '⭐ ' .repeat(review.review_rating) %>
-                                            </p>
-                                            <p class="comment-txt">
-                                              <%= review.review_content %>
-                                            </p>
-                                            <div class="comment-date content-right">
-                                              <p>작성일 : <%= review.created_at.toISOString().substr(0, 10) %>
-                                              </p>
-                                            </div>
+                                              </ul>
+                                              <% } %>
+                                                <p class="comment-rating">
+                                                  <%= '⭐ ' .repeat(review.review_rating) %>
+                                                </p>
+                                                <p class="comment-txt">
+                                                  <%= review.review_content %>
+                                                </p>
+                                                <div class="comment-date content-right">
+                                                  <p>작성일 : <%= review.created_at.toISOString().substr(0, 10) %>
+                                                  </p>
+                                                </div>
                                           </li>
                                           <% }); %>
                                       </ul>
@@ -269,13 +269,13 @@
                         </div>
                       </div>
                     </div>
-                  </div> 
-                </div> 
+                  </div>
+                </div>
               </section>
               <!-- Product Details Section End -->
 
               <!-- Related Product Section Begin -->
-              <section class="related-product">
+              <!-- <section class="related-product">
                 <div class="container">
                   <div class="row">
                     <div class="col-lg-12">
@@ -371,7 +371,7 @@
                     </div>
                   </div>
                 </div>
-              </section>
+              </section> -->
               <!-- Related Product Section End -->
 
               <!-- include : footer -->
@@ -427,11 +427,8 @@
                   //-- 장바구니 추가 --//
                   document.getElementById('addCartBtn').addEventListener('click', async function addCarts() {
                     const product = document.getElementById('btnLike')
-                    console.log(product)
                     const productId = product.getAttribute('data-item-id');
-                    console.log(productId)
                     const quantity = document.getElementById('quantity_num').value;
-                    console.log(quantity)
                     try {
                       const response = await fetch(`/carts`, {
                         method: 'POST',
@@ -453,17 +450,6 @@
                       console.error('Error:', err);
                     }
                   });
-
-                  const addQuestionButton = document.querySelector('#addQuestionButton');
-                  if (addQuestionButton) {
-                    addQuestionButton.addEventListener('click', () => {
-                      // 현재 페이지의 URL에서 product_id 값을 가져옴
-                      const productId = window.location.href.match(/\/product-detail\/(\d+)/)[1];
-                      
-                      // 생성한 주소로 이동
-                      window.location.href = `/user-qna/${productId}`;
-                    });
-                  }
                 </script>
   </body>
 
