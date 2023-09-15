@@ -470,7 +470,6 @@
         orderItem.classList.add('tr');
 
         const product = order.product; // 주문에서 단일 제품 정보를 가져옴
-        console.log('프로덕트', product);
         // `product_image`가 정의되어 있는 경우에만 이미지 렌더링
         const productImages = product.product_image
           ? `
@@ -492,7 +491,6 @@
         const productNames = product.product_name; // 단일 제품의 이름을 가져옴
 
         // 주문 상태를 한글로 변환하여 표시
-        console.log(orderStatus);
         const orderStatusKorean = getOrderStatusKorean(orderStatus);
 
         orderItem.innerHTML = `
@@ -631,7 +629,6 @@
 
           if (response.ok) {
             const data = await response.json();
-            console.log(data.message);
             alert('주문상태가 수정되었습니다.');
             window.location.reload();
             // 성공적으로 주문 상태가 변경된 경우 처리

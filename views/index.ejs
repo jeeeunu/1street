@@ -363,7 +363,7 @@
               productItem.className =
                 'col-lg-3 col-md-4 col-sm-6 mix category product-item';
               productItem.setAttribute('data-item-id', item.id);
-              console.log(item);
+
               productItem.innerHTML = `
                 <div class="featured__item">
                   <div class="featured__item__pic set-bg">
@@ -441,7 +441,6 @@
         liveList.innerHTML = '';
         for (let i in data) {
           let liveTitle = i;
-          console.log('liveTitle', liveTitle);
           const liveCount = data[i];
           const li = document.createElement('li');
           const p1 = document.createElement('p');

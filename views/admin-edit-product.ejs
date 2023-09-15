@@ -234,10 +234,8 @@
             formData.append('product_desc', productDescValue);
           }
           formData.append('product_price', productPrice.value);
-          console.log(deletedImagesId);
           formData.append('delete_imgs', deletedImagesId);
           let productImgfiles = [];
-          console.log(document.querySelectorAll('.profile-input'));
           document.querySelectorAll('.profile-input').forEach((file) => {
             if (file.files[0] !== undefined) {
               formData.append('files', file.files[0]);
