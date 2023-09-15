@@ -2,6 +2,52 @@
 <html lang="ko">
   <!-- include : head -->
   <%- include('includes/head') %>
+  <style>
+    /* 모달 스타일 설정 */
+    .modal {
+      display: none;
+      /* 모달을 처음에는 숨김 처리 */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      /* 배경을 반투명하게 설정 */
+      z-index: 1;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      /* 모달 내용의 배경색 설정 */
+      width: 20%;
+      /* 모달 내용의 가로 크기 설정 */
+      margin: 15% auto;
+      /* 모달을 수직 가운데 정렬하도록 설정 */
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      /* 그림자 효과 추가 */
+    }
+
+    #reviewModal li {
+      font-size: 15px;
+    }
+
+    .close {
+      float: right;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* 모달 닫기 버튼 위치 설정 */
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  </style>
 
   <body>
     <!-- include : top-button -->
@@ -86,11 +132,9 @@
               <li class="status-item">
                 <p>Q&A</p>
                 <p>
-                  <a
-                    id="qnaLink"
-                    href="/my-page-user-qna/<%= authUser.user_id %>"
-                    ><%= qnaCount %> 건</a
-                  >
+                  <a href="/my-page-user-qna/<%= authUser.user_id %>">
+                    <%= qnaCount %> 건
+                  </a>
                 </p>
               </li>
               <li class="status-item">
@@ -154,6 +198,17 @@
 
     <!-- include : footer -->
     <%- include('includes/footer') %>
+
+    <div id="reviewModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeModalBtn">&times;</span>
+        <h2>리뷰 작성</h2>
+        <p>리뷰를 작성할 상품을 선택하세요</p>
+        <ul id="orderDetailList">
+          <!-- 오더 디테일 목록은 JavaScript로 동적으로 추가될 예정 -->
+        </ul>
+      </div>
+    </div>
 
     <script>
       //-- 유저 탈퇴 api --//
@@ -246,13 +301,13 @@
         // 주문 정보와 상세 정보를 이용하여 HTML을 생성하고 orderListContainer에 추가합니다.
         const orderItem = document.createElement('li');
         orderItem.classList.add('tr');
-
+        console.log('124', order.id);
         // 주문 상태에 따른 버튼 HTML을 동적으로 생성
         let buttonHtml = '';
         if (order.order_status === 'OrderPending') {
           buttonHtml = `<button type="button" id="order_cancel_${order.id}" class="btn-primary-s">주문 취소</button>`;
         } else if (order.order_status === 'DeliveryComplete') {
-          buttonHtml = `<button type="button" id="review_${orderDetails.id}" class="btn-primary-s" >리뷰 작성</button>`;
+          buttonHtml = `<button type="button" id="review_${order.id}" class="btn-primary-s" >리뷰 작성</button>`;
         } else if (order.order_status === 'OrderConfirm') {
           buttonHtml = `<button type="button" class="btn-primary-s">주문 확인중</button>`;
         } else if (order.order_status === 'OrderShipping') {
@@ -304,14 +359,92 @@
 
         orderListContainer.appendChild(orderItem);
 
-        //-- 리뷰 작성 페이지 이동 --//
+        // 주문 상태를 한글로 변환합니다.
+        const koreanOrderStatus = translateOrderStatusToKorean(
+          order.order_status,
+        );
 
-        const reviewCBtn = document.getElementById(`review_${orderDetails.id}`);
+        // 주문 상태를 표시하는 span 요소 선택
+        const statusSpan = orderItem.querySelector('.status-wrap span');
+
+        // 주문 상태를 한글로 변경하여 span 요소에 적용
+        statusSpan.textContent = koreanOrderStatus;
+
+        function translateOrderStatusToKorean(orderStatus) {
+          switch (orderStatus) {
+            case 'OrderPending':
+              return '주문 대기 중';
+            case 'DeliveryComplete':
+              return '배송 완료';
+            case 'OrderConfirm':
+              return '주문 확인 중';
+            case 'OrderShipping':
+              return '배송 준비 중';
+            case 'orderDelivering':
+              return '배송 중';
+            default:
+              return '주문 취소';
+          }
+        }
+
+        // 리뷰 작성 버튼 클릭 이벤트 처리
+        const reviewCBtn = document.getElementById(`review_${order.id}`);
         if (reviewCBtn) {
           reviewCBtn.addEventListener('click', async (event) => {
-            window.location.href = `/my-page/create-review/${orderDetails.id}`;
+            openReviewModal(order); // 리뷰 작성 모달 열기 함수 호출
           });
         }
+        // 모달 열기 함수
+        function openReviewModal(order) {
+          console.log('1', order);
+          const reviewModal = document.getElementById('reviewModal');
+          const orderDetailList = document.getElementById('orderDetailList');
+
+          // 기존에 있는 주문 디테일 목록을 초기화합니다.
+          orderDetailList.innerHTML = '';
+
+          // orderDetails.order_details 배열을 순회하면서 각 주문 디테일에 대한 정보와 리뷰 작성 버튼을 생성합니다.
+          orderDetails.order_details.forEach((detail) => {
+            const listItem = document.createElement('li');
+            console.log(detail);
+            // 주문 디테일 아이디를 표시합니다.
+            listItem.textContent = `상품 명: ${detail.product.product_name}`;
+
+            // 리뷰 작성 버튼을 생성하고 클릭 이벤트를 설정합니다.
+            const reviewButton = document.createElement('button');
+            reviewButton.type = 'button'; // 버튼 타입 속성 설정
+            reviewButton.classList.add('btn-primary-s'); // 클래스 추가
+            reviewButton.textContent = '리뷰 작성';
+            reviewButton.addEventListener('click', () => {
+              // 리뷰 작성 페이지로 이동할 URL 생성
+              const reviewUrl = `/my-page/create-review/${detail.id}`;
+              window.location.href = reviewUrl; // URL로 이동
+            });
+
+            // 주문 디테일 목록에 리뷰 작성 버튼과 주문 디테일 아이디를 추가합니다.
+            listItem.appendChild(reviewButton);
+            orderDetailList.appendChild(listItem);
+          });
+
+          reviewModal.style.display = 'block'; // 모달을 화면에 표시
+        }
+
+        // 모달 닫기 함수
+        function closeModal() {
+          const reviewModal = document.getElementById('reviewModal');
+          reviewModal.style.display = 'none';
+        }
+
+        // "X" 버튼 또는 모달 외부 클릭 시 모달 닫기
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        closeModalBtn.addEventListener('click', closeModal);
+
+        window.addEventListener('click', (event) => {
+          const reviewModal = document.getElementById('reviewModal');
+          if (event.target === reviewModal) {
+            closeModal();
+          }
+        });
 
         const orderCcBtn = document.getElementById(`order_cancel_${order.id}`);
         if (orderCcBtn) {
@@ -338,43 +471,6 @@
           });
         }
       }
-
-      // 사용자의 user_id 가져오기
-      const userId = '<%= authUser.user_id %>';
-      const qnaLink = document.getElementById('qnaLink');
-      qnaLink.addEventListener('click', (event) => {
-        event.preventDefault(); // 기본 링크 동작 방지
-        window.location.href = `/my-page-user-qna/${userId}`;
-      });
-
-      // Q&A 데이터를 가져오는 API 호출
-      fetch(`/qnas/user/${userId}`)
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Q&A 데이터를 가져오는데 실패했습니다.');
-          }
-        })
-        .then((qnaData) => {
-          // qnaData를 이용하여 Q&A 개수 계산
-          const qnaCount = qnaData.length;
-
-          // qnaCount를 HTML에 렌더링
-          const qnaCountElement = document.querySelector('#qnaCount');
-          if (qnaCountElement) {
-            qnaCountElement.textContent = `${qnaCount}건`;
-          }
-        })
-        .catch((error) => {
-          console.error('Q&A 데이터를 가져오는 중 오류 발생: ', error);
-
-          // 에러가 발생하면 qnaCount를 0으로 설정
-          const qnaCountElement = document.querySelector('#qnaCount');
-          if (qnaCountElement) {
-            qnaCountElement.textContent = '0건';
-          }
-        });
     </script>
   </body>
 </html>
