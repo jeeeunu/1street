@@ -113,10 +113,8 @@
 
             qnaList.forEach((qna) => {
               const row = document.createElement('tr');
-
               // 각각의 qna에 대한 qnaId를 가져옵니다.
               const qnaId = qna.id;
-
               // qnaId를 사용하여 서버에서 해당 qna의 답변을 가져옵니다.
               fetch(`/qnas/${qnaId}/answers`)
                 .then(async (response) => {

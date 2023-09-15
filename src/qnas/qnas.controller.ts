@@ -70,10 +70,10 @@ export class QnasController {
     return await this.qnasService.getForShop(shopId);
   }
 
-  // QNA 개수 세기 (product_id)
-  @Get('count/:productId')
-  async getQnaCount(@Param('productId') productId: number): Promise<number> {
-    const qnaCount = await this.qnasService.countQnaByProduct(productId);
+  // QNA 개수 세기 (user_id)
+  @Get('count/:userId')
+  async getQnaCount(@Param('user_id') userId: number): Promise<number> {
+    const qnaCount = await this.qnasService.getQnaCount(userId);
     return qnaCount;
   }
 

@@ -2,6 +2,14 @@
 <html lang="ko">
 <!-- include : head -->
 <%- include('includes/head') %>
+  <style>
+    ul li {
+      white-space: nowrap;
+      /* 텍스트가 길어도 줄 바꿈 없이 한 줄에 표시 */
+      overflow: hidden;
+      /* 넘치는 텍스트를 숨김 */
+    }
+  </style>
 
   <body>
     <!-- include : preloder -->
@@ -360,6 +368,10 @@
               }
             }
 
+            function formatNumberWithCommas(number) {
+              return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
             async function initializeCheckout() {
               try {
                 // 페이지 로딩 시 장바구니 데이터 불러오기
@@ -377,7 +389,7 @@
                 productList.forEach(product => {
                   const priceMultiplyQuantity = product.product_price * product.quantity
                   const liElement = document.createElement('li');
-                  liElement.innerHTML = `${product.product_name} <span>₩${priceMultiplyQuantity}</span>`;
+                  liElement.innerHTML = `${product.product_name} <span>₩${formatNumberWithCommas(priceMultiplyQuantity)}</span>`;
                   ulElement.appendChild(liElement);
                 });
 
@@ -388,11 +400,11 @@
 
                 // Subtotal 업데이트
                 const subtotalElement = document.querySelector('.checkout__order__subtotal span');
-                subtotalElement.textContent = `₩${subtotal}`;
+                subtotalElement.textContent = `₩${formatNumberWithCommas(subtotal)}`;
 
                 // Total 업데이트
                 const totalElement = document.querySelector('.checkout__order__total span');
-                totalElement.textContent = `₩${subtotal}`;
+                totalElement.textContent = `₩${formatNumberWithCommas(subtotal)}`;
               } catch (error) {
                 console.error('장바구니 데이터를 가져오는 중 오류가 발생했습니다:', error);
               }
@@ -468,7 +480,24 @@
                       alert('오류가 발생했습니다.');
                     }
                   } else {
-                    alert('결제에 실패하였습니다.');
+                    try {
+                      const response = await fetch(`/orders/${orderId}/fail/delete`, {
+                        method: 'DELETE',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                      });
+                      const data = await response.json();
+                      if (response.ok) {
+                        console.log(data.message);
+                        alert('결제에 실패하여 주문을 취소합니다.');
+                        window.location.reload();
+                      } else {
+                        console.log(data.message);
+                      }
+                    } catch (err) {
+                      console.error('Error:', err);
+                    }
                   }
                 });
             }

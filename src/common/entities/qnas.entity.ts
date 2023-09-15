@@ -17,11 +17,6 @@ export class QnasEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  // @Column()
-  // @IsNotEmpty()
-  // @IsString()
-  // public product_id: number;
-
   // qna 제목
   @Column('varchar', { length: 50 })
   public qna_name: string;
