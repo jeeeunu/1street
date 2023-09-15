@@ -99,30 +99,13 @@ export class QnasService {
     return qna;
   }
 
-  // QNA 개수 세기
-  async getQnaCount(): Promise<number> {
-    try {
-      const qnaCount = await this.qnaRepository.count();
-
-      // 조회된 Q&A 데이터 개수를 반환합니다.
-      return qnaCount;
-    } catch (error) {
-      console.error('Q&A 데이터 개수 조회 중 오류 발생:', error);
-      return 0;
-    }
-  }
-
-  // QNA 개수 세기 2
-  async countQnaByProduct(productId: number): Promise<number> {
-    try {
-      const qnaCount = await this.qnaRepository.count({
-        where: { id: productId },
-      });
-      return qnaCount;
-    } catch (error) {
-      console.error('Q&A 개수 조회 중 오류 발생:', error);
-      return 0;
-    }
+  // QNA 개수 세기 (userId)
+  async getQnaCount(userId: number): Promise<number> {
+    const qnaCount = await this.qnaRepository
+      .createQueryBuilder('qna')
+      .where('qna.user_id = :userId', { userId }) // 현재 로그인한 사용자의 ID로 필터링
+      .getCount();
+    return qnaCount;
   }
 
   //-- QNA 수정 --//

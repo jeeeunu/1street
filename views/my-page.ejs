@@ -52,7 +52,7 @@
   <body>
     <!-- include : top-button -->
     <%- include('includes/top-button') %>
-
+    
       <!-- include : preloder -->
       <%- include('includes/preloder') %>
 
@@ -127,7 +127,7 @@
                       <li class="status-item">
                         <p>Q&A</p>
                         <p>
-                          <a id="qnaLink" href="/my-page-user-qna/<%= authUser.user_id %>">
+                          <a href="/my-page-user-qna/<%= authUser.user_id %>">
                             <%= qnaCount %> 건
                           </a>
                         </p>
@@ -467,32 +467,6 @@
                     });
                   }
                 }
-
-
-                // 사용자의 user_id 가져오기
-                const userId = getUserId();
-                const qnaLink = document.getElementById('qnaLink');
-                qnaLink.addEventListener('click', (event) => {
-                  event.preventDefault(); // 기본 링크 동작 방지
-                  window.location.href = `/my-page-user-qna/${userId}`;
-                });
-
-                // Q&A 데이터를 가져오는 API 호출
-                fetch(`/qnas/user/${userId}`)
-                  .then((response) => response.json())
-                  .then((qnaData) => {
-                    // qnaData를 이용하여 Q&A 개수 계산
-                    const qnaCount = qnaData.length;
-
-                    // qnaCount를 HTML에 렌더링
-                    const qnaCountElement = document.querySelector('#qnaCount');
-                    if (qnaCountElement) {
-                      qnaCountElement.textContent = `${qnaCount}건`;
-                    }
-                  })
-                  .catch((error) => {
-                    console.error('Q&A 데이터를 가져오는 중 오류 발생: ', error);
-                  });
               </script>
   </body>
 
