@@ -152,17 +152,8 @@
     </div> -->
     <!-- Banner End -->
     <div class="container">
-      <div style="vertical-align: top">
-        <h3
-          style="
-            margin-bottom: 20px;
-            font-weight: 700;
-            display: inline;
-            margin-right: 2rem;
-          "
-        >
-          라이브 방송
-        </h3>
+      <div style="vertical-align: top" class="section-title">
+        <h2>라이브 방송</h2>
       </div>
 
       <ul id="liveList" class="mt-4 d-flex flex-wrap">
@@ -170,6 +161,7 @@
         <li class="liveListBox">라이브 방송 썸네일</li>
       </ul>
     </div>
+
     <!-- Latest Product Section Begin -->
     <section class="latest-product spad">
       <div class="container">
@@ -373,30 +365,30 @@
               productItem.setAttribute('data-item-id', item.id);
 
               productItem.innerHTML = `
-               <div class="featured__item">
-                 <div class="featured__item__pic set-bg">
-                   <img src="${item.product_image[0].url}">
-                   <ul class="featured__item__pic__hover">
-                     <li>
-                       <button type="button" class="btn-like">❤️</button>
-                     </li>
-                     <li>
-                       <a href="#" class="add-to-cart-link"onclick="addToCart(${
-                         item.id
-                       })" data-product-id="${item.id}">
-                         <i class="fa fa-shopping-cart"></i>
-                       </a>
-                     </li>
-                   </ul>
-                 </div>
-                 <div class="featured__item__text">
-                   <h6><a href="product-detail/${item.id}">${
+                <div class="featured__item">
+                  <div class="featured__item__pic set-bg">
+                    <img src="${item.product_image[0].url}">
+                    <ul class="featured__item__pic__hover">
+                      <li>
+                        <button type="button" class="btn-like">❤️</button>
+                      </li>
+                      <li>
+                        <a href="#" class="add-to-cart-link"onclick="addToCart(${
+                          item.id
+                        })" data-product-id="${item.id}">
+                          <i class="fa fa-shopping-cart"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="featured__item__text">
+                    <h6><a href="product-detail/${item.id}">${
                 item.product_name
               }</a></h6>
-                   <h5>${item.product_price.toLocaleString()}원</h5>
-                 </div>
-               </div>
-             `;
+                    <h5>${item.product_price.toLocaleString()}원</h5>
+                  </div>
+                </div>
+              `;
 
               fragment.appendChild(productItem); // Fragment에 추가
             });
