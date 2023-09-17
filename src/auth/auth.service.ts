@@ -79,7 +79,17 @@ export class AuthService {
       newUser.profile_image = req.user.picture;
       newUser.provider = 'google';
       await this.usersRepository.save(newUser);
-      return;
+
+      // JWT 토큰에 포함될 payload
+      const payload = {
+        user_id: newUser.id,
+        user_name: newUser.name,
+        email: newUser.email,
+      };
+
+      const accessToken = await this.jwtService.signAsync(payload);
+
+      return accessToken;
     } else {
       // JWT 토큰에 포함될 payload
       const payload = {
