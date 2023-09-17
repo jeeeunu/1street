@@ -30,11 +30,11 @@
                             alt="" />
                         </div>
                         <div class="product__details__pic__slider owl-carousel">
-                          <% if (product.product_image && product.product_image.length>
-                            0) { %> <% product.product_image.forEach((image, index)=> { %>
+                          <% if (product.product_image && product.product_image.length >0) { %> 
+                              <% product.product_image.forEach((image, index)=> { %>
                               <img id="productImg" data-imgbigurl="<%= image.url %>" src="<%= image.url %>" alt="" />
                               <% }); %>
-                                <% } %>
+                          <% } %>
                         </div>
                       </div>
                     </div>
@@ -123,7 +123,7 @@
                           </li>
                           <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab" aria-selected="false">상품문의
-                              (2)</a>
+                              (<%=productQnAs.length%>)</a>
                           </li>
                         </ul>
                         <div class="tab-content">
@@ -264,7 +264,8 @@
                               <% } %>
                             </div>
                             <!-- 문의 등록하기 버튼 (우측 하단 고정) -->
-                            <button class="btn btn-primary btn-sm float-right ml-2" id="addQuestionButton" style="background-color: #7fad39; color: #ffffff; font-weight: bold; font-size: 14px;">문의 등록하기</button>
+                            <button class="btn btn-primary btn-sm float-right ml-2" id="addQuestionButton" data-islogin="<%= user === undefined ? false:true %>"
+                            style="background-color: #7fad39; color: #ffffff; font-weight: bold; font-size: 14px;">문의 등록하기</button>
                           </div>      
                         </div>
                       </div>
@@ -447,6 +448,19 @@
                       console.error('Error:', err);
                     }
                   });
+
+                  //- 상품 문의 등록하기 버튼 -//
+                  document.querySelector('#addQuestionButton').addEventListener('click',(e)=>{
+                  // user-qna 페이지로 리다이렉트
+                  const product = document.getElementById('btnLike')
+                  const productId = product.getAttribute('data-item-id');
+                  const isLogin = e.target.getAttribute('data-islogin')
+                  if(isLogin === 'false') {
+                    alert('로그인이 필요합니다')
+                    return;
+                  }
+                  else window.location.href = `/user-qna/${productId}`;
+                  })
                 </script>
   </body>
 

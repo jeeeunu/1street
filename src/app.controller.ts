@@ -11,7 +11,6 @@ import { CartsService } from './carts/carts.service';
 import { OrdersService } from './orders/orders.service';
 import { ReviewsService } from './reviews/reviews.service';
 import { QnasService } from './qnas/qnas.service';
-import { rename } from 'fs';
 
 @Controller()
 export class AppController {
@@ -389,7 +388,6 @@ export class AppController {
     const reviewRating = await this.productsService.getRatingAverage(productId);
     const reviews = await this.reviewsService.findAllByProductId(productId);
     const productQnAs = await this.qnasService.getForProduct(productId);
-
     response.render('product-detail', {
       isIndexPath,
       isSearchPath,
