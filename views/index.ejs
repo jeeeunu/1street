@@ -70,29 +70,57 @@
     <!-- Categories Section Begin -->
     <section class="categories">
       <div class="container">
-        <div class="row">
+        <div class="mx-5">
           <div class="section-title">
-            <h2>Live</h2>
+            <h2>진행중인 이벤트</h2>
           </div>
-          <ul class="categories__slider owl-carousel">
-            <!-- TODO :: 슬라이드에는 무조건 5개 이상의 데이터가 있어야 합니다. -->
-            <li class="col-lg-3">
-              <div
-                class="categories__item set-bg"
-                data-setbg="img/categories/cat-1.jpg"
-              >
-                <h5><a href="https://m.naver.com">Fresh Fruit</a></h5>
+          <div
+            id="carouselExampleControls"
+            class="carousel slide"
+            data-bs-ride="carousel"
+          >
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="/img/banner/banner1.jpg" class="d-block w-100" />
               </div>
-            </li>
-            <li class="col-lg-3">
-              <div
-                class="categories__item set-bg"
-                data-setbg="img/categories/cat-2.jpg"
-              >
-                <h5><a href="#">Dried Fruit</a></h5>
+              <div class="carousel-item">
+                <img src="/img/banner/banner2.jpg" class="d-block w-100" />
               </div>
-            </li>
-          </ul>
+              <div class="carousel-item">
+                <img src="/img/banner/banner3.jpg" class="d-block w-100" />
+              </div>
+              <div class="carousel-item">
+                <img src="/img/banner/banner4.jpg" class="d-block w-100" />
+              </div>
+              <div class="carousel-item">
+                <img src="/img/banner/banner5.jpg" class="d-block w-100" />
+              </div>
+            </div>
+            <button
+              class="carousel-control-prev"
+              type="button"
+              data-bs-target="#carouselExampleControls"
+              data-bs-slide="prev"
+            >
+              <span
+                class="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button
+              class="carousel-control-next"
+              type="button"
+              data-bs-target="#carouselExampleControls"
+              data-bs-slide="next"
+            >
+              <span
+                class="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -142,7 +170,6 @@
         <li class="liveListBox">라이브 방송 썸네일</li>
       </ul>
     </div>
-    <<<<<<< HEAD ======= >>>>>>> 21077dd (fix: index.ejs)
     <!-- Latest Product Section Begin -->
     <section class="latest-product spad">
       <div class="container">
@@ -344,31 +371,32 @@
               productItem.className =
                 'col-lg-3 col-md-4 col-sm-6 mix category product-item';
               productItem.setAttribute('data-item-id', item.id);
+
               productItem.innerHTML = `
-                <div class="featured__item">
-                  <div class="featured__item__pic set-bg">
-                    <img src="${item.product_image[0].url}">
-                    <ul class="featured__item__pic__hover">
-                      <li>
-                        <button type="button" class="btn-like">❤️</button>
-                      </li>
-                      <li>
-                        <a href="#" class="add-to-cart-link"onclick="addToCart(${
-                          item.id
-                        })" data-product-id="${item.id}">
-                          <i class="fa fa-shopping-cart"></i>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="featured__item__text">
-                    <h6><a href="product-detail/${item.id}">${
+               <div class="featured__item">
+                 <div class="featured__item__pic set-bg">
+                   <img src="${item.product_image[0].url}">
+                   <ul class="featured__item__pic__hover">
+                     <li>
+                       <button type="button" class="btn-like">❤️</button>
+                     </li>
+                     <li>
+                       <a href="#" class="add-to-cart-link"onclick="addToCart(${
+                         item.id
+                       })" data-product-id="${item.id}">
+                         <i class="fa fa-shopping-cart"></i>
+                       </a>
+                     </li>
+                   </ul>
+                 </div>
+                 <div class="featured__item__text">
+                   <h6><a href="product-detail/${item.id}">${
                 item.product_name
               }</a></h6>
-                    <h5>${item.product_price.toLocaleString()}원</h5>
-                  </div>
-                </div>
-              `;
+                   <h5>${item.product_price.toLocaleString()}원</h5>
+                 </div>
+               </div>
+             `;
 
               fragment.appendChild(productItem); // Fragment에 추가
             });
@@ -420,26 +448,35 @@
       socket.on('roomChange', (data) => {
         liveList.innerHTML = '';
         for (let i in data) {
-          const liveTitle = i;
+          let liveTitle = i;
           const liveCount = data[i];
           const li = document.createElement('li');
-          li.innerText = `${liveTitle} (${liveCount}명)`;
+          const p1 = document.createElement('p');
+          const p2 = document.createElement('p');
+          if (liveTitle.length > 15) {
+            const tempLiveTitle = liveTitle.substring(0, 14);
+            p1.innerText = `${tempLiveTitle}...`;
+          } else {
+            p1.innerText = `${liveTitle}`;
+          }
+          p2.innerText = `(${liveCount}명 시청중)`;
+          li.append(p1);
+          li.append(p2);
+          p1.setAttribute('class', 'liveItem');
           li.setAttribute('data-title', liveTitle);
-          li.setAttribute('class', 'liveItem liveListBox');
+          li.setAttribute('class', 'liveListBox');
           liveList.append(li);
         }
 
         //- 라이브 창 열기 -//
-        document.querySelectorAll('.liveItem').forEach((item) => {
+        document.querySelectorAll('.liveListBox').forEach((item) => {
           item.addEventListener('click', (e) => {
-            const title = e.target.getAttribute('data-title');
+            const title = item.getAttribute('data-title');
             window.open(`/live?title=${title}`);
+
+            return;
           });
         });
-      });
-
-      socket.on('disconnect', function () {
-        console.log('Disconnected');
       });
 
       async function addToCart(productId) {
