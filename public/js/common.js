@@ -105,6 +105,7 @@ const createLike = async (productId) => {
 
     if (response.ok) {
       alert(data.message);
+      window.location.reload();
     } else {
       console.log(data.message);
       if (Array.isArray(data.message)) {
