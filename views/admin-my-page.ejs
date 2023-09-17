@@ -67,7 +67,6 @@
       <div class="row">
         <!-- include : aside -->
         <%- include('includes/my-page-aside') %>
-
         <!-- shop 존재시 -->
         <% if (authUser.shop_id !==undefined) { %>
         <section class="col-lg-9">
@@ -100,28 +99,25 @@
               <li>
                 <a href="/admin-create-product">상품 등록하기</a>
               </li>
-              <!-- <li>
-                <a href="">1:1 채팅 요청<span class="red-text">(2)</span></a>
-              </li> -->
               <li>
                 <a id="qnaLink" href="/admin-qna/<%= authUser.shop_id %>"
                   >상품 문의사항</a
                 >
+              </li>
+              <li>
+                <a
+                  id="liveModalBtn"
+                  data-bs-toggle="modal"
+                  data-bs-target="#liveRoomModal"
+                >
+                  라이브 방송
+                </a>
               </li>
             </ul>
           </section>
           <section class="list-container">
             <div class="title-wrap">
               <h3>등록된 상품 ( <%= products.length %> )</h3>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#liveRoomModal"
-                style="font-size: 2rem; margin-bottom: 15px"
-              >
-                라이브 방송 시작하기
-              </button>
             </div>
             <div class="order-list-table">
               <ul class="t-head">
@@ -213,6 +209,7 @@
               </ul>
             </div>
           </section>
+          <% } %>
 
           <!-- 주문 -->
           <section class="list-container">
@@ -262,7 +259,6 @@
             </div>
           </section>
         </section>
-
         <% } %>
         <!-- shop 없을시 -->
         <% if (authUser.shop_id===undefined) { %>
@@ -466,198 +462,186 @@
           }
         } catch (error) {
           console.error('ERROR:', error);
+        }
+      }
+
+      function createOrderItem(order) {
+        const orderItem = document.createElement('li');
+        orderItem.classList.add('tr');
+
+        const product = order.product; // 주문에서 단일 제품 정보를 가져옴
+        // `product_image`가 정의되어 있는 경우에만 이미지 렌더링
+        const productImages = product.product_image
+          ? `
+    <div class="img-wrap">
+      <img src="${
+        Array.isArray(product.product_image)
+          ? product.product_image[0].url
+          : product.product_image.url
+      }" alt="" />
+    </div>
+  `
+          : '';
+
+        const orderDate = order.order.created_at
+          .slice(0, 10)
+          .replace(/-/g, '.');
+        const orderStatus = order.order.order_status;
+        const orderId = order.order.id;
+        const productNames = product.product_name; // 단일 제품의 이름을 가져옴
+
+        // 주문 상태를 한글로 변환하여 표시
+        const orderStatusKorean = getOrderStatusKorean(orderStatus);
+
+        orderItem.innerHTML = `
+  <div class="td">
+    <p class="date-text">${orderDate}</p>
+  </div>
+  <div class="td">
+    <div class="order-info-wrap">
+      ${productImages}
+      <div class="text-wrap">
+        <a href="admin-my-page-order/${orderId}">
+          <span>${orderDate + orderId}</span>
+          <div class="product-title">${productNames}</div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="td status-wrap">
+    <span>${orderStatusKorean}</span>
+  </div>
+  <div class="td">
+    <span for="order-status-dropdown"></span>
+    <select id="order-status-dropdown">
+      <option id="order-id${orderId}" value="OrderCancel" ${
+          orderStatus === 'OrderCancel' ? 'selected' : ''
+        }>주문 취소</option>
+      <option id="order-id${orderId}" value="OrderPending" ${
+          orderStatus === 'OrderPending' ? 'selected' : ''
+        }>주문 대기</option>
+      <option id="order-id${orderId}" value="OrderConfirm" ${
+          orderStatus === 'OrderConfirm' ? 'selected' : ''
+        }>주문 확인</option>
+      <option id="order-id${orderId}" value="OrderShipping" ${
+          orderStatus === 'OrderShipping' ? 'selected' : ''
+        }>배송 준비중</option>
+      <option id="order-id${orderId}" value="orderDelivering" ${
+          orderStatus === 'orderDelivering' ? 'selected' : ''
+        }>배송 중</option>
+      <option id="order-id${orderId}" value="DeliveryComplete" ${
+          orderStatus === 'DeliveryComplete' ? 'selected' : ''
+        }>배송 완료</option>
+    </select>
+    <input type="hidden" id="order-id" value="${orderId}"> 
+    <button class="btn-primary-s change-order-status">상태 변경</button>
+  </div>
+  `;
+
+        // 주문 상태 영문에서 한글로 변환하는 함수
+        function getOrderStatusKorean(orderStatus) {
+          switch (orderStatus) {
+            case 'OrderCancel':
+              return '주문 취소';
+            case 'OrderPending':
+              return '주문 대기';
+            case 'OrderConfirm':
+              return '주문 확인';
+            case 'OrderShipping':
+              return '배송 준비중';
+            case 'orderDelivering':
+              return '배송 중';
+            case 'DeliveryComplete':
+              return '배송 완료';
+            default:
+              return '알 수 없음';
+          }
+        }
+
+        // // 주문 상태 변경 버튼 클릭 이벤트 핸들러 등록
+        const changeOrderStatusButton = orderItem.querySelector(
+          '.change-order-status',
+        );
+        const orderStatusDropdown = orderItem.querySelector(
+          '#order-status-dropdown',
+        );
+
+        changeOrderStatusButton.addEventListener('click', () => {
+          const selectedStatus = orderStatusDropdown.value;
+
+          if (!orderId) {
+            console.error('주문 ID를 찾을 수 없습니다.');
+            return;
+          }
+
+          changeOrderStatus(orderId, selectedStatus);
+        });
+        countOrderStatus();
+        return orderItem;
+      }
+
+      // 주문 상태를 집계하는 함수
+      async function countOrderStatus() {
+        try {
+          const response = await fetch('orders/seller/list');
+          const orders = await response.json();
+
+          // 주문 상태별로 카운트를 초기화
+          let orderPendingCount = 0;
+          let orderDeliveringCount = 0;
+          let deliveryCompleteCount = 0;
+          // 주문 데이터를 순회하면서 상태별로 카운트 증가
+          for (const order of orders) {
+            if (order.order.order_status === 'OrderPending') {
+              orderPendingCount++;
+            } else if (order.order.order_status === 'orderDelivering') {
+              orderDeliveringCount++;
+            } else if (order.order.order_status === 'DeliveryComplete') {
+              deliveryCompleteCount++;
+            }
+            // 다른 주문 상태에 대한 처리도 추가 가능
+          }
+
+          // 각 상태별 카운트를 HTML에 표시
+          document.getElementById(
+            'order-pending-count',
+          ).textContent = `${orderPendingCount} 건`;
+          document.getElementById(
+            'order-delivering-count',
+          ).textContent = `${orderDeliveringCount} 건`;
+          document.getElementById(
+            'delivery-complete-count',
+          ).textContent = `${deliveryCompleteCount} 건`;
+        } catch (error) {
+          console.error('주문 상태를 가져오는 중 오류 발생:', error);
+        }
+      }
+
+      async function changeOrderStatus(orderId, newStatus) {
+        try {
+          const response = await fetch(`/orders/${orderId}/seller`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ order_status: newStatus }),
+          });
 
           if (response.ok) {
-            alert(data.message);
-            window.location.href = '/';
+            const data = await response.json();
+            alert('주문상태가 수정되었습니다.');
+            window.location.reload();
+            // 성공적으로 주문 상태가 변경된 경우 처리
           } else {
-            alert(data.message);
-            console.error('상품삭제중 오류가 발생했습니다.');
-            window.location.href = '/';
+            console.log(data.message);
           }
+        } catch (error) {
+          console.error('ERROR:', error);
+          // 오류 처리
         }
-
-        function createOrderItem(order) {
-          const orderItem = document.createElement('li');
-          orderItem.classList.add('tr');
-
-          const product = order.product; // 주문에서 단일 제품 정보를 가져옴
-          console.log('프로덕트', product);
-          // `product_image`가 정의되어 있는 경우에만 이미지 렌더링
-          const productImages = product.product_image
-            ? `
-        <div class="img-wrap">
-          <img src="${
-            Array.isArray(product.product_image)
-              ? product.product_image[0].url
-              : product.product_image.url
-          }" alt="" />
-        </div>
-      `
-            : '';
-
-          const orderDate = order.order.created_at
-            .slice(0, 10)
-            .replace(/-/g, '.');
-          const orderStatus = order.order.order_status;
-          const orderId = order.order.id;
-          const productNames = product.product_name; // 단일 제품의 이름을 가져옴
-
-          // 주문 상태를 한글로 변환하여 표시
-          console.log(orderStatus);
-          const orderStatusKorean = getOrderStatusKorean(orderStatus);
-
-          orderItem.innerHTML = `
-      <div class="td">
-        <p class="date-text">${orderDate}</p>
-      </div>
-      <div class="td">
-        <div class="order-info-wrap">
-          ${productImages}
-          <div class="text-wrap">
-            <a href="admin-my-page-order/${orderId}">
-              <span>${orderDate + orderId}</span>
-              <div class="product-title">${productNames}</div>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="td status-wrap">
-        <span>${orderStatusKorean}</span>
-      </div>
-      <div class="td">
-        <span for="order-status-dropdown"></span>
-        <select id="order-status-dropdown">
-          <option id="order-id${orderId}" value="OrderCancel" ${
-            orderStatus === 'OrderCancel' ? 'selected' : ''
-          }>주문 취소</option>
-          <option id="order-id${orderId}" value="OrderPending" ${
-            orderStatus === 'OrderPending' ? 'selected' : ''
-          }>주문 대기</option>
-          <option id="order-id${orderId}" value="OrderConfirm" ${
-            orderStatus === 'OrderConfirm' ? 'selected' : ''
-          }>주문 확인</option>
-          <option id="order-id${orderId}" value="OrderShipping" ${
-            orderStatus === 'OrderShipping' ? 'selected' : ''
-          }>배송 준비중</option>
-          <option id="order-id${orderId}" value="orderDelivering" ${
-            orderStatus === 'orderDelivering' ? 'selected' : ''
-          }>배송 중</option>
-          <option id="order-id${orderId}" value="DeliveryComplete" ${
-            orderStatus === 'DeliveryComplete' ? 'selected' : ''
-          }>배송 완료</option>
-        </select>
-        <input type="hidden" id="order-id" value="${orderId}">
-        <button class="btn-primary-s change-order-status">상태 변경</button>
-      </div>
-      `;
-
-          // 주문 상태 영문에서 한글로 변환하는 함수
-          function getOrderStatusKorean(orderStatus) {
-            switch (orderStatus) {
-              case 'OrderCancel':
-                return '주문 취소';
-              case 'OrderPending':
-                return '주문 대기';
-              case 'OrderConfirm':
-                return '주문 확인';
-              case 'OrderShipping':
-                return '배송 준비중';
-              case 'orderDelivering':
-                return '배송 중';
-              case 'DeliveryComplete':
-                return '배송 완료';
-              default:
-                return '알 수 없음';
-            }
-          }
-
-          // // 주문 상태 변경 버튼 클릭 이벤트 핸들러 등록
-          const changeOrderStatusButton = orderItem.querySelector(
-            '.change-order-status',
-          );
-          const orderStatusDropdown = orderItem.querySelector(
-            '#order-status-dropdown',
-          );
-
-          changeOrderStatusButton.addEventListener('click', () => {
-            const selectedStatus = orderStatusDropdown.value;
-
-            if (!orderId) {
-              console.error('주문 ID를 찾을 수 없습니다.');
-              return;
-            }
-
-            changeOrderStatus(orderId, selectedStatus);
-          });
-          countOrderStatus();
-          return orderItem;
-        }
-
-        // 주문 상태를 집계하는 함수
-        async function countOrderStatus() {
-          try {
-            const response = await fetch('orders/seller/list');
-            const orders = await response.json();
-
-            // 주문 상태별로 카운트를 초기화
-            let orderPendingCount = 0;
-            let orderDeliveringCount = 0;
-            let deliveryCompleteCount = 0;
-            // 주문 데이터를 순회하면서 상태별로 카운트 증가
-            for (const order of orders) {
-              if (order.order.order_status === 'OrderPending') {
-                orderPendingCount++;
-              } else if (order.order.order_status === 'orderDelivering') {
-                orderDeliveringCount++;
-              } else if (order.order.order_status === 'DeliveryComplete') {
-                deliveryCompleteCount++;
-              }
-              // 다른 주문 상태에 대한 처리도 추가 가능
-            }
-
-            // 각 상태별 카운트를 HTML에 표시
-            document.getElementById(
-              'order-pending-count',
-            ).textContent = `${orderPendingCount} 건`;
-            document.getElementById(
-              'order-delivering-count',
-            ).textContent = `${orderDeliveringCount} 건`;
-            document.getElementById(
-              'delivery-complete-count',
-            ).textContent = `${deliveryCompleteCount} 건`;
-          } catch (error) {
-            console.error('주문 상태를 가져오는 중 오류 발생:', error);
-          }
-        }
-
-        async function changeOrderStatus(orderId, newStatus) {
-          try {
-            const response = await fetch(`/orders/${orderId}/seller`, {
-              method: 'PATCH',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ order_status: newStatus }),
-            });
-
-            if (response.ok) {
-              const data = await response.json();
-              console.log(data.message);
-              alert('주문상태가 수정되었습니다.');
-              window.location.reload();
-              // 성공적으로 주문 상태가 변경된 경우 처리
-            } else {
-              console.log(data.message);
-            }
-          } catch (error) {
-            console.error('ERROR:', error);
-            // 오류 처리
-          }
-        }
-        // 초기 주문 목록 불러오기
-        renderOrderList();
       }
+      // 초기 주문 목록 불러오기
+      renderOrderList();
 
       //- 라이브 창으로 이동 -//
       const title = document.querySelector('#liveTitle');
@@ -665,6 +649,10 @@
       document
         .querySelector('.liveStartBtn')
         .addEventListener('click', async () => {
+          if (title.value.length < 3 || title.value.length > 30) {
+            alert('방송 제목은 3자 이상 30자 미만이여야합니다');
+            return;
+          }
           window.open(`/live?title=${title.value}`);
         });
     </script>

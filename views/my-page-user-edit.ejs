@@ -66,7 +66,7 @@
               required=""
               value="<%- user.address %>"
             />
-            <label>Adress</label>
+            <label>Address</label>
           </div>
           <button
             type="button"
@@ -202,7 +202,6 @@
             alert('회원 정보 수정이 완료되었습니다.');
             window.location.href = '/my-page';
           } else {
-            console.log(data);
             alert(data.message);
           }
         } catch (error) {

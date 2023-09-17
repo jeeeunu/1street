@@ -165,7 +165,7 @@ export class AppController {
     }
 
     const carts = await this.cartsService.getCart(authUser.user_id);
-    const qnaCount = await this.qnasService.getQnaCount();
+    const qnaCount = await this.qnasService.getQnaCount(authUser.user_id);
 
     response.render('my-page', {
       isIndexPath,
