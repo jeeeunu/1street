@@ -70,6 +70,7 @@
     <!-- Categories Section Begin -->
     <section class="categories">
       <div class="container">
+<<<<<<< HEAD
         <div class="mx-5">
           <div class="section-title">
             <h2>진행중인 이벤트</h2>
@@ -121,6 +122,31 @@
               <span class="visually-hidden">Next</span>
             </button>
           </div>
+=======
+        <div class="row">
+          <div class="section-title">
+            <h2>Live</h2>
+          </div>
+          <ul class="categories__slider owl-carousel">
+            <!-- TODO :: 슬라이드에는 무조건 5개 이상의 데이터가 있어야 합니다. -->
+            <li class="col-lg-3">
+              <div
+                class="categories__item set-bg"
+                data-setbg="img/categories/cat-1.jpg"
+              >
+                <h5><a href="https://m.naver.com">Fresh Fruit</a></h5>
+              </div>
+            </li>
+            <li class="col-lg-3">
+              <div
+                class="categories__item set-bg"
+                data-setbg="img/categories/cat-2.jpg"
+              >
+                <h5><a href="#">Dried Fruit</a></h5>
+              </div>
+            </li>
+          </ul>
+>>>>>>> 21077dd (fix: index.ejs)
         </div>
       </div>
     </section>
@@ -152,8 +178,17 @@
     </div> -->
     <!-- Banner End -->
     <div class="container">
-      <div style="vertical-align: top" class="section-title">
-        <h2>라이브 방송</h2>
+      <div style="vertical-align: top">
+        <h3
+          style="
+            margin-bottom: 20px;
+            font-weight: 700;
+            display: inline;
+            margin-right: 2rem;
+          "
+        >
+          라이브 방송
+        </h3>
       </div>
 
       <ul id="liveList" class="mt-4 d-flex flex-wrap">
@@ -161,7 +196,10 @@
         <li class="liveListBox">라이브 방송 썸네일</li>
       </ul>
     </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 21077dd (fix: index.ejs)
     <!-- Latest Product Section Begin -->
     <section class="latest-product spad">
       <div class="container">
@@ -363,7 +401,6 @@
               productItem.className =
                 'col-lg-3 col-md-4 col-sm-6 mix category product-item';
               productItem.setAttribute('data-item-id', item.id);
-
               productItem.innerHTML = `
                 <div class="featured__item">
                   <div class="featured__item__pic set-bg">
@@ -440,35 +477,26 @@
       socket.on('roomChange', (data) => {
         liveList.innerHTML = '';
         for (let i in data) {
-          let liveTitle = i;
+          const liveTitle = i;
           const liveCount = data[i];
           const li = document.createElement('li');
-          const p1 = document.createElement('p');
-          const p2 = document.createElement('p');
-          if (liveTitle.length > 15) {
-            const tempLiveTitle = liveTitle.substring(0, 14);
-            p1.innerText = `${tempLiveTitle}...`;
-          } else {
-            p1.innerText = `${liveTitle}`;
-          }
-          p2.innerText = `(${liveCount}명 시청중)`;
-          li.append(p1);
-          li.append(p2);
-          p1.setAttribute('class', 'liveItem');
+          li.innerText = `${liveTitle} (${liveCount}명)`;
           li.setAttribute('data-title', liveTitle);
-          li.setAttribute('class', 'liveListBox');
+          li.setAttribute('class', 'liveItem liveListBox');
           liveList.append(li);
         }
 
         //- 라이브 창 열기 -//
-        document.querySelectorAll('.liveListBox').forEach((item) => {
+        document.querySelectorAll('.liveItem').forEach((item) => {
           item.addEventListener('click', (e) => {
-            const title = item.getAttribute('data-title');
+            const title = e.target.getAttribute('data-title');
             window.open(`/live?title=${title}`);
-
-            return;
           });
         });
+      });
+
+      socket.on('disconnect', function () {
+        console.log('Disconnected');
       });
 
       async function addToCart(productId) {
