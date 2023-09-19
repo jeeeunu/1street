@@ -1,0 +1,52 @@
+html,
+body {
+  width: 100vw;
+  height: 100vh;
+  background-color: #6c757d;
+  margin: 0;
+  padding: 0;
+}
+#admin {
+  margin: 2em 30em 2em 30em;
+  align-items: center;
+}
+#videoBox {
+  position: relative;
+}
+#myFace {
+  width: 100%;
+}
+#title {
+  text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
+  color: #fff;
+}
+#chatList {
+  width: 15%;
+  height: 20%;
+  text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
+  color: #fff;
+  position: absolute;
+  top: 65%;
+  left: 25%;
+  overflow-y: auto;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.353),
+    10%,
+    transparent
+  );
+}
+
+#chatList::-webkit-scrollbar {
+  display: none;
+}
+
+#chatList {
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
+}
+#settingBox {
+  position: absolute;
+  top: 10%;
+  right: 25%;
+}

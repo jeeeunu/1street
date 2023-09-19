@@ -27,14 +27,14 @@
             <span id="searchKeyword">'<%= searchContent %>'</span>에 대한
             검색결과
           </h2>
-          <div class="search-list-wrap">
-            <span>연관 검색어:</span>
-            <ul class="search-keyword-list">
-              <li>바나나 우유</li>
-              <li>바나나 과일</li>
-              <li>프리미엄 바나나</li>
-            </ul>
-          </div>
+          <!-- <div class="search-list-wrap">
+                      <span>연관 검색어:</span>
+                      <ul class="search-keyword-list">
+                        <li>바나나 우유</li>
+                        <li>바나나 과일</li>
+                        <li>프리미엄 바나나</li>
+                      </ul>
+                    </div> -->
         </div>
       </section>
 
@@ -107,7 +107,6 @@
         if (url !== currentUrl) {
         }
         try {
-          console.log(url);
           const response = await fetch(url, {
             method: 'GET',
             headers: {

@@ -11,7 +11,6 @@ import { CartsService } from './carts/carts.service';
 import { OrdersService } from './orders/orders.service';
 import { ReviewsService } from './reviews/reviews.service';
 import { QnasService } from './qnas/qnas.service';
-import { rename } from 'fs';
 
 @Controller()
 export class AppController {
@@ -165,7 +164,7 @@ export class AppController {
     }
 
     const carts = await this.cartsService.getCart(authUser.user_id);
-    const qnaCount = await this.qnasService.getQnaCount();
+    const qnaCount = await this.qnasService.getQnaCount(authUser.user_id);
 
     response.render('my-page', {
       isIndexPath,
@@ -297,9 +296,11 @@ export class AppController {
     const { isIndexPath, isSearchPath, categories, user } =
       await this.userPageData(request, authUser);
     const qna = await this.qnasService.getForProduct(productId);
+    const product = await this.productsService.findById(productId);
     response.render('user-qna', {
       isIndexPath,
       isSearchPath,
+      product,
       user,
       qna,
       authUser,
@@ -386,7 +387,7 @@ export class AppController {
     const product = await this.productsService.findById(productId);
     const reviewRating = await this.productsService.getRatingAverage(productId);
     const reviews = await this.reviewsService.findAllByProductId(productId);
-
+    const productQnAs = await this.qnasService.getForProduct(productId);
     response.render('product-detail', {
       isIndexPath,
       isSearchPath,
@@ -396,6 +397,7 @@ export class AppController {
       categories,
       reviewRating,
       reviews,
+      productQnAs,
     });
   }
 
@@ -589,13 +591,70 @@ export class AppController {
     });
   }
 
+  // -- admin : 해당 상점 대상 QNA 리스트 --//
+  @Get('admin-qna/:shop_id')
+  async adminQnaPage(
+    @Param('shop_id') shopId: number,
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { user, shop } = await this.adminPageData(authUser, response);
+    const products = await this.productsService.findRegisteredAll(
+      authUser.shop_id,
+    );
+    const qna = await this.qnasService.getForShop(shopId);
+    const qnaAnswer = await this.qnasService.getQnaAnswerByShopId(shopId);
+
+    response.render('admin-qna', {
+      authUser,
+      user,
+      shop,
+      products,
+      qna,
+      qnaAnswer,
+    });
+  }
+
+  // -- admin : QNA 답변 작성 --//
+  @Get('admin-qna-detail/:qna_id')
+  async adminQnaDetailPage(
+    @Param('qna_id') qnaId: number,
+    @AuthUser() authUser: RequestUserInterface,
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<void> {
+    const { isIndexPath, isSearchPath, categories, user } =
+      await this.userPageData(request, authUser);
+    const qna = await this.qnasService.findById(qnaId);
+
+    response.render('admin-qna-detail', {
+      isIndexPath,
+      isSearchPath,
+      authUser,
+      user,
+      qna,
+      categories,
+    });
+  }
+
   //-- 채팅구현 중 --//
   @Get('chat')
   async chat(@Res() response: Response) {
     response.render('chat');
   }
   @Get('live')
-  async live(@Res() response: Response, @Query('title') title: string) {
-    response.render('live', { title });
+  async live(
+    @Res() response: Response,
+    @Query('title') title: string,
+    @AuthUser() authUser: RequestUserInterface,
+  ) {
+    let isAdmin;
+    if (!authUser || authUser.isAdmin === false) {
+      isAdmin = false;
+    } else {
+      isAdmin = true;
+    }
+    response.render('live', { title, isAdmin, authUser });
   }
 }

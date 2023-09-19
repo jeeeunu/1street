@@ -9,6 +9,8 @@ import {
 import { IsNumber, IsString, MaxLength } from 'class-validator';
 import { ProductsEntity } from './products.entity';
 import { UsersEntity } from '.';
+import { QnasEntity } from './qnas.entity';
+import { QnaAnswerEntity } from 'src/qnas/entities/qna-answer.entity';
 
 @Entity({ name: 'shops' })
 export class ShopsEntity {
@@ -40,4 +42,10 @@ export class ShopsEntity {
 
   @OneToMany(() => ProductsEntity, (product) => product.shop)
   public products: ProductsEntity[];
+
+  @OneToMany(() => QnasEntity, (qna) => qna.shop)
+  public qna: QnasEntity;
+
+  @OneToMany(() => QnaAnswerEntity, (qna_answer) => qna_answer.shop)
+  public qna_answer: QnaAnswerEntity;
 }

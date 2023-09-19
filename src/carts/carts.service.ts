@@ -75,15 +75,16 @@ export class CartsService {
     if (cart === null) {
       return [];
     }
-    console.log(cart);
     const content: any[] = [];
     for (const item of cart) {
       const product_id = item.product_id;
       const quantity = item.quantity;
-      console.log(product_id);
       const product = await this.productRepository.findOne({
         where: { id: product_id },
       });
+      if (product === null) {
+        continue;
+      }
       const product_img = await this.productImageRepository.findOne({
         where: { product_id: product_id },
       });
@@ -112,7 +113,7 @@ export class CartsService {
   //-- 장바구니 물품 수량 변경 --//
   async updateCartItem(
     user_id: number,
-    product_id: string,
+    product_id: number,
     newQuantity: number,
   ): Promise<ResultableInterface> {
     const cartKey = `${user_id}_cart`;

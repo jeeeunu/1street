@@ -152,5 +152,22 @@
     </div>
     <% } %>
       <!-- 고객 End -->
+      <script>
+        document.addEventListener("DOMContentLoaded", async function fetchCartCount() {
+          try {
+            const response = await fetch(`/carts`); // 주문 상세 정보를 가져오는 API 엔드포인트 URL을 적절히 변경하세요.
+
+            if (response.ok) {
+              const data = await response.json();
+              const cartCountElement = document.getElementById('cart_count');
+              cartCountElement.textContent = `${data.length}`;
+            } else {
+              console.error('장바구니 개수를 가져오는데 실패했습니다.');
+            }
+          } catch (error) {
+            console.error('ERROR:', error);
+          }
+        })
+      </script>
 </header>
 <!-- Header Section End -->

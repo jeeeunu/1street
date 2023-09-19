@@ -165,7 +165,7 @@
                     Cart</a>
                 </div>
               </div> -->
-              <div class="col-lg-6">
+              <!-- <div class="col-lg-6">
                 <div class="shoping__continue">
                   <div class="shoping__discount">
                     <h5>Discount Codes</h5>
@@ -175,8 +175,8 @@
                     </form>
                   </div>
                 </div>
-              </div>
-              <div class="col-lg-6">
+              </div> -->
+              <div class="col-lg-12">
                 <div class="shoping__checkout">
                   <h5>Cart Total</h5>
                   <ul>
@@ -222,7 +222,7 @@
         <img src="${item.product_img}" alt="" />
         <h5>${item.product_name}</h5>
       </td>
-      <td class="shoping__cart__price">₩${item.product_price}</td>
+      <td class="shoping__cart__price">₩${formatNumber(item.product_price)}</td>
       <td class="shoping__cart__quantity">
         <div class="quantity">
           <div class="pro-qty">
@@ -230,7 +230,7 @@
           </div>
         </div>
       </td>
-      <td class="shoping__cart__total">₩${(item.total)}</td>
+      <td class="shoping__cart__total">₩${formatNumber(item.total)}</td>
       <td class="shoping__cart__item__close">
         <button class="remove-cart-item-btn" data-productId="${item.product_id}" onclick=removeCartItem(${item.product_id})>
           <span class="icon_close"></span>
@@ -247,11 +247,15 @@
                   }
                 });
 
+                function formatNumber(number) {
+                  return new Intl.NumberFormat('ko-KR').format(number); // 한국 로케일 (ko-KR) 사용
+                }
+
                 const subtotalElement = document.getElementById('subtotalValue');
                 const totalElement = document.getElementById('totalValue');
 
-                subtotalElement.textContent = `₩${subtotal}`;
-                totalElement.textContent = `₩${subtotal}`;
+                subtotalElement.textContent = `₩${formatNumber(subtotal)}`;
+                totalElement.textContent = `₩${formatNumber(subtotal)}`;
 
               } catch (error) {
                 console.error('ERROR:', error);
@@ -268,7 +272,7 @@
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify({ product_id: String(product_id), quantity: updatedQuantity }),
+                  body: JSON.stringify({ product_id: product_id, quantity: updatedQuantity }),
                 });
                 if (response.ok) {
                   // 성공적으로 업데이트된 경우 fetchCartData() 함수 호출하여 장바구니 데이터 다시 로드
@@ -290,13 +294,14 @@
                     'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
-                    product_id: String(product_id)
+                    product_id: product_id
                   }),
                 });
 
                 if (response.ok) {
                   // 성공적으로 삭제된 경우 fetchCartData() 함수 호출하여 장바구니 데이터 다시 로드
                   alert('물품이 삭제되었습니다.')
+                  window.location.reload()
                   fetchCartData();
                 } else {
                   throw new Error('장바구니 물품을 삭제할 수 없습니다.');

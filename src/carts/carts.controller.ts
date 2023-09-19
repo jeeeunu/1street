@@ -49,12 +49,12 @@ export class CartsController {
     return await this.cartsService.getCart(authUser.user_id);
   }
 
-  //-- 장바구니 수정 --//
+  //-- 장바구니 물품 수량 수정 --//
   @Patch()
   @UseGuards(AuthGuard)
   async updateCartItemQuantity(
     @AuthUser() authUser: RequestUserInterface,
-    @Body('product_id') product_id: string,
+    @Body('product_id') product_id: number,
     @Body('quantity') quantity: number,
   ): Promise<any> {
     return await this.cartsService.updateCartItem(

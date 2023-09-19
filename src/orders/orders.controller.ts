@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -11,7 +12,6 @@ import {
 import { OrdersService } from './orders.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser } from '../auth/auth.decorator';
-import { Request } from 'supertest';
 import { Order2CreateDto, OrderCreateDto, OrderStatusDto } from './dtos';
 import { ResultableInterface } from 'src/common/interfaces';
 import { RequestUserInterface } from 'src/users/interfaces';
@@ -101,5 +101,15 @@ export class OrdersController {
   ): Promise<ResultableInterface> {
     const authUser: RequestUserInterface = req['user'];
     return await this.ordersService.sellerOrder(authUser, order_id, data);
+  }
+
+  //-- 결제 실패시 주문 삭제 --//
+  @Delete('/:order_id/fail/delete')
+  @UseGuards(AuthGuard)
+  async deleteOrder(
+    @AuthUser() authUser: RequestUserInterface,
+    @Param('order_id') order_id: number,
+  ): Promise<ResultableInterface> {
+    return await this.ordersService.deleteOrder(authUser.user_id, order_id);
   }
 }

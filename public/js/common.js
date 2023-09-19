@@ -1,3 +1,10 @@
+// 엔터키 막기
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+  }
+});
+
 //-- TOP 버튼 --//
 const scrollTop = function () {
   const scrollBtn = document.createElement('button');
@@ -98,6 +105,7 @@ const createLike = async (productId) => {
 
     if (response.ok) {
       alert(data.message);
+      window.location.reload();
     } else {
       console.log(data.message);
       if (Array.isArray(data.message)) {

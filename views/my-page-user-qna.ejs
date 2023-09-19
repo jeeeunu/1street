@@ -2,6 +2,48 @@
 <html lang="ko">
   <!-- include : head -->
   <%- include('includes/head') %>
+  <head>
+    <style>
+      /* Q&A 섹션 스타일 수정 */
+      .qna-page {
+        margin-top: 100px; /* 상단 마진을 늘립니다. */
+        padding: 20px; /* 패딩을 추가합니다. */
+      }
+
+      /* 테이블 스타일 수정 */
+      .qna__table table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      .qna__table th,
+      .qna__table td {
+        border: 1px solid #000000; /* 테두리 추가 */
+        padding: 10px;
+        text-align: center;
+      }
+
+      .qna__table th {
+        background-color: #7fad39; /* 테이블 헤더 배경색 */
+        color: #ffffff; /* 테이블 헤더 텍스트 색상 */
+        font-weight: bold;
+      }
+
+      .qna__table td {
+        background-color: #ffffff; /* 테이블 셀 배경색 */
+        color: #000000; /* 테이블 셀 텍스트 색상 */
+      }
+
+      .qna__table tbody tr:nth-child(even) {
+        background-color: #ececec; /* 짝수 행 배경색 (예시) */
+      }
+
+      .qna__table tbody tr:hover {
+        background-color: #ffffcc; /* 호버 상태 배경색 (예시) */
+      }
+    </style>
+  </head>
   <body>
     <!-- include : preloder -->
     <%- include('includes/preloder') %>
@@ -25,9 +67,10 @@
               <table>
                 <thead>
                   <tr>
-                    <th>작성일자</th>
+                    <th>작성일</th>
                     <th>판매자</th>
                     <th>상품명</th>
+                    <th>문의 제목</th>
                     <th>문의 내용</th>
                     <th>질문상태</th>
                   </tr>
@@ -43,15 +86,14 @@
     </section>
     <!-- Qna Page Section End -->
     <script>
-      // 로그인한 사용자 정보를 저장한 객체 (가정)
-      // 현재 로그인한 내 정보를 바탕으로 페이지를 불러오기에 성공했지만,
-      // 익명의 누군가가 접속했을 때 해당 userId를 통해 QNA 정보를 확인하는 것으로 수정해야한다.
-      const currentUser = {
-        id: 3, // 사용자의 고유 ID
-      };
+      // 현재 페이지의 URL에서 끝에 있는 숫자를 추출하여 userId 변수에 저장
+      const url = window.location.href;
+      const userId = parseInt(url.substring(url.lastIndexOf('/') + 1));
 
-      // 로그인한 사용자의 ID를 userId 변수에 저장
-      const userId = currentUser.id;
+      // 로그인한 사용자 정보를 저장한 객체
+      const currentUser = {
+        id: userId,
+      };
 
       // userId를 사용하여 서버로 요청 보내는 예시
       document.addEventListener('DOMContentLoaded', async () => {
@@ -71,15 +113,51 @@
 
             qnaList.forEach((qna) => {
               const row = document.createElement('tr');
-              row.innerHTML = `
-                <td>${qna.created_at}</td>
-                <td>${qna.user.name}</td>
-                <td>${qna.product.product_name}</td>
-                <td>${qna.qna_content}</td>
-                <td class="status-cell">${qna.status}</td>
-              `;
+              // 각각의 qna에 대한 qnaId를 가져옵니다.
+              const qnaId = qna.id;
+              // qnaId를 사용하여 서버에서 해당 qna의 답변을 가져옵니다.
+              fetch(`/qnas/${qnaId}/answers`)
+                .then(async (response) => {
+                  if (response.ok) {
+                    const qnaAnswers = await response.json();
+                    const status =
+                      qnaAnswers.length > 0 ? '답변 완료' : '답변 대기중';
 
-              tbody.appendChild(row);
+                    // 작성일자를 원하는 형식으로 변환합니다.
+                    const createdDate = new Date(qna.created_at);
+                    const formattedDate = createdDate.toLocaleString('ko-KR', {
+                      year: 'numeric',
+                      month: 'numeric',
+                      day: 'numeric',
+                      hour: 'numeric',
+                      minute: 'numeric',
+                    });
+
+                    // 상태를 추가하여 화면에 표시합니다.
+                    row.innerHTML = `
+                      <td>${formattedDate}</td>
+                      <td>${qna.user.name}</td>
+                      <td>${qna.product.product_name}</td>
+                      <td>${qna.qna_name}</td>
+                      <td>${qna.qna_content}</td>
+                      <td class="status-cell">${status}</td>
+                    `;
+
+                    tbody.appendChild(row);
+                  } else {
+                    // 서버 응답이 실패인 경우
+                    console.error(
+                      '서버 응답 오류:',
+                      response.status,
+                      response.statusText,
+                    );
+                    alert('데이터를 불러오는데 실패했습니다.');
+                  }
+                })
+                .catch((error) => {
+                  console.error('오류 발생:', error);
+                  alert('오류가 발생했습니다.');
+                });
             });
           } else {
             // 서버 응답이 실패인 경우

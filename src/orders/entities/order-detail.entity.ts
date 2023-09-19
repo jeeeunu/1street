@@ -24,7 +24,9 @@ export class OrderDetailsEntity {
   @Column()
   public order_quantity: number;
 
-  @ManyToOne(() => OrdersEntity, (order) => order.order_details)
+  @ManyToOne(() => OrdersEntity, (order) => order.order_details, {
+    onDelete: 'CASCADE',
+  })
   public order: OrdersEntity;
 
   @ManyToOne(() => ProductsEntity, (product) => product.order_detail)
