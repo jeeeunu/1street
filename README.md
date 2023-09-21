@@ -16,6 +16,61 @@
 
 쇼핑몰·오픈마켓·소셜커머스
 
+### Rest API
+
+| Content              | Method     | Path                                       |
+| -------------------- | ---------- | ------------------------------------------ |
+| 로그인                   | `POST`     | /auth/login                              |
+| 소셜로그인-google         | `GET`      | /google/login/callback                  |
+| 소셜로그인-google redirect| `GET`      | /google/redirect                        |
+| 로그아웃                  | `POST`      | /auth/logout                          |
+| 회원가입                  | `POST`      | /users                                |
+| 내정보 조회                | `GET`      | /users/user                            |
+| 내정보 수정                | `PATCH`      | /users                               |
+| 회원탈퇴                  | `DELETE`      | /users                              |
+| 스토어 보기               | `GET`      | /users                                  |
+| 내 스토어 정보            | `GET`      | /shops                                  |
+| 스토어 생성              | `POST`      | /shops                                 |
+| 스토어 수정              | `PATCH`      | /shops                                |
+| 스토어 삭제              | `DELETE`      | /shops                               |
+| 상품 상세보기             | `GET`      | /products/:productId                    |
+| 상품 전체보기             | `GET`      | /products                               |
+| 상품 검색(키워드,카테고리,필터별) | `GET`      | /products/search?keyword=키워드&limit=number&cursor=number       |
+| 상품 카테고리 검색 | `GET`      | /products/search?categoryId=1&limit=number&cursor=number       |
+| 상품 등록             | `POST`      | /products                                      |
+| 상품 수정             | `PATCH`      | /products/:productId                           |
+| 상품 삭제             | `DELETE`      | /products/:productId                         |
+| ‘좋아요’한 상품보기     | `GET`      | /likes                                           |
+| ‘좋아요’하기          | `POST`      | /likes/:productId                              |
+| ‘좋아요’ 취소          | `DELETE`      | /likes/:productId                            |
+| 주문 조회          | `GET`      | /orders                                            |
+| 주문 등록          | `POST`      | /orders/carts                                     |
+| 주문 상세 조회          | `GET`      | /orders/:order_id                              |
+| 주문 수정          | `PATCH`      | /orders/:order_id                              |
+| 주문 선택 취소          | `PATCH`      | /orders/:order_id/:order_detail_id/select      |
+| 주문 취소          | `PATCH`      | /orders/:order_id/cancel                     |
+| 주문 처리상태 수정 : 판매자          | `PATCH`      | /orders/:order_id/seller              |
+| 리뷰 작성          | `POST`      | /reviews/:order_detail_id                     |
+| 리뷰 조회 : 주문별          | `GET`      | /reviews?order_detail_id=123              |
+| 리뷰 조회 : 상품별          | `GET`      | /reviews/:product_id                     |
+| 리뷰 조회 : 샵          | `GET`      | /reviews/:user_id                     |
+| 리뷰 수정          | `PATCH`      | /reviews/:review_id                     |
+| 리뷰 삭제          | `DELETE`      | /reviews/:review_id                     |
+| 질문 조회          | `GET`      | /qnas/:product_id                   |
+| 질문 등록          | `POST`      | /qnas                                 |
+| 질문 수정          | `POST`      | /qnas/:qna_id                          |
+| 질문 삭제          | `DELETE`      | /qnas/:qna_id                   |
+| 답변 조회          | `GET`      | /qna_answers/:product_id            |
+| 답변 등록          | `POST`      | /qna_answers                          |
+| 답변 수정          | `PATCH`      | /qna_answers/:qna_answer_id            |
+| 답변 삭제          | `DELETE`      | /qna_answers/:qna_answer_id            |
+| 장바구니 등록          | `POST`      | /carts                                 |
+| 장바구니 조회          | `GET`      | /carts                                 |
+| 장바구니 수정          | `GET`      | /carts                                 |
+| 장바구니 삭제          | `DELETE`      | /carts                          |
+
+
+
 #### 🔩 사용한 기술
 
 `JavaScript` `TypeScript` `NestJS` `TypeORM` `S3` `RDS` `Redis` `socket.io` `webRTC`
