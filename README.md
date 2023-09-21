@@ -7,6 +7,7 @@
 - ejs 연결
 - 회원가입, 로그인, 상점, 리뷰, 상품, 좋아요, 마이페이지, 최근 본 상품, 카테고리, 검색
 - 무한스크롤 적용
+  
 `back`
 - S3, 이미지 리사이징
 - 회원가입, 로그인, 소셜 로그인 API
@@ -19,6 +20,7 @@
 ### 부팀장: 한조원 (https://github.com/JW01987)
 `front`
 - webRTC, 채팅 기능 구현
+  
 `back`
 - shop, product, category API 구현
 - webRTC, 채팅 기능 구현
@@ -29,6 +31,7 @@
 ### 팀원 : 이병수 (https://github.com/byeongsoo52)
 `front`
 - qna ejs 연결 (user, admin)
+  
 `back`
 - qna, qnaAnswer API 구현
 
@@ -37,6 +40,7 @@
 `front`
 - 결제 API 연결
 - 장바구니, 주문, 주문상세내역, 마이페이지
+  
 `back`
 - 주문, 결제 API 구현
 Redis 사용 장바구니(cart) 기능 구현
