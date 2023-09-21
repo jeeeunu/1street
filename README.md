@@ -2,7 +2,50 @@
 
 ## 🧑‍💻 팀원
 
-팀장: 유지은/부팀장: 한조원/팀원 : 이병수, 홍진택
+##### 팀장: 유지은 (https://github.com/jeeeunu)
+
+`front`
+- ejs 연결
+- 회원가입, 로그인, 상점, 리뷰, 상품, 좋아요, 마이페이지, 최근 본 상품, 카테고리, 검색
+- 무한스크롤 적용
+
+`back`
+- S3, 이미지 리사이징
+- 회원가입, 로그인, 소셜 로그인 API
+- 스토어, 상품, 검색, 리뷰, 좋아요 API
+- 상품 커서 기반 페이지네이션 적용
+- EC2 CI/CD 배포
+- https 적용
+
+  
+##### 부팀장: 한조원 (https://github.com/JW01987)
+
+`front`
+- webRTC, 채팅 기능 구현
+
+`back`
+- shop, product, category API 구현
+- webRTC, 채팅 기능 구현
+- EC2 CI/CD 배포
+- https 적용
+
+  
+##### 팀원 : 이병수 (https://github.com/byeongsoo52)
+`front`
+- qna ejs 연결 (user, admin)
+
+`back`
+- qna, qnaAnswer API 구현
+
+  
+##### 팀원 : 홍진택 (https://github.com/todjwer13)
+`front`
+- 결제 API 연결
+- 장바구니, 주문, 주문상세내역, 마이페이지
+
+`back`
+- 주문, 결제 API 구현
+Redis 사용 장바구니(cart) 기능 구현
 
 
 ## 💁 프로젝트 소개
