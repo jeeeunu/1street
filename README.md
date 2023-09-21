@@ -107,7 +107,8 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 
 
 
-### ✏️ 프로젝트 아키텍쳐
+
+## ✏프로젝트 아키텍쳐
 ![](https://velog.velcdn.com/images/jw01987/post/05b95ba7-6a0e-4c4e-8350-912c524087a8/image.jpg)
 
 
@@ -155,6 +156,7 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 
 
 
+
 ## ⚽️ 트러블 슈팅
 
 ### *EC2 배포 문제
@@ -176,6 +178,8 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
     
 - 추후에 로그그룹 , AWS SAM 등을 이용해 배포/관리에 활용하기로 함
 
+
+
 ### *DOM 조작시 성능저하되는 문제
 
 #### 문제
@@ -193,6 +197,8 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 - html 템플릿에 상품 이미지가 background-image 로 설정되어 있었는데, img 태그처럼 렌더링 우선순위를 보장받지 못하기 때문에 <img> 태그로 변경됨.
 
 
+
+
 ### *결과에 포함되는 다른 영역의 엔티티를 불러오는 문제
 
 #### 문제
@@ -207,6 +213,8 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 따라서 각각의 엔티티에서 아래와 같은 관계를 설정해주었고, 서비스 단에서는 where, relations를 이용해 제품에 대한 Q&A 값을 반환하도록 했다.
 
 !https://velog.velcdn.com/images/jw01987/post/f952290e-89ff-4244-a703-7432788df0d3/image.png
+
+
 
 
 ### *장바구니 기능의 로직 문제
