@@ -2,18 +2,17 @@
 
 ## 🧑‍💻 팀원
 
-팀장: 유지은
-부팀장: 한조원
-팀원 : 이병수, 홍진택
+팀장: 유지은/부팀장: 한조원/팀원 : 이병수, 홍진택
 
 
-### 💁 프로젝트 소개
+## 💁 프로젝트 소개
 
 ![](https://velog.velcdn.com/images/jw01987/post/83fadb58-5df5-4175-b2e4-9fc575e16c61/image.png)
 
 쇼핑몰·오픈마켓·소셜커머스
 
-### Rest API
+
+## Rest API
 
 | Content              | Method     | Path                                       |
 | -------------------- | ---------- | ------------------------------------------ |
@@ -66,20 +65,21 @@
 | 장바구니 수정          | `GET`      | /carts                                 |
 | 장바구니 삭제          | `DELETE`      | /carts                          |
 
-### Wire Frame
+
+## Wire Frame
 
 https://www.figma.com/file/qdigPQBTAsd33sRy5geVpW/일번가?type=design&node-id=0%3A1&mode=design&t=BeGcRKIAN6lQkQaB-1
 
 
 
-### ERD
+## ERD
 
 https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 ![일번가.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0cb12d77-8646-4795-a966-20a1c68c5351/%EC%9D%BC%EB%B2%88%EA%B0%80.png)
 
 
 
-#### 🔩 사용한 기술
+## 🔩 사용한 기술
 
 `JavaScript` `TypeScript` `NestJS` `TypeORM` `S3` `RDS` `Redis` `socket.io` `webRTC`
 
@@ -112,7 +112,7 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 
 
 
-### 💬 기술적 의사결정
+## 💬 기술적 의사결정
 
 #### *오프셋 기반 vs 커서 기반 페이지네이션
 
@@ -155,7 +155,7 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 
 
 
-# ⚽️ 트러블 슈팅
+## ⚽️ 트러블 슈팅
 
 #### *EC2 배포 문제
 
