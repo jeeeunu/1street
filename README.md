@@ -70,10 +70,14 @@
 
 https://www.figma.com/file/qdigPQBTAsd33sRy5geVpW/일번가?type=design&node-id=0%3A1&mode=design&t=BeGcRKIAN6lQkQaB-1
 
+
+
 ### ERD
 
 https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 ![일번가.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0cb12d77-8646-4795-a966-20a1c68c5351/%EC%9D%BC%EB%B2%88%EA%B0%80.png)
+
+
 
 #### 🔩 사용한 기술
 
@@ -101,12 +105,16 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 - 메모리에 저장하기 때문에 디스크 기반 데이터베이스보다 더 빠르게 데이터를 읽을 수 있다.
 - 문법적으로 사용하기 쉽고, 작성할 개발코드 양이 적다
 
+
+
 ### ✏️ 프로젝트 아키텍쳐
 ![](https://velog.velcdn.com/images/jw01987/post/05b95ba7-6a0e-4c4e-8350-912c524087a8/image.jpg)
 
+
+
 ### 💬 기술적 의사결정
 
-#### 오프셋 기반 vs 커서 기반 페이지네이션
+#### *오프셋 기반 vs 커서 기반 페이지네이션
 
 - 결정: 일반적인 방법인 고유식별자 기준으로 커서기반 페이지네이션을 구현했다.
 - 실시간 데이터 처리 능력, 누락/중복되지 않는 데이터에 이점이 있음
@@ -122,33 +130,34 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
     커서 기반 페이지네이션은 O(1), O(limit)으로 항상 일정하기 때문에 페이지 로딩에 이점이 있다.
 ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/c8fa7276-3610-4f11-923b-efe367f6d500/20b69847-11dd-48b5-9499-585ecc30c7b5/Untitled.png)
 
-#### http vs https
+#### *http vs https
 
 결정: https 적용
 - chrome 등의 브라우저에서 http 웹 사이트를 안전하지 않은 페이지로 분류
 - webRTC를 활용한 라이브쇼핑이 활성화 되지 않는 문제
 
-#### S3 이미지 업로드 시, 서버에서 이미지 리사이징 처리
+#### *S3 이미지 업로드 시, 서버에서 이미지 리사이징 처리
 
 결정: node sharp 모듈을 통한 이미지 리사이징 적용
 - 사용자가 큰 용량의 이미지를 올렸을때의 대처
 - 이미지 압축
 
-#### CI / CD 와 테스트 코드
+#### *CI/CD, 테스트 코드
 
 결정: 테스트 코드를 제외 하고 CI/CD 배포를 적용
 - 프로젝트 배포 후에도 당분간 계속 추가,수정해야하기 때문에 CI/CD 자동화가 주는 이점이 큼, 테스트 코드를 배우고 실행하기에는 이미 많은 코드가 작성되어있어 다음 프로젝트를 기약함
 
-#### HLS vs WebRTC
+#### *HLS vs WebRTC
 
 결정: WebRTC
 - HLS는 영상들을 전송하는데 시간이 걸림
 - 접근하기 쉬운 WebRTC를 사용하기로 함
 
 
+
 # ⚽️ 트러블 슈팅
 
-## EC2 배포 문제
+#### *EC2 배포 문제
 
 ### 문제
 
@@ -167,7 +176,7 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
     
 - 추후에 로그그룹 , AWS SAM 등을 이용해 배포/관리에 활용하기로 함
 
-## DOM 조작시 성능저하되는 문제
+#### *DOM 조작시 성능저하되는 문제
 
 ### 문제
 
@@ -184,7 +193,7 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 - html 템플릿에 상품 이미지가 background-image 로 설정되어 있었는데, img 태그처럼 렌더링 우선순위를 보장받지 못하기 때문에 <img> 태그로 변경됨.
 
 
-## 결과에 포함되는 다른 영역의 엔티티를 불러오는 문제
+#### *결과에 포함되는 다른 영역의 엔티티를 불러오는 문제
 
 ### 문제
 
@@ -200,7 +209,7 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 !https://velog.velcdn.com/images/jw01987/post/f952290e-89ff-4244-a703-7432788df0d3/image.png
 
 
-## 장바구니 기능의 로직 문제
+#### *장바구니 기능의 로직 문제
 
 ### 문제
 
