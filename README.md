@@ -116,7 +116,7 @@ https://www.figma.com/file/qdigPQBTAsd33sRy5geVpW/일번가?type=design&node-id=
 ## ERD
 
 https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
-<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FW3tTj%2Fbtsy8t8nNtJ%2FX1amR2MXSZ5ljqnfIu0k20%2Fimg.png" width=“80%” height=“auto/>
+<img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FW3tTj%2Fbtsy8t8nNtJ%2FX1amR2MXSZ5ljqnfIu0k20%2Fimg.png" width=“auto” height=“700"/>
 
 
 
