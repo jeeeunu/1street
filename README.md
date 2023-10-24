@@ -2,7 +2,48 @@
 
 ## 🧑‍💻 팀원
 
-팀장: 유지은/부팀장: 한조원/팀원 : 이병수, 홍진택
+### 팀장: 유지은 (https://github.com/jeeeunu)
+`front`
+- ejs 연결, 기존 html 템플릿 퍼블리싱 수정
+- 회원가입, 로그인, 상점, 리뷰, 상품, 좋아요, 마이페이지, 최근 본 상품, 카테고리, 검색
+- 무한스크롤 적용
+  
+`back`
+- S3, 이미지 리사이징
+- 회원가입, 로그인, 소셜 로그인 API
+- 스토어, 상품, 검색, 리뷰, 좋아요 API
+- 상품 커서 기반 페이지네이션 적용
+- EC2 CI/CD 배포
+- https 적용
+
+  
+### 부팀장: 한조원 (https://github.com/JW01987)
+`front`
+- webRTC, 채팅 기능 구현
+  
+`back`
+- shop, product, category API 구현
+- webRTC, 채팅 기능 구현
+- EC2 CI/CD 배포
+- https 적용
+
+  
+### 팀원 : 이병수 (https://github.com/byeongsoo52)
+`front`
+- qna ejs 연결 (user, admin)
+  
+`back`
+- qna, qnaAnswer API 구현
+
+  
+### 팀원 : 홍진택 (https://github.com/todjwer13)
+`front`
+- 결제 API 연결
+- 장바구니, 주문, 주문상세내역, 마이페이지
+  
+`back`
+- 주문, 결제 API 구현
+Redis 사용 장바구니(cart) 기능 구현
 
 
 ## 💁 프로젝트 소개
@@ -73,13 +114,16 @@ https://www.figma.com/file/qdigPQBTAsd33sRy5geVpW/일번가?type=design&node-id=
 
 
 ## ERD
-![일번가](https://github.com/jeeeunu/1street/assets/98936231/c43d378b-9c29-4521-9a5a-0251e3c2dd5e)
+
+https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FW3tTj%2Fbtsy8t8nNtJ%2FX1amR2MXSZ5ljqnfIu0k20%2Fimg.png)
+
 
 
 
 ## 🔩 사용한 기술
 
-`JavaScript` `TypeScript` `NestJS` `TypeORM` `S3` `RDS` `Redis` `socket.io` `webRTC`
+`JavaScript` `TypeScript` `NestJS` `TypeORM` `MySQL` `S3` `RDS` `Redis` `socket.io` `webRTC`
 
 ##### NestJs
 
@@ -105,8 +149,9 @@ https://www.figma.com/file/qdigPQBTAsd33sRy5geVpW/일번가?type=design&node-id=
 
 
 
-### ✏️ 프로젝트 아키텍쳐
-![](https://velog.velcdn.com/images/jw01987/post/05b95ba7-6a0e-4c4e-8350-912c524087a8/image.jpg)
+
+## ✏프로젝트 아키텍쳐
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcuSYkR%2Fbtsy9RVdyzS%2FSUtNlesvZMCAXktaF2nX20%2Fimg.png)
 
 
 
@@ -126,6 +171,8 @@ https://www.figma.com/file/qdigPQBTAsd33sRy5geVpW/일번가?type=design&node-id=
     오프셋 페이징의 시간복잡성은 O(N), O(offset+limit)으로 데이터 양이 증가 할 수록 데이터 베이스 쿼리가 느려질 수 있다.
     
     커서 기반 페이지네이션은 O(1), O(limit)으로 항상 일정하기 때문에 페이지 로딩에 이점이 있다.
+    
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fp2TCK%2Fbtsy4kERmoa%2Fnqhp8uvfgMF4kFY58367f1%2Fimg.png)
 
 
 ### *http vs https
@@ -153,7 +200,33 @@ https://www.figma.com/file/qdigPQBTAsd33sRy5geVpW/일번가?type=design&node-id=
 
 
 
+
 ## ⚽️ 트러블 슈팅
+
+### *타 모듈의 service 불러오기
+
+#### 문제
+
+- upload.service 요소를 다른 모듈에 불러와 쓰려고 함 ⇒ 연관 없는 order.module, shop.module 등 곳곳에서 오류가 발생
+
+    ```jsx
+    Potential solutions:
+    - Is UsersModule a valid NestJS module?
+    - If ReviewImageEntityRepository is a provider, is it part of the current UsersModule?
+    - If ReviewImageEntityRepository is exported from a separate @Module, is that module imported within UsersModule?
+      @Module({
+        imports: [ /* the Module containing ReviewImageEntityRepository */ ]
+      })
+    
+    Error: Nest can't resolve dependencies of the UploadsService (?). Please make sure that the argument ReviewImageEntityRepository at index [0] is available in the UsersModule context.
+    ```
+
+  
+#### 해결방법
+
+- Order,Shop 등의 모듈에서 userservice를 참조로 하기 때문에 종속성의 문제로 오류가 발생하는 것으로 userservice와 연관된 모든 모듈에 UploadsService를 불러와 해결
+
+
 
 ### *EC2 배포 문제
 
@@ -174,6 +247,8 @@ https://www.figma.com/file/qdigPQBTAsd33sRy5geVpW/일번가?type=design&node-id=
     
 - 추후에 로그그룹 , AWS SAM 등을 이용해 배포/관리에 활용하기로 함
 
+
+
 ### *DOM 조작시 성능저하되는 문제
 
 #### 문제
@@ -191,6 +266,8 @@ https://www.figma.com/file/qdigPQBTAsd33sRy5geVpW/일번가?type=design&node-id=
 - html 템플릿에 상품 이미지가 background-image 로 설정되어 있었는데, img 태그처럼 렌더링 우선순위를 보장받지 못하기 때문에 <img> 태그로 변경됨.
 
 
+
+
 ### *결과에 포함되는 다른 영역의 엔티티를 불러오는 문제
 
 #### 문제
@@ -205,6 +282,8 @@ https://www.figma.com/file/qdigPQBTAsd33sRy5geVpW/일번가?type=design&node-id=
 따라서 각각의 엔티티에서 아래와 같은 관계를 설정해주었고, 서비스 단에서는 where, relations를 이용해 제품에 대한 Q&A 값을 반환하도록 했다.
 
 !https://velog.velcdn.com/images/jw01987/post/f952290e-89ff-4244-a703-7432788df0d3/image.png
+
+
 
 
 ### *장바구니 기능의 로직 문제
