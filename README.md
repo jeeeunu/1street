@@ -200,6 +200,31 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 
 ## ⚽️ 트러블 슈팅
 
+### *타 모듈의 service 불러오기
+
+#### 문제
+
+- upload.service 요소를 다른 모듈에 불러와 쓰려고 함 ⇒ 연관 없는 order.module, shop.module 등 곳곳에서 오류가 발생
+
+    ```jsx
+    Potential solutions:
+    - Is UsersModule a valid NestJS module?
+    - If ReviewImageEntityRepository is a provider, is it part of the current UsersModule?
+    - If ReviewImageEntityRepository is exported from a separate @Module, is that module imported within UsersModule?
+      @Module({
+        imports: [ /* the Module containing ReviewImageEntityRepository */ ]
+      })
+    
+    Error: Nest can't resolve dependencies of the UploadsService (?). Please make sure that the argument ReviewImageEntityRepository at index [0] is available in the UsersModule context.
+    ```
+
+  
+#### 해결방법
+
+- Order,Shop 등의 모듈에서 userservice를 참조로 하기 때문에 종속성의 문제로 오류가 발생하는 것으로 userservice와 연관된 모든 모듈에 UploadsService를 불러와 해결
+
+
+
 ### *EC2 배포 문제
 
 #### 문제
