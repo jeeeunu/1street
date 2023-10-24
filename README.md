@@ -4,7 +4,7 @@
 
 ### 팀장: 유지은 (https://github.com/jeeeunu)
 `front`
-- ejs 연결
+- ejs 연결, 기존 html 템플릿 퍼블리싱 수정
 - 회원가입, 로그인, 상점, 리뷰, 상품, 좋아요, 마이페이지, 최근 본 상품, 카테고리, 검색
 - 무한스크롤 적용
   
@@ -122,7 +122,7 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 
 ## 🔩 사용한 기술
 
-`JavaScript` `TypeScript` `NestJS` `TypeORM` `S3` `RDS` `Redis` `socket.io` `webRTC`
+`JavaScript` `TypeScript` `NestJS` `TypeORM` `MySQL` `S3` `RDS` `Redis` `socket.io` `webRTC`
 
 ##### NestJs
 
