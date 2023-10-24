@@ -116,7 +116,7 @@ https://www.figma.com/file/qdigPQBTAsd33sRy5geVpW/일번가?type=design&node-id=
 ## ERD
 
 https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
-![일번가.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0cb12d77-8646-4795-a966-20a1c68c5351/%EC%9D%BC%EB%B2%88%EA%B0%80.png)
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FW3tTj%2Fbtsy8t8nNtJ%2FX1amR2MXSZ5ljqnfIu0k20%2Fimg.png)
 
 
 
@@ -150,7 +150,7 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 
 
 ## ✏프로젝트 아키텍쳐
-![](https://velog.velcdn.com/images/jw01987/post/05b95ba7-6a0e-4c4e-8350-912c524087a8/image.jpg)
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcuSYkR%2Fbtsy9RVdyzS%2FSUtNlesvZMCAXktaF2nX20%2Fimg.png)
 
 
 
@@ -170,7 +170,7 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
     오프셋 페이징의 시간복잡성은 O(N), O(offset+limit)으로 데이터 양이 증가 할 수록 데이터 베이스 쿼리가 느려질 수 있다.
     
     커서 기반 페이지네이션은 O(1), O(limit)으로 항상 일정하기 때문에 페이지 로딩에 이점이 있다.
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/c8fa7276-3610-4f11-923b-efe367f6d500/20b69847-11dd-48b5-9499-585ecc30c7b5/Untitled.png)
+![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fp2TCK%2Fbtsy4kERmoa%2Fnqhp8uvfgMF4kFY58367f1%2Fimg.png)
 
 ### *http vs https
 
