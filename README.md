@@ -120,6 +120,7 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
 
 
 
+
 ## 🔩 사용한 기술
 
 `JavaScript` `TypeScript` `NestJS` `TypeORM` `MySQL` `S3` `RDS` `Redis` `socket.io` `webRTC`
@@ -170,7 +171,9 @@ https://www.erdcloud.com/d/KRrNZpgo4aszmk4eY
     오프셋 페이징의 시간복잡성은 O(N), O(offset+limit)으로 데이터 양이 증가 할 수록 데이터 베이스 쿼리가 느려질 수 있다.
     
     커서 기반 페이지네이션은 O(1), O(limit)으로 항상 일정하기 때문에 페이지 로딩에 이점이 있다.
+    
 ![](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fp2TCK%2Fbtsy4kERmoa%2Fnqhp8uvfgMF4kFY58367f1%2Fimg.png)
+
 
 ### *http vs https
 
