@@ -17,7 +17,11 @@
     "migration:create": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:create ./src/database/migrations/Migration",
     "migration:generate": "npm run typeorm migration:generate ./src/database/migrations/Migration",
     "migration:run": "npm run typeorm  migration:run",
-    "migration:revert": "npm run typeorm migration:revert"
+    "migration:revert": "npm run typeorm migration:revert",
+    "db:create": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs db:create",
+    "db:drop": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs db:drop",
+    "seed:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs seed:run",
+    "seed:create": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs seed:create"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^2.1.0",
@@ -53,6 +57,7 @@
     "sharp": "^0.32.5",
     "socket.io": "^4.7.2",
     "typeorm": "^0.3.17",
+    "typeorm-extension": "^3.1.1",
     "typeorm-naming-strategies": "^4.1.0",
     "uuid": "^9.0.0"
   },
