@@ -86,7 +86,7 @@ export class UsersService {
 
     const createUser = await this.usersEntity.save(userDto);
 
-    if (files.length > 0) {
+    if (files && files.length > 0) {
       const imageUrl = await this.uploadsService.createProfileImage(files);
       createUser.profile_image = imageUrl;
       if (!imageUrl) throw new BadRequestException();
